@@ -317,6 +317,28 @@ function syncUIWithConfig() {
   const focalSelect = document.getElementById('cfg-focal-mode') as HTMLSelectElement | null;
   if (focalSelect) focalSelect.value = config.focalLengthMode || 'physical';
 
+  // Update Inputs & Checkboxes
+  const customNoteInput = document.getElementById('cfg-custom-note') as HTMLInputElement | null;
+  if (customNoteInput) customNoteInput.value = config.customNote || '';
+
+  const showLogoCheckbox = document.getElementById('cfg-show-logo') as HTMLInputElement | null;
+  if (showLogoCheckbox) showLogoCheckbox.checked = config.showLogo;
+
+  const showModelCheckbox = document.getElementById('cfg-show-model') as HTMLInputElement | null;
+  if (showModelCheckbox) showModelCheckbox.checked = config.showModel;
+
+  const showLensCheckbox = document.getElementById('cfg-show-lens') as HTMLInputElement | null;
+  if (showLensCheckbox) showLensCheckbox.checked = config.showLens;
+
+  const showParamsCheckbox = document.getElementById('cfg-show-params') as HTMLInputElement | null;
+  if (showParamsCheckbox) showParamsCheckbox.checked = config.showParams;
+
+  const showDateCheckbox = document.getElementById('cfg-show-date') as HTMLInputElement | null;
+  if (showDateCheckbox) showDateCheckbox.checked = config.showDate;
+
+  const brandSelect = document.getElementById('cfg-brand-logo') as HTMLSelectElement | null;
+  if (brandSelect) brandSelect.value = config.selectedLogo || 'auto';
+
   // Update Template Active Card
   document.querySelectorAll('.template-card').forEach((card) => {
     card.classList.toggle('active', card.getAttribute('data-template') === config.template);

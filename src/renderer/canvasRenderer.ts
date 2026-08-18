@@ -105,6 +105,7 @@ export async function renderPhotoFrame(
         lensText,
         paramsText,
         dateText,
+        noteText,
         logoImg
       );
       break;
@@ -123,6 +124,7 @@ export async function renderPhotoFrame(
         lensText,
         paramsText,
         dateText,
+        noteText,
         logoImg
       );
       break;
@@ -137,6 +139,8 @@ export async function renderPhotoFrame(
         config,
         modelText,
         paramsText,
+        dateText,
+        noteText,
         logoImg
       );
       break;
@@ -270,18 +274,21 @@ function renderBottomBar(
     currentRightX -= Math.round(24 * fontScale);
   }
 
-  // Draw Parameters and Date
+  // Draw Parameters, Date & Signature
   ctx.textAlign = 'right';
-  const hasDateOrNote = !!(dateText || noteText);
+  const subMetaParts: string[] = [];
+  if (noteText) subMetaParts.push(noteText);
+  if (dateText) subMetaParts.push(dateText);
+  const rightSubText = subMetaParts.join('   •   ');
 
-  if (hasDateOrNote) {
+  if (rightSubText) {
     ctx.font = `600 ${mainFontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(paramsText, currentRightX, midY - mainFontSize * 0.6);
 
     ctx.font = `400 ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
-    ctx.fillText(dateText || noteText, currentRightX, midY + subFontSize * 0.8);
+    ctx.fillText(rightSubText, currentRightX, midY + subFontSize * 0.8);
   } else {
     ctx.font = `600 ${mainFontSize * 1.05}px ${fontFam}`;
     ctx.fillStyle = textColor;
@@ -310,10 +317,13 @@ function renderBorderFrame(
   lensText: string,
   paramsText: string,
   dateText: string,
+  noteText: string,
   logoImg: HTMLImageElement | null
 ) {
   const pad = Math.round(Math.min(imgW, imgH) * (config.paddingPercent / 100));
-  const bottomExtra = Math.round(pad * 1.3);
+  const subMetaParts = [noteText, dateText].filter(Boolean);
+  const subMetaLine = subMetaParts.join('  •  ');
+  const bottomExtra = subMetaLine ? Math.round(pad * 1.6) : Math.round(pad * 1.2);
 
   const canvasW = imgW + pad * 2;
   const canvasH = imgH + pad * 2 + bottomExtra;
@@ -352,7 +362,8 @@ function renderBorderFrame(
   );
 
   // Centered Caption at Bottom
-  const captionY = pad + imgH + (pad + bottomExtra) / 2;
+  const bottomAreaY = pad + imgH;
+  const captionH = pad + bottomExtra;
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const fontSize = Math.max(Math.round(18 * fontScale), 14);
   const subFontSize = Math.max(Math.round(13 * fontScale), 11);
@@ -369,6 +380,8 @@ function renderBorderFrame(
 
   const summaryParts = [modelText, lensText, paramsText].filter(Boolean);
   const summaryLine = summaryParts.join('  •  ');
+  const hasSubLine = !!subMetaLine;
+  const mainY = hasSubLine ? bottomAreaY + captionH * 0.42 : bottomAreaY + captionH * 0.5;
 
   if (logoImg) {
     const logoH = Math.round(fontSize * 1.25);
@@ -379,22 +392,22 @@ function renderBorderFrame(
     const totalWidth = logoW + spacing + textWidth;
 
     const startX = (canvasW - totalWidth) / 2;
-    ctx.drawImage(logoImg, startX, captionY - logoH / 2, logoW, logoH);
+    ctx.drawImage(logoImg, startX, mainY - logoH / 2, logoW, logoH);
 
     ctx.textAlign = 'left';
     ctx.fillStyle = textColor;
-    ctx.fillText(summaryLine, startX + logoW + spacing, captionY);
+    ctx.fillText(summaryLine, startX + logoW + spacing, mainY);
   } else {
     ctx.font = `500 ${fontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
-    ctx.fillText(summaryLine, canvasW / 2, captionY);
+    ctx.fillText(summaryLine, canvasW / 2, mainY);
   }
 
-  if (dateText) {
+  if (hasSubLine) {
     ctx.font = `400 ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
     ctx.textAlign = 'center';
-    ctx.fillText(dateText, canvasW / 2, captionY + fontSize * 1.3);
+    ctx.fillText(subMetaLine, canvasW / 2, mainY + fontSize * 1.25);
   }
 
   ctx.shadowColor = 'transparent';
@@ -419,10 +432,11 @@ function renderPolaroid(
   lensText: string,
   paramsText: string,
   dateText: string,
+  noteText: string,
   logoImg: HTMLImageElement | null
 ) {
   const pad = Math.round(imgW * 0.06);
-  const bottomExtra = Math.round(imgH * 0.22);
+  const bottomExtra = Math.round(imgH * 0.24);
 
   const canvasW = imgW + pad * 2;
   const canvasH = imgH + pad + bottomExtra;
@@ -451,7 +465,11 @@ function renderPolaroid(
   const fontFam = config.fontFamily || 'Georgia, serif, -apple-system';
 
   const bottomAreaY = pad + imgH;
-  const midY = bottomAreaY + (bottomExtra - pad) / 2 + pad * 0.5;
+  const bottomAreaH = bottomExtra - pad * 0.5;
+  const midY = bottomAreaY + bottomAreaH / 2;
+
+  const leftX = pad + Math.round(pad * 0.4);
+  const rightX = canvasW - pad - Math.round(pad * 0.4);
 
   if (isFrosted) {
     ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
@@ -459,26 +477,58 @@ function renderPolaroid(
     ctx.shadowOffsetY = 2;
   }
 
+  // Left Content: Model + (Lens | Params) + Signature Note
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.font = `600 ${fontSize}px ${fontFam}`;
-  ctx.fillStyle = textColor;
-  ctx.fillText(modelText, pad + Math.round(pad * 0.3), midY - fontSize * 0.6);
 
-  ctx.font = `400 ${subFontSize}px ${fontFam}`;
-  ctx.fillStyle = subTextColor;
   const subLine = [lensText, paramsText].filter(Boolean).join('  |  ');
-  ctx.fillText(subLine, pad + Math.round(pad * 0.3), midY + subFontSize * 0.8);
+  const hasNote = !!noteText;
 
-  if (logoImg) {
+  if (hasNote && subLine) {
+    ctx.font = `600 ${fontSize}px ${fontFam}`;
+    ctx.fillStyle = textColor;
+    ctx.fillText(modelText, leftX, midY - fontSize * 0.95);
+
+    ctx.font = `400 ${subFontSize}px ${fontFam}`;
+    ctx.fillStyle = subTextColor;
+    ctx.fillText(subLine, leftX, midY);
+
+    ctx.font = `italic 400 ${subFontSize * 0.95}px ${fontFam}`;
+    ctx.fillStyle = isFrosted ? '#e0e7ff' : '#4b5563';
+    ctx.fillText(`✍️ ${noteText}`, leftX, midY + fontSize * 0.95);
+  } else if (subLine || hasNote) {
+    ctx.font = `600 ${fontSize}px ${fontFam}`;
+    ctx.fillStyle = textColor;
+    ctx.fillText(modelText, leftX, midY - fontSize * 0.6);
+
+    ctx.font = `400 ${subFontSize}px ${fontFam}`;
+    ctx.fillStyle = subTextColor;
+    ctx.fillText(subLine || noteText, leftX, midY + subFontSize * 0.8);
+  } else {
+    ctx.font = `600 ${fontSize * 1.1}px ${fontFam}`;
+    ctx.fillStyle = textColor;
+    ctx.fillText(modelText, leftX, midY);
+  }
+
+  // Right Content: Logo + Vintage Date Stamp (Supports showing BOTH simultaneously)
+  if (logoImg && dateText) {
+    const logoH = Math.round(fontSize * 1.25);
+    const logoW = Math.round((logoImg.width / logoImg.height) * logoH);
+    ctx.drawImage(logoImg, rightX - logoW, midY - logoH * 1.05, logoW, logoH);
+
+    ctx.textAlign = 'right';
+    ctx.font = `500 ${subFontSize * 0.95}px 'Courier New', Courier, monospace`;
+    ctx.fillStyle = isFrosted ? '#fdba74' : '#c2410c'; // Vintage retro amber stamp
+    ctx.fillText(dateText, rightX, midY + subFontSize * 0.85);
+  } else if (logoImg) {
     const logoH = Math.round(fontSize * 1.5);
     const logoW = Math.round((logoImg.width / logoImg.height) * logoH);
-    ctx.drawImage(logoImg, canvasW - pad - logoW - Math.round(pad * 0.3), midY - logoH / 2, logoW, logoH);
+    ctx.drawImage(logoImg, rightX - logoW, midY - logoH / 2, logoW, logoH);
   } else if (dateText) {
     ctx.textAlign = 'right';
-    ctx.font = `400 ${subFontSize}px ${fontFam}`;
-    ctx.fillStyle = '#ea580c';
-    ctx.fillText(dateText, canvasW - pad - Math.round(pad * 0.3), midY);
+    ctx.font = `500 ${subFontSize}px 'Courier New', Courier, monospace`;
+    ctx.fillStyle = isFrosted ? '#fdba74' : '#c2410c';
+    ctx.fillText(dateText, rightX, midY);
   }
 
   ctx.shadowColor = 'transparent';
@@ -498,6 +548,8 @@ function renderMinimalBadge(
   config: FrameConfig,
   modelText: string,
   paramsText: string,
+  dateText: string,
+  noteText: string,
   logoImg: HTMLImageElement | null
 ) {
   canvas.width = imgW;
@@ -509,7 +561,8 @@ function renderMinimalBadge(
   const fontSize = Math.max(Math.round(15 * fontScale), 12);
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
 
-  const summary = [modelText, paramsText].filter(Boolean).join('  |  ');
+  const extraParts = [noteText, dateText].filter(Boolean).join('  ');
+  const summary = [modelText, paramsText, extraParts].filter(Boolean).join('  |  ');
 
   ctx.font = `500 ${fontSize}px ${fontFam}`;
   const textW = ctx.measureText(summary).width;
