@@ -19,6 +19,11 @@ src-tauri/target
 target
 **/*.rs.bk
 
+# Packaging & AppImage Artifacts
+dist-appimage
+build-appimage-dir
+appimagetool*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

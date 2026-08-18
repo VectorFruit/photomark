@@ -24,7 +24,10 @@ echo "================================================================"
 echo "==> 步骤 1/4: 编译前端与 Rust Release 二进制..."
 cd "${PROJECT_ROOT}"
 
-yarn install
+if [ ! -d "node_modules" ]; then
+    yarn install
+fi
+
 yarn build
 cargo build --release --manifest-path src-tauri/Cargo.toml
 
@@ -91,6 +94,9 @@ fi
 
 mkdir -p "${OUTPUT_DIR}"
 export ARCH="${ARCH}"
+export APPIMAGE_EXTRACT_AND_RUN=1
+
+${APPIMAGETOOL} --appimage-extract-and-run --no-appstream "${APP_DIR}" "${OUTPUT_APPIMAGE}" || \
 ${APPIMAGETOOL} --no-appstream "${APP_DIR}" "${OUTPUT_APPIMAGE}"
 
 rm -rf "${PROJECT_ROOT}/build-appimage-dir"
