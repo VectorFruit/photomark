@@ -16,27 +16,6 @@
 
 ---
 
-## 🖼️ 效果演示 (Showcase)
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="50%">
-        <img src="docs/assets/DSC_0427_framed.jpg" alt="横构图经典底栏相框效果" width="100%" />
-        <br />
-        <b>📷 经典底栏 (Classic Bottom Bar) — 横构图效果</b>
-      </td>
-      <td align="center" width="50%">
-        <img src="docs/assets/DSC_0693_framed.jpg" alt="竖构图经典相框效果" width="100%" />
-        <br />
-        <b>📷 竖构图画质装裱效果</b>
-      </td>
-    </tr>
-  </table>
-</div>
-
----
-
 ## 🌟 为什么选择 PhotoMark？
 
 市面上的摄影相框工具往往基于体积臃肿的 Electron 架构（动辄消耗 300MB+ 内存），或依赖 Perl、ImageMagick 等外部复杂 CLI 管道，运行缓慢且容易崩溃。
@@ -74,6 +53,14 @@
 * **深浅双色主题**：支持 `☀️ 浅色模式` 与 `🌙 深色模式` 一键切换，偏好持久化。
 * **UI 界面自由缩放**：提供 80% ~ 150% 界面缩放，完美适配 HiDPI 2K/4K 大屏与轻薄本。
 * **一键重置**：每个调节滑块均配有独立 `↺` 重置按钮，并支持一键恢复全局默认配置。
+
+---
+
+## 🖼️ 效果演示 (Showcase)
+
+![横构图效果](docs/assets/DSC_0427_framed.jpg)
+
+![竖构图效果](docs/assets/DSC_0693_framed.jpg)
 
 ---
 
