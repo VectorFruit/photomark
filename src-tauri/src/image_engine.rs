@@ -25,7 +25,7 @@ pub fn generate_thumbnail<P: AsRef<Path>>(path: P, max_edge: u32, orientation: O
     let thumb = img.thumbnail(max_edge, max_edge);
     let mut buffer = Cursor::new(Vec::new());
     
-    // Encode as JPEG with quality for fast preview
+    // Encode as JPEG with high quality for fast preview
     thumb.write_to(&mut buffer, ImageFormat::Jpeg)
         .map_err(|e| format!("Failed to encode thumbnail: {}", e))?;
 
@@ -35,8 +35,21 @@ pub fn generate_thumbnail<P: AsRef<Path>>(path: P, max_edge: u32, orientation: O
     Ok((data_url, orig_w, orig_h))
 }
 
+pub fn load_full_image_data_url<P: AsRef<Path>>(path: P, orientation: Option<u32>) -> Result<String, String> {
+    let img = load_and_orient_image(&path, orientation)?;
+    let mut buffer = Cursor::new(Vec::new());
+    
+    // Encode at 100% full original resolution
+    img.write_to(&mut buffer, ImageFormat::Jpeg)
+        .map_err(|e| format!("Failed to encode full image: {}", e))?;
+
+    let base64_str = BASE64.encode(buffer.into_inner());
+    let data_url = format!("data:image/jpeg;base64,{}", base64_str);
+
+    Ok(data_url)
+}
+
 pub fn save_base64_image<P: AsRef<Path>>(output_path: P, base64_data: &str, _format: &str, _quality: u8) -> Result<(), String> {
-    // Strip "data:image/...;base64," prefix if present
     let raw_b64 = if let Some(idx) = base64_data.find(";base64,") {
         &base64_data[idx + 8..]
     } else if let Some(idx) = base64_data.find(",") {
@@ -48,7 +61,6 @@ pub fn save_base64_image<P: AsRef<Path>>(output_path: P, base64_data: &str, _for
     let bytes = BASE64.decode(raw_b64.trim())
         .map_err(|e| format!("Failed to decode base64: {}", e))?;
 
-    // Create parent directory if needed
     if let Some(parent) = output_path.as_ref().parent() {
         std::fs::create_dir_all(parent).map_err(|e| format!("Failed to create parent dir: {}", e))?;
     }

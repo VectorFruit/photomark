@@ -23,12 +23,13 @@ export interface PhotoItem {
   thumbnail_data_url?: string;
 }
 
-export type FrameTemplateId = 'bottom_bar' | 'border' | 'frosted_blur' | 'polaroid' | 'minimal_badge';
+export type FrameTemplateId = 'bottom_bar' | 'border' | 'polaroid' | 'minimal_badge';
+export type BackgroundType = 'white' | 'dark' | 'frosted_blur' | 'custom';
 
 export interface FrameConfig {
   template: FrameTemplateId;
-  theme: 'light' | 'dark' | 'auto';
-  backgroundColor: string;
+  backgroundType: BackgroundType;
+  customBackgroundColor: string;
   fontFamily: string;
   fontSizeScale: number; // 0.8 to 1.5
   paddingPercent: number; // 2% to 15%
@@ -47,15 +48,18 @@ export interface FrameConfig {
   showParams: boolean; // Aperture + Shutter + ISO + Focal
   showDate: boolean;
   showCustomNote: boolean;
-  
-  // Aspect ratio
-  aspectRatio: 'original' | '1:1' | '4:3' | '3:2' | '16:9';
-  landscapeMode: boolean;
 }
 
 export interface ExportSettings {
   format: 'jpeg' | 'png' | 'webp';
   quality: number; // 70 to 100
-  scale: number; // 1 = original, 2 = 2x, 0.5 = preview
+  isOriginalResolution: boolean;
   outputDir: string;
+}
+
+export interface ParseProgressEvent {
+  current: number;
+  total: number;
+  filename: string;
+  percent: number;
 }

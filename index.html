@@ -21,7 +21,7 @@
           <span>+ 添加照片</span>
         </button>
         <button id="btn-export-current" class="btn btn-primary">
-          <span>导出当前照片</span>
+          <span>导出当前原画照片</span>
         </button>
       </div>
     </header>
@@ -42,7 +42,7 @@
         <div id="empty-queue" class="empty-queue">
           <div style="font-size: 32px">📁</div>
           <div style="font-size: 13px; font-weight: 500">拖入照片或点击导入</div>
-          <div style="font-size: 11px">支持 JPG, PNG, TIFF, WebP</div>
+          <div style="font-size: 11px">支持 JPG, PNG, TIFF, WebP, RAW</div>
         </div>
       </aside>
 
@@ -70,13 +70,27 @@
           <div class="template-grid">
             <div class="template-card active" data-template="bottom_bar">经典底栏</div>
             <div class="template-card" data-template="border">画廊相框</div>
-            <div class="template-card" data-template="frosted_blur">毛玻璃虚化</div>
             <div class="template-card" data-template="polaroid">拍立得即显</div>
             <div class="template-card" data-template="minimal_badge">极简微章</div>
           </div>
         </div>
 
-        <!-- 2. Logo & Brand -->
+        <!-- 2. Background Style -->
+        <div class="settings-group">
+          <div class="group-title">相框与背景质感</div>
+          <div class="bg-type-grid">
+            <div class="bg-type-btn active" data-bg="white">纯白相框</div>
+            <div class="bg-type-btn" data-bg="dark">深黑相框</div>
+            <div class="bg-type-btn" data-bg="frosted_blur">✨ 毛玻璃虚化</div>
+          </div>
+
+          <div class="control-row" id="custom-color-row" style="display: none; margin-top: 8px">
+            <span class="control-label">自定义背景色</span>
+            <input type="color" id="cfg-custom-color" value="#ffffff" />
+          </div>
+        </div>
+
+        <!-- 3. Logo & Brand -->
         <div class="settings-group">
           <div class="group-title">相机与品牌 Logo</div>
           <div class="control-row">
@@ -104,7 +118,7 @@
           </div>
         </div>
 
-        <!-- 3. Parameters Display -->
+        <!-- 4. Parameters Display -->
         <div class="settings-group">
           <div class="group-title">参数显示项</div>
           <div class="checkbox-group">
@@ -120,17 +134,9 @@
           <input type="text" id="cfg-custom-note" placeholder="例如: Photo by Alex" />
         </div>
 
-        <!-- 4. Style & Layout Tuning -->
+        <!-- 5. Style & Layout Tuning -->
         <div class="settings-group">
-          <div class="group-title">样式与细节调节</div>
-          
-          <div class="control-row">
-            <span class="control-label">色彩主题</span>
-            <select id="cfg-theme">
-              <option value="light">明亮浅色</option>
-              <option value="dark">质感深黑</option>
-            </select>
-          </div>
+          <div class="group-title">相框细节微调</div>
 
           <div class="control-row">
             <span class="control-label">边距留白</span>
@@ -148,26 +154,36 @@
           </div>
 
           <div class="control-row">
-            <span class="control-label">投影阴影</span>
-            <input type="range" id="cfg-shadow" min="0" max="50" value="10" />
+            <span class="control-label">照片立体阴影</span>
+            <input type="range" id="cfg-shadow" min="0" max="50" value="15" />
           </div>
         </div>
 
-        <!-- 5. Export -->
+        <!-- 6. Export Settings -->
         <div class="settings-group">
-          <div class="group-title">导出配置</div>
+          <div class="group-title">导出配置 (原画无损保障)</div>
+          
           <div class="control-row">
-            <span class="control-label">导出格式</span>
-            <select id="export-format">
-              <option value="jpeg">JPEG (高画质)</option>
-              <option value="png">PNG (无损格式)</option>
-              <option value="webp">WebP (现代高效)</option>
+            <span class="control-label">画质保障</span>
+            <select id="export-quality-select">
+              <option value="100">原始品质 (100% 最高无损)</option>
+              <option value="95" selected>超高画质 (95% 推荐)</option>
+              <option value="90">高画质 (90%)</option>
+              <option value="85">标准压缩 (85%)</option>
             </select>
           </div>
 
           <div class="control-row">
-            <span class="control-label">画质</span>
-            <input type="range" id="export-quality" min="70" max="100" value="95" />
+            <span class="control-label">导出格式</span>
+            <select id="export-format">
+              <option value="jpeg">JPEG (专业摄影通用)</option>
+              <option value="png">PNG (100% 无损透明)</option>
+              <option value="webp">WebP (现代高效)</option>
+            </select>
+          </div>
+
+          <div class="export-note">
+            ✓ 导出将读取原始高分辨率照片 (6000×4000+)，保障完整千万级像素与清晰度。
           </div>
 
           <button id="btn-batch-export" class="btn btn-primary btn-block" style="margin-top: 10px">
@@ -175,6 +191,20 @@
           </button>
         </div>
       </aside>
+    </div>
+
+    <!-- Progress Modal Overlay -->
+    <div id="progress-modal" class="modal-overlay" style="display: none">
+      <div class="modal-card">
+        <div class="modal-title" id="progress-title">正在处理...</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="progress-info">
+          <span id="progress-status">准备中...</span>
+          <span id="progress-percent">0%</span>
+        </div>
+      </div>
     </div>
 
     <!-- Toast Notification -->

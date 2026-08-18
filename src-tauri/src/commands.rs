@@ -1,12 +1,26 @@
 use std::path::Path;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 use rayon::prelude::*;
+use serde::Serialize;
+use tauri::{AppHandle, Emitter};
 use crate::exif_reader::read_exif_from_path;
-use crate::image_engine::{generate_thumbnail, save_base64_image};
+use crate::image_engine::{generate_thumbnail, load_full_image_data_url, save_base64_image};
 use crate::models::{BatchExportItem, ExportResult, PhotoInfo};
 
+#[derive(Clone, Serialize)]
+pub struct ProgressEvent {
+    pub current: usize,
+    pub total: usize,
+    pub filename: String,
+    pub percent: u8,
+}
+
 #[tauri::command]
-pub async fn load_photos(paths: Vec<String>) -> Result<Vec<PhotoInfo>, String> {
-    // Process in parallel using Rayon
+pub async fn load_photos(app: AppHandle, paths: Vec<String>) -> Result<Vec<PhotoInfo>, String> {
+    let total = paths.len();
+    let counter = Arc::new(AtomicUsize::new(0));
+
     let results: Vec<PhotoInfo> = paths
         .par_iter()
         .filter_map(|p_str| {
@@ -37,6 +51,19 @@ pub async fn load_photos(paths: Vec<String>) -> Result<Vec<PhotoInfo>, String> {
 
             let id = format!("{}_{}", p_str, size_bytes);
 
+            let curr = counter.fetch_add(1, Ordering::SeqCst) + 1;
+            let percent = ((curr as f64 / total as f64) * 100.0).round() as u8;
+
+            let _ = app.emit(
+                "parse-progress",
+                ProgressEvent {
+                    current: curr,
+                    total,
+                    filename: filename.clone(),
+                    percent,
+                },
+            );
+
             Some(PhotoInfo {
                 id,
                 path: p_str.clone(),
@@ -52,6 +79,11 @@ pub async fn load_photos(paths: Vec<String>) -> Result<Vec<PhotoInfo>, String> {
 }
 
 #[tauri::command]
+pub async fn load_full_photo(path: String, orientation: Option<u32>) -> Result<String, String> {
+    load_full_image_data_url(&path, orientation)
+}
+
+#[tauri::command]
 pub async fn save_rendered_photo(
     output_path: String,
     base64_data: String,
@@ -63,11 +95,19 @@ pub async fn save_rendered_photo(
 }
 
 #[tauri::command]
-pub async fn batch_export(items: Vec<BatchExportItem>) -> Result<Vec<ExportResult>, String> {
+pub async fn batch_export(app: AppHandle, items: Vec<BatchExportItem>) -> Result<Vec<ExportResult>, String> {
+    let total = items.len();
+    let counter = Arc::new(AtomicUsize::new(0));
+
     let results: Vec<ExportResult> = items
         .into_par_iter()
         .map(|item| {
-            match save_base64_image(&item.output_path, &item.base64_image, &item.format, item.quality) {
+            let filename = Path::new(&item.output_path)
+                .file_name()
+                .map(|f| f.to_string_lossy().to_string())
+                .unwrap_or_default();
+
+            let res = match save_base64_image(&item.output_path, &item.base64_image, &item.format, item.quality) {
                 Ok(_) => ExportResult {
                     success: true,
                     source_path: item.photo_path,
@@ -80,7 +120,22 @@ pub async fn batch_export(items: Vec<BatchExportItem>) -> Result<Vec<ExportResul
                     output_path: item.output_path,
                     error: Some(e),
                 },
-            }
+            };
+
+            let curr = counter.fetch_add(1, Ordering::SeqCst) + 1;
+            let percent = ((curr as f64 / total as f64) * 100.0).round() as u8;
+
+            let _ = app.emit(
+                "batch-progress",
+                ProgressEvent {
+                    current: curr,
+                    total,
+                    filename,
+                    percent,
+                },
+            );
+
+            res
         })
         .collect();
 

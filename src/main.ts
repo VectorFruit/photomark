@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
 import { open, save } from '@tauri-apps/plugin-dialog';
-import { FrameConfig, PhotoItem, FrameTemplateId } from './types';
+import { BackgroundType, FrameConfig, FrameTemplateId, ParseProgressEvent, PhotoItem } from './types';
 import { renderPhotoFrame } from './renderer/canvasRenderer';
 
 // Default State
@@ -10,13 +11,13 @@ let currentZoom = 1.0;
 
 const config: FrameConfig = {
   template: 'bottom_bar',
-  theme: 'light',
-  backgroundColor: '#ffffff',
+  backgroundType: 'white',
+  customBackgroundColor: '#ffffff',
   fontFamily: 'Inter, -apple-system, sans-serif',
   fontSizeScale: 1.0,
   paddingPercent: 4,
   bottomBarHeightPercent: 12,
-  shadowRadius: 10,
+  shadowRadius: 15,
   shadowOpacity: 0.25,
   borderRadius: 0,
   showLogo: true,
@@ -28,8 +29,6 @@ const config: FrameConfig = {
   showParams: true,
   showDate: true,
   showCustomNote: false,
-  aspectRatio: 'original',
-  landscapeMode: false,
 };
 
 // DOM Elements
@@ -41,12 +40,48 @@ const canvasContainer = document.getElementById('canvas-container') as HTMLDivEl
 const zoomLevelEl = document.getElementById('zoom-level') as HTMLSpanElement;
 const toastEl = document.getElementById('toast') as HTMLDivElement;
 
-// Cache loaded HTMLImageElements
-const loadedImages: Map<string, HTMLImageElement> = new Map();
+// Progress Modal DOM
+const progressModalEl = document.getElementById('progress-modal') as HTMLDivElement;
+const progressTitleEl = document.getElementById('progress-title') as HTMLDivElement;
+const progressFillEl = document.getElementById('progress-fill') as HTMLDivElement;
+const progressStatusEl = document.getElementById('progress-status') as HTMLSpanElement;
+const progressPercentEl = document.getElementById('progress-percent') as HTMLSpanElement;
+
+// Image Cache (for preview)
+const previewImageCache: Map<string, HTMLImageElement> = new Map();
 
 async function init() {
   bindEvents();
+  setupProgressListeners();
   renderPhotoList();
+}
+
+function setupProgressListeners() {
+  // Listen for parse progress
+  listen<ParseProgressEvent>('parse-progress', (event) => {
+    const { current, total, filename, percent } = event.payload;
+    showProgressModal('正在解析照片 EXIF...', `(${current}/${total}) ${filename}`, percent);
+  });
+
+  // Listen for batch export progress
+  listen<ParseProgressEvent>('batch-progress', (event) => {
+    const { current, total, filename, percent } = event.payload;
+    showProgressModal('正在批量导出照片...', `(${current}/${total}) ${filename}`, percent);
+  });
+}
+
+function showProgressModal(title: string, status: string, percent: number) {
+  progressModalEl.style.display = 'flex';
+  progressTitleEl.textContent = title;
+  progressStatusEl.textContent = status;
+  progressPercentEl.textContent = `${percent}%`;
+  progressFillEl.style.width = `${percent}%`;
+}
+
+function hideProgressModal() {
+  setTimeout(() => {
+    progressModalEl.style.display = 'none';
+  }, 400);
 }
 
 function bindEvents() {
@@ -58,7 +93,7 @@ function bindEvents() {
   document.getElementById('btn-clear-all')?.addEventListener('click', () => {
     photos = [];
     activeIndex = -1;
-    loadedImages.clear();
+    previewImageCache.clear();
     renderPhotoList();
     clearCanvas();
   });
@@ -73,6 +108,27 @@ function bindEvents() {
     });
   });
 
+  // Background Type Buttons (纯白 / 深黑 / 毛玻璃虚化)
+  document.querySelectorAll('.bg-type-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.bg-type-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      config.backgroundType = btn.getAttribute('data-bg') as BackgroundType;
+      
+      const customRow = document.getElementById('custom-color-row');
+      if (customRow) {
+        customRow.style.display = config.backgroundType === 'custom' ? 'flex' : 'none';
+      }
+      triggerReRender();
+    });
+  });
+
+  const customColorInput = document.getElementById('cfg-custom-color') as HTMLInputElement | null;
+  customColorInput?.addEventListener('input', () => {
+    config.customBackgroundColor = customColorInput.value;
+    triggerReRender();
+  });
+
   // Controls Binding
   bindCheckbox('cfg-show-logo', (val) => (config.showLogo = val));
   bindSelect('cfg-brand-logo', (val) => (config.selectedLogo = val));
@@ -85,17 +141,12 @@ function bindEvents() {
     config.showCustomNote = !!val;
   });
 
-  bindSelect('cfg-theme', (val) => {
-    config.theme = val as 'light' | 'dark';
-    config.backgroundColor = val === 'dark' ? '#14151a' : '#ffffff';
-  });
-
   bindRange('cfg-padding', (val) => (config.paddingPercent = val));
   bindRange('cfg-font-scale', (val) => (config.fontSizeScale = val / 100));
   bindRange('cfg-border-radius', (val) => (config.borderRadius = val));
   bindRange('cfg-shadow', (val) => {
     config.shadowRadius = val;
-    config.shadowOpacity = val > 0 ? 0.25 : 0;
+    config.shadowOpacity = val > 0 ? 0.28 : 0;
   });
 
   // Zoom Toolbar
@@ -122,7 +173,7 @@ async function handleImportDialog() {
       filters: [
         {
           name: 'Images',
-          extensions: ['jpg', 'jpeg', 'png', 'webp', 'tiff', 'tif', 'JPG', 'JPEG', 'PNG'],
+          extensions: ['jpg', 'jpeg', 'png', 'webp', 'tiff', 'tif', 'JPG', 'JPEG', 'PNG', 'ARW', 'CR2', 'CR3', 'NEF', 'RAF'],
         },
       ],
     });
@@ -144,7 +195,6 @@ async function handleFileDrop(e: DragEvent) {
 
   const paths: string[] = [];
   for (let i = 0; i < files.length; i++) {
-    // In Tauri, webkitRelativePath or path exists
     const p = (files[i] as any).path || files[i].name;
     if (p) paths.push(p);
   }
@@ -156,7 +206,7 @@ async function handleFileDrop(e: DragEvent) {
 
 async function importPaths(paths: string[]) {
   try {
-    showToast(`正在解析 ${paths.length} 张照片的 EXIF...`);
+    showProgressModal('准备解析照片...', '正在读取文件列表...', 5);
     const newItems: PhotoItem[] = await invoke('load_photos', { paths });
 
     if (newItems.length > 0) {
@@ -170,6 +220,8 @@ async function importPaths(paths: string[]) {
     }
   } catch (err) {
     showToast(`解析失败: ${err}`);
+  } finally {
+    hideProgressModal();
   }
 }
 
@@ -244,13 +296,13 @@ async function doRender() {
   }
 
   const currentPhoto = photos[activeIndex];
-  let img = loadedImages.get(currentPhoto.path);
+  let img = previewImageCache.get(currentPhoto.path);
 
   if (!img) {
     img = new Image();
-    img.src = currentPhoto.thumbnail_data_url || currentPhoto.path;
+    img.src = currentPhoto.thumbnail_data_url || '';
     await new Promise((res) => (img!.onload = res));
-    loadedImages.set(currentPhoto.path, img);
+    previewImageCache.set(currentPhoto.path, img);
   }
 
   await renderPhotoFrame(img, currentPhoto.exif, config, previewCanvas);
@@ -272,7 +324,7 @@ function setZoom(val: number) {
 }
 
 // -----------------------------------------------------------------------------
-// Exporting Operations
+// Exporting Operations (Full Original Resolution)
 // -----------------------------------------------------------------------------
 async function handleExportCurrent() {
   if (activeIndex < 0 || activeIndex >= photos.length) {
@@ -282,10 +334,10 @@ async function handleExportCurrent() {
 
   const currentPhoto = photos[activeIndex];
   const formatSelect = document.getElementById('export-format') as HTMLSelectElement;
-  const qualityRange = document.getElementById('export-quality') as HTMLInputElement;
+  const qualitySelect = document.getElementById('export-quality-select') as HTMLSelectElement;
 
   const format = formatSelect.value;
-  const quality = parseInt(qualityRange.value, 10);
+  const quality = parseInt(qualitySelect.value, 10);
   const ext = format === 'jpeg' ? 'jpg' : format;
 
   const defaultName = currentPhoto.filename.replace(/\.[^/.]+$/, '') + `_framed.${ext}`;
@@ -298,15 +350,25 @@ async function handleExportCurrent() {
 
     if (!savePath) return;
 
-    showToast('正在导出高分辨率照片...');
+    showProgressModal('正在导出原画相框照片...', '读取原始高分辨率像素...', 25);
 
-    // Render full quality
+    // 1. Load FULL original resolution image
+    const fullResDataUrl: string = await invoke('load_full_photo', {
+      path: currentPhoto.path,
+      orientation: currentPhoto.exif.orientation,
+    });
+
+    showProgressModal('正在渲染原画相框...', '生成高分辨率排版...', 60);
+
     const fullImg = new Image();
-    fullImg.src = currentPhoto.thumbnail_data_url || currentPhoto.path;
+    fullImg.src = fullResDataUrl;
     await new Promise((res) => (fullImg.onload = res));
 
+    // 2. Render on full-resolution offscreen canvas
     const exportCanvas = document.createElement('canvas');
     await renderPhotoFrame(fullImg, currentPhoto.exif, config, exportCanvas);
+
+    showProgressModal('正在编码与写入文件...', `分辨率: ${exportCanvas.width} × ${exportCanvas.height}`, 85);
 
     const mime = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
     const base64Data = exportCanvas.toDataURL(mime, quality / 100);
@@ -318,9 +380,11 @@ async function handleExportCurrent() {
       quality,
     });
 
-    showToast(`✓ 已成功保存到: ${savePath}`);
+    showToast(`✓ 原画照片已保存 (${exportCanvas.width}×${exportCanvas.height}): ${savePath}`);
   } catch (err) {
     showToast(`导出失败: ${err}`);
+  } finally {
+    hideProgressModal();
   }
 }
 
@@ -339,27 +403,36 @@ async function handleBatchExport() {
     if (!outputDir || typeof outputDir !== 'string') return;
 
     const formatSelect = document.getElementById('export-format') as HTMLSelectElement;
-    const qualityRange = document.getElementById('export-quality') as HTMLInputElement;
+    const qualitySelect = document.getElementById('export-quality-select') as HTMLSelectElement;
     const format = formatSelect.value;
-    const quality = parseInt(qualityRange.value, 10);
+    const quality = parseInt(qualitySelect.value, 10);
     const ext = format === 'jpeg' ? 'jpg' : format;
     const mime = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
 
-    showToast(`开始批量处理 ${photos.length} 张照片...`);
+    showProgressModal('准备批量导出...', `共 ${photos.length} 张照片`, 5);
 
     const batchTasks = [];
 
     for (let i = 0; i < photos.length; i++) {
       const item = photos[i];
-      let img = loadedImages.get(item.path);
-      if (!img) {
-        img = new Image();
-        img.src = item.thumbnail_data_url || item.path;
-        await new Promise((res) => (img!.onload = res));
-      }
+      showProgressModal(
+        '正在渲染原画照片...',
+        `(${i + 1}/${photos.length}) ${item.filename}`,
+        Math.round(((i + 1) / photos.length) * 70)
+      );
+
+      // Load full-resolution image
+      const fullResDataUrl: string = await invoke('load_full_photo', {
+        path: item.path,
+        orientation: item.exif.orientation,
+      });
+
+      const fullImg = new Image();
+      fullImg.src = fullResDataUrl;
+      await new Promise((res) => (fullImg.onload = res));
 
       const canvas = document.createElement('canvas');
-      await renderPhotoFrame(img, item.exif, config, canvas);
+      await renderPhotoFrame(fullImg, item.exif, config, canvas);
       const base64Image = canvas.toDataURL(mime, quality / 100);
 
       const outName = item.filename.replace(/\.[^/.]+$/, '') + `_framed.${ext}`;
@@ -374,12 +447,16 @@ async function handleBatchExport() {
       });
     }
 
+    showProgressModal('多线程并行写入磁盘...', 'Rust Rayon 并行处理中...', 85);
+
     const results: any[] = await invoke('batch_export', { items: batchTasks });
     const successCount = results.filter((r) => r.success).length;
 
     showToast(`✓ 批量导出完成: 成功 ${successCount} / ${photos.length}`);
   } catch (err) {
     showToast(`批量导出失败: ${err}`);
+  } finally {
+    hideProgressModal();
   }
 }
 

@@ -14,12 +14,13 @@ export async function renderPhotoFrame(
   const imgW = image.naturalWidth || image.width;
   const imgH = image.naturalHeight || image.height;
 
-  // Determine dark/light theme
-  const isDark = config.theme === 'dark' || (config.theme === 'auto' && config.template === 'frosted_blur');
+  // Determine theme and colors
+  const isFrosted = config.backgroundType === 'frosted_blur';
+  const isDark = config.backgroundType === 'dark' || isFrosted;
+
   const textColor = isDark ? '#f3f4f6' : '#111827';
   const subTextColor = isDark ? '#9ca3af' : '#6b7280';
-  const accentColor = isDark ? '#fbbf24' : '#d97706';
-  const dividerColor = isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.12)';
+  const dividerColor = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.12)';
 
   // Determine Logo
   const brandId = config.selectedLogo === 'auto' ? detectBrandId(exif.make, exif.model) : config.selectedLogo;
@@ -47,23 +48,80 @@ export async function renderPhotoFrame(
   const dateText = config.showDate && exif.datetime ? exif.datetime : '';
   const noteText = config.showCustomNote && config.customNote ? config.customNote : '';
 
-  // Apply layout based on template
   switch (config.template) {
     case 'bottom_bar':
-      renderBottomBar(canvas, ctx, image, imgW, imgH, config, isDark, textColor, subTextColor, dividerColor, modelText, lensText, paramsText, dateText, noteText, logoImg);
+      renderBottomBar(
+        canvas,
+        ctx,
+        image,
+        imgW,
+        imgH,
+        config,
+        isFrosted,
+        isDark,
+        textColor,
+        subTextColor,
+        dividerColor,
+        modelText,
+        lensText,
+        paramsText,
+        dateText,
+        noteText,
+        logoImg
+      );
       break;
     case 'border':
-      renderBorderFrame(canvas, ctx, image, imgW, imgH, config, isDark, textColor, subTextColor, dividerColor, modelText, lensText, paramsText, dateText, noteText, logoImg);
-      break;
-    case 'frosted_blur':
-      renderFrostedBlur(canvas, ctx, image, imgW, imgH, config, textColor, subTextColor, accentColor, modelText, lensText, paramsText, dateText, noteText, logoImg);
+      renderBorderFrame(
+        canvas,
+        ctx,
+        image,
+        imgW,
+        imgH,
+        config,
+        isFrosted,
+        isDark,
+        textColor,
+        subTextColor,
+        dividerColor,
+        modelText,
+        lensText,
+        paramsText,
+        dateText,
+        noteText,
+        logoImg
+      );
       break;
     case 'polaroid':
-      renderPolaroid(canvas, ctx, image, imgW, imgH, config, textColor, subTextColor, modelText, lensText, paramsText, dateText, noteText, logoImg);
+      renderPolaroid(
+        canvas,
+        ctx,
+        image,
+        imgW,
+        imgH,
+        config,
+        isFrosted,
+        textColor,
+        subTextColor,
+        modelText,
+        lensText,
+        paramsText,
+        dateText,
+        logoImg
+      );
       break;
     case 'minimal_badge':
     default:
-      renderMinimalBadge(canvas, ctx, image, imgW, imgH, config, isDark, textColor, subTextColor, modelText, lensText, paramsText, logoImg);
+      renderMinimalBadge(
+        canvas,
+        ctx,
+        image,
+        imgW,
+        imgH,
+        config,
+        modelText,
+        paramsText,
+        logoImg
+      );
       break;
   }
 
@@ -71,7 +129,7 @@ export async function renderPhotoFrame(
 }
 
 // -----------------------------------------------------------------------------
-// 1. Template: Classic Bottom Bar (经典参数底栏)
+// 1. Template: Classic Bottom Bar (经典底栏 / 支持毛玻璃相框)
 // -----------------------------------------------------------------------------
 function renderBottomBar(
   canvas: HTMLCanvasElement,
@@ -80,7 +138,8 @@ function renderBottomBar(
   imgW: number,
   imgH: number,
   config: FrameConfig,
-  isDark: boolean,
+  isFrosted: boolean,
+  _isDark: boolean,
   textColor: string,
   subTextColor: string,
   dividerColor: string,
@@ -101,17 +160,39 @@ function renderBottomBar(
   canvas.width = canvasW;
   canvas.height = canvasH;
 
-  // Background
-  ctx.fillStyle = config.backgroundColor || (isDark ? '#121316' : '#ffffff');
-  ctx.fillRect(0, 0, canvasW, canvasH);
+  // Background Rendering
+  if (isFrosted) {
+    drawFrostedBackground(ctx, img, canvasW, canvasH);
+  } else if (config.backgroundType === 'dark') {
+    ctx.fillStyle = '#121316';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+  } else if (config.backgroundType === 'custom') {
+    ctx.fillStyle = config.customBackgroundColor || '#ffffff';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+  } else {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+  }
 
-  // Main image with shadow / rounded corners
+  // Draw Photo with shadow (Frosted mode always gives a prominent floating shadow)
   const photoX = padX;
   const photoY = padTop;
+  const shadowBlur = isFrosted ? Math.max(config.shadowRadius, 35) : config.shadowRadius;
+  const shadowOpacity = isFrosted ? Math.max(config.shadowOpacity, 0.4) : config.shadowOpacity;
 
-  drawPhotoWithOptionalShadow(ctx, img, photoX, photoY, imgW, imgH, config.borderRadius, config.shadowRadius, config.shadowOpacity);
+  drawPhotoWithOptionalShadow(
+    ctx,
+    img,
+    photoX,
+    photoY,
+    imgW,
+    imgH,
+    config.borderRadius,
+    shadowBlur,
+    shadowOpacity
+  );
 
-  // Bottom bar content area
+  // Bottom Bar Content Area
   const contentY = photoY + imgH;
   const contentH = barHeight;
   const midY = contentY + contentH / 2;
@@ -120,6 +201,13 @@ function renderBottomBar(
   const mainFontSize = Math.max(Math.round(22 * fontScale), 16);
   const subFontSize = Math.max(Math.round(15 * fontScale), 12);
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
+
+  // If frosted blur, apply text drop shadow for pristine legibility
+  if (isFrosted) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 2;
+  }
 
   // Left Section: Model & Lens
   const leftX = photoX + Math.round(padX * 0.5);
@@ -143,7 +231,6 @@ function renderBottomBar(
 
   // Right Section: Logo & Params
   const rightX = photoX + imgW - Math.round(padX * 0.5);
-
   let currentRightX = rightX;
 
   // Draw Logo if available
@@ -156,7 +243,7 @@ function renderBottomBar(
     ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
     currentRightX = logoX - Math.round(24 * fontScale);
 
-    // Vertical divider line between params and logo
+    // Divider Line
     ctx.strokeStyle = dividerColor;
     ctx.lineWidth = Math.max(1, Math.round(1.5 * fontScale));
     ctx.beginPath();
@@ -184,10 +271,15 @@ function renderBottomBar(
     ctx.fillStyle = textColor;
     ctx.fillText(paramsText, currentRightX, midY);
   }
+
+  // Reset shadow
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 }
 
 // -----------------------------------------------------------------------------
-// 2. Template: Gallery Border (画廊全包相框)
+// 2. Template: Gallery Border (画廊全包相框 / 支持毛玻璃相框)
 // -----------------------------------------------------------------------------
 function renderBorderFrame(
   canvas: HTMLCanvasElement,
@@ -196,7 +288,8 @@ function renderBorderFrame(
   imgW: number,
   imgH: number,
   config: FrameConfig,
-  isDark: boolean,
+  isFrosted: boolean,
+  _isDark: boolean,
   textColor: string,
   subTextColor: string,
   _dividerColor: string,
@@ -208,7 +301,7 @@ function renderBorderFrame(
   logoImg: HTMLImageElement | null
 ) {
   const pad = Math.round(Math.min(imgW, imgH) * (config.paddingPercent / 100));
-  const bottomExtra = Math.round(pad * 1.2);
+  const bottomExtra = Math.round(pad * 1.3);
 
   const canvasW = imgW + pad * 2;
   const canvasH = imgH + pad * 2 + bottomExtra;
@@ -216,12 +309,35 @@ function renderBorderFrame(
   canvas.width = canvasW;
   canvas.height = canvasH;
 
-  // Frame Background
-  ctx.fillStyle = config.backgroundColor || (isDark ? '#14151a' : '#fafafa');
-  ctx.fillRect(0, 0, canvasW, canvasH);
+  // Background
+  if (isFrosted) {
+    drawFrostedBackground(ctx, img, canvasW, canvasH);
+  } else if (config.backgroundType === 'dark') {
+    ctx.fillStyle = '#14151a';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+  } else if (config.backgroundType === 'custom') {
+    ctx.fillStyle = config.customBackgroundColor || '#fafafa';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+  } else {
+    ctx.fillStyle = '#fafafa';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+  }
 
-  // Photo
-  drawPhotoWithOptionalShadow(ctx, img, pad, pad, imgW, imgH, config.borderRadius, config.shadowRadius, config.shadowOpacity);
+  // Draw Photo with shadow
+  const shadowBlur = isFrosted ? Math.max(config.shadowRadius, 35) : config.shadowRadius;
+  const shadowOpacity = isFrosted ? Math.max(config.shadowOpacity, 0.4) : config.shadowOpacity;
+
+  drawPhotoWithOptionalShadow(
+    ctx,
+    img,
+    pad,
+    pad,
+    imgW,
+    imgH,
+    config.borderRadius,
+    shadowBlur,
+    shadowOpacity
+  );
 
   // Centered Caption at Bottom
   const captionY = pad + imgH + (pad + bottomExtra) / 2;
@@ -230,15 +346,20 @@ function renderBorderFrame(
   const subFontSize = Math.max(Math.round(13 * fontScale), 11);
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
 
+  if (isFrosted) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 2;
+  }
+
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // Compose line: [LOGO] Model • Params
   const summaryParts = [modelText, lensText, paramsText].filter(Boolean);
   const summaryLine = summaryParts.join('  •  ');
 
   if (logoImg) {
-    const logoH = Math.round(fontSize * 1.2);
+    const logoH = Math.round(fontSize * 1.25);
     const logoW = Math.round((logoImg.width / logoImg.height) * logoH);
     ctx.font = `500 ${fontSize}px ${fontFam}`;
     const textWidth = ctx.measureText(summaryLine).width;
@@ -263,111 +384,14 @@ function renderBorderFrame(
     ctx.textAlign = 'center';
     ctx.fillText(dateText, canvasW / 2, captionY + fontSize * 1.3);
   }
+
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 }
 
 // -----------------------------------------------------------------------------
-// 3. Template: Frosted Blur Glass (毛玻璃虚化背景)
-// -----------------------------------------------------------------------------
-function renderFrostedBlur(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  img: HTMLImageElement,
-  imgW: number,
-  imgH: number,
-  config: FrameConfig,
-  _textColor: string,
-  _subTextColor: string,
-  accentColor: string,
-  modelText: string,
-  lensText: string,
-  paramsText: string,
-  _dateText: string,
-  _noteText: string,
-  logoImg: HTMLImageElement | null
-) {
-  const padX = Math.round(imgW * 0.12);
-  const padY = Math.round(imgH * 0.12);
-  const bottomBarH = Math.round(imgH * 0.14);
-
-  const canvasW = imgW + padX * 2;
-  const canvasH = imgH + padY * 2 + bottomBarH;
-
-  canvas.width = canvasW;
-  canvas.height = canvasH;
-
-  // 1. Draw Blurred background
-  ctx.save();
-  ctx.filter = 'blur(40px) brightness(0.65) saturate(1.4)';
-  ctx.drawImage(img, -canvasW * 0.1, -canvasH * 0.1, canvasW * 1.2, canvasH * 1.2);
-  ctx.filter = 'none';
-  ctx.restore();
-
-  // Dark overlay
-  ctx.fillStyle = 'rgba(10, 12, 18, 0.4)';
-  ctx.fillRect(0, 0, canvasW, canvasH);
-
-  // 2. Draw Main Photo with prominent shadow
-  const photoX = padX;
-  const photoY = padY;
-  const radius = Math.max(config.borderRadius, Math.round(imgW * 0.015));
-
-  drawPhotoWithOptionalShadow(ctx, img, photoX, photoY, imgW, imgH, radius, Math.max(config.shadowRadius, 30), 0.45);
-
-  // 3. Frosted Glass Capsule at bottom
-  const capsuleW = Math.round(imgW * 0.88);
-  const capsuleH = Math.round(bottomBarH * 0.7);
-  const capsuleX = (canvasW - capsuleW) / 2;
-  const capsuleY = photoY + imgH + Math.round((padY + bottomBarH - capsuleH) / 2);
-  const capsuleRadius = Math.round(capsuleH / 2);
-
-  ctx.save();
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
-  ctx.lineWidth = 1.5;
-  roundRect(ctx, capsuleX, capsuleY, capsuleW, capsuleH, capsuleRadius);
-  ctx.fill();
-  ctx.stroke();
-  ctx.restore();
-
-  // Draw metadata inside capsule
-  const fontScale = (imgW / 1200) * config.fontSizeScale;
-  const fontSize = Math.max(Math.round(18 * fontScale), 14);
-  const subFontSize = Math.max(Math.round(13 * fontScale), 11);
-  const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
-  const midY = capsuleY + capsuleH / 2;
-
-  // Left in capsule: Logo + Model
-  const padInner = Math.round(capsuleH * 0.35);
-  let curX = capsuleX + padInner;
-
-  if (logoImg) {
-    const logoH = Math.round(capsuleH * 0.45);
-    const logoW = Math.round((logoImg.width / logoImg.height) * logoH);
-    ctx.drawImage(logoImg, curX, midY - logoH / 2, logoW, logoH);
-    curX += logoW + Math.round(16 * fontScale);
-  }
-
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  ctx.font = `600 ${fontSize}px ${fontFam}`;
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(modelText, curX, midY - (lensText ? fontSize * 0.5 : 0));
-
-  if (lensText) {
-    ctx.font = `400 ${subFontSize}px ${fontFam}`;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    ctx.fillText(lensText, curX, midY + subFontSize * 0.7);
-  }
-
-  // Right in capsule: Parameters
-  ctx.textAlign = 'right';
-  ctx.font = `600 ${fontSize}px ${fontFam}`;
-  ctx.fillStyle = accentColor;
-  ctx.fillText(paramsText, capsuleX + capsuleW - padInner, midY);
-}
-
-// -----------------------------------------------------------------------------
-// 4. Template: Polaroid (拍立得底片)
+// 3. Template: Polaroid (拍立得即显照片)
 // -----------------------------------------------------------------------------
 function renderPolaroid(
   canvas: HTMLCanvasElement,
@@ -376,13 +400,13 @@ function renderPolaroid(
   imgW: number,
   imgH: number,
   config: FrameConfig,
+  isFrosted: boolean,
   textColor: string,
   subTextColor: string,
   modelText: string,
   lensText: string,
   paramsText: string,
   dateText: string,
-  _noteText: string,
   logoImg: HTMLImageElement | null
 ) {
   const pad = Math.round(imgW * 0.06);
@@ -394,19 +418,21 @@ function renderPolaroid(
   canvas.width = canvasW;
   canvas.height = canvasH;
 
-  // Warm off-white polaroid card
-  ctx.fillStyle = config.backgroundColor || '#fbfaf8';
-  ctx.fillRect(0, 0, canvasW, canvasH);
+  if (isFrosted) {
+    drawFrostedBackground(ctx, img, canvasW, canvasH);
+  } else {
+    ctx.fillStyle = config.customBackgroundColor || '#fbfaf8';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+    ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0, 0, canvasW, canvasH);
+  }
 
-  // Subtle paper texture / border
-  ctx.strokeStyle = 'rgba(0,0,0,0.06)';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(0, 0, canvasW, canvasH);
+  const shadowBlur = isFrosted ? 35 : 0;
+  const shadowOpacity = isFrosted ? 0.35 : 0;
 
-  // Photo
-  ctx.drawImage(img, pad, pad, imgW, imgH);
+  drawPhotoWithOptionalShadow(ctx, img, pad, pad, imgW, imgH, config.borderRadius, shadowBlur, shadowOpacity);
 
-  // Handcrafted / Typewriter style typography
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const fontSize = Math.max(Math.round(20 * fontScale), 15);
   const subFontSize = Math.max(Math.round(14 * fontScale), 12);
@@ -414,6 +440,12 @@ function renderPolaroid(
 
   const bottomAreaY = pad + imgH;
   const midY = bottomAreaY + (bottomExtra - pad) / 2 + pad * 0.5;
+
+  if (isFrosted) {
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 2;
+  }
 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
@@ -426,7 +458,6 @@ function renderPolaroid(
   const subLine = [lensText, paramsText].filter(Boolean).join('  |  ');
   ctx.fillText(subLine, pad + Math.round(pad * 0.3), midY + subFontSize * 0.8);
 
-  // Right side: Logo or Date stamp
   if (logoImg) {
     const logoH = Math.round(fontSize * 1.5);
     const logoW = Math.round((logoImg.width / logoImg.height) * logoH);
@@ -434,13 +465,17 @@ function renderPolaroid(
   } else if (dateText) {
     ctx.textAlign = 'right';
     ctx.font = `400 ${subFontSize}px ${fontFam}`;
-    ctx.fillStyle = '#ea580c'; // Vintage orange date stamp
+    ctx.fillStyle = '#ea580c';
     ctx.fillText(dateText, canvasW - pad - Math.round(pad * 0.3), midY);
   }
+
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 }
 
 // -----------------------------------------------------------------------------
-// 5. Template: Minimal Badge (浮动微章极简水印)
+// 4. Template: Minimal Badge (极简微章)
 // -----------------------------------------------------------------------------
 function renderMinimalBadge(
   canvas: HTMLCanvasElement,
@@ -449,21 +484,15 @@ function renderMinimalBadge(
   imgW: number,
   imgH: number,
   config: FrameConfig,
-  _isDark: boolean,
-  _textColor: string,
-  _subTextColor: string,
   modelText: string,
-  _lensText: string,
   paramsText: string,
   logoImg: HTMLImageElement | null
 ) {
   canvas.width = imgW;
   canvas.height = imgH;
 
-  // Draw full image
   ctx.drawImage(img, 0, 0, imgW, imgH);
 
-  // Floating dark glass badge in bottom right corner
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const fontSize = Math.max(Math.round(15 * fontScale), 12);
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
@@ -505,8 +534,20 @@ function renderMinimalBadge(
 }
 
 // -----------------------------------------------------------------------------
-// Helper: Draw photo with optional rounded corners & drop shadow
+// Helpers
 // -----------------------------------------------------------------------------
+function drawFrostedBackground(ctx: CanvasRenderingContext2D, img: HTMLImageElement, canvasW: number, canvasH: number) {
+  ctx.save();
+  ctx.filter = 'blur(45px) brightness(0.8) saturate(1.4)';
+  ctx.drawImage(img, -canvasW * 0.1, -canvasH * 0.1, canvasW * 1.2, canvasH * 1.2);
+  ctx.filter = 'none';
+  ctx.restore();
+
+  // Dark frosted overlay
+  ctx.fillStyle = 'rgba(12, 14, 20, 0.35)';
+  ctx.fillRect(0, 0, canvasW, canvasH);
+}
+
 function drawPhotoWithOptionalShadow(
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement,
@@ -537,9 +578,6 @@ function drawPhotoWithOptionalShadow(
   ctx.restore();
 }
 
-// -----------------------------------------------------------------------------
-// Helper: Rounded Rectangle Path
-// -----------------------------------------------------------------------------
 function roundRect(
   ctx: CanvasRenderingContext2D,
   x: number,

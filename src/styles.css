@@ -352,6 +352,37 @@ header {
   font-weight: 600;
 }
 
+/* Background Type Buttons */
+.bg-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.bg-type-btn {
+  padding: 8px 4px;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.bg-type-btn:hover {
+  border-color: var(--text-muted);
+}
+
+.bg-type-btn.active {
+  background-color: rgba(59, 130, 246, 0.14);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
 /* Form Controls */
 .control-row {
   display: flex;
@@ -411,28 +442,14 @@ input[type="range"] {
   cursor: pointer;
 }
 
-/* Color Presets */
-.color-presets {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.color-dot {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform 0.1s ease;
-}
-
-.color-dot:hover {
-  transform: scale(1.1);
-}
-
-.color-dot.active {
-  border-color: var(--accent);
+.export-note {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--success);
+  background-color: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
 }
 
 /* Buttons */
@@ -474,6 +491,60 @@ input[type="range"] {
   width: 100%;
 }
 
+/* Modal Progress Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+
+.modal-card {
+  width: 360px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-input);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 4px;
+  transition: width 0.15s ease;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
 /* Toast Notification */
 .toast {
   position: fixed;
@@ -495,4 +566,9 @@ input[type="range"] {
 @keyframes slideIn {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
