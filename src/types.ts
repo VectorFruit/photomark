@@ -26,6 +26,8 @@ export interface PhotoItem {
 export type FrameTemplateId = 'bottom_bar' | 'border' | 'polaroid' | 'minimal_badge';
 export type BackgroundType = 'white' | 'dark' | 'frosted_blur' | 'custom';
 
+export type FocalLengthMode = 'physical' | 'equiv35mm' | 'both';
+
 export interface FrameConfig {
   template: FrameTemplateId;
   backgroundType: BackgroundType;
@@ -40,6 +42,7 @@ export interface FrameConfig {
   blurIntensity: number; // 10 to 120
   showLogo: boolean;
   selectedLogo: string; // 'auto' or specific brand key
+  focalLengthMode: FocalLengthMode;
   customNote: string;
   
   // Field toggles
@@ -65,6 +68,7 @@ export const DEFAULT_FRAME_CONFIG: FrameConfig = {
   blurIntensity: 55,
   showLogo: true,
   selectedLogo: 'auto',
+  focalLengthMode: 'physical',
   customNote: '',
   showMake: true,
   showModel: true,

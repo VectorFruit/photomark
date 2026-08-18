@@ -1,6 +1,27 @@
-import { ExifData, FrameConfig } from '../types';
+import { ExifData, FocalLengthMode, FrameConfig } from '../types';
 import { detectBrandId, loadLogoImage } from './logoManager';
 import { drawDeepFrostedBackground } from './blurEngine';
+
+function formatFocalLength(exif: ExifData, mode: FocalLengthMode): string {
+  const physical = exif.focal_length;
+  const equiv = exif.focal_length_35mm;
+
+  if (!physical && !equiv) return '';
+
+  if (mode === 'equiv35mm') {
+    return equiv || physical || '';
+  }
+
+  if (mode === 'both') {
+    if (physical && equiv && physical !== equiv) {
+      return `${physical} (等效 ${equiv})`;
+    }
+    return physical || equiv || '';
+  }
+
+  // Default 'physical'
+  return physical || equiv || '';
+}
 
 export async function renderPhotoFrame(
   image: HTMLImageElement,
@@ -36,9 +57,8 @@ export async function renderPhotoFrame(
 
   const paramParts: string[] = [];
   if (config.showParams) {
-    if (exif.focal_length_35mm || exif.focal_length) {
-      paramParts.push(exif.focal_length_35mm || exif.focal_length!);
-    }
+    const focalText = formatFocalLength(exif, config.focalLengthMode || 'physical');
+    if (focalText) paramParts.push(focalText);
     if (exif.f_number) paramParts.push(exif.f_number);
     if (exif.exposure_time) paramParts.push(exif.exposure_time);
     if (exif.iso) paramParts.push(exif.iso);

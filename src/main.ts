@@ -250,6 +250,7 @@ function bindEvents() {
   // Controls Binding
   bindCheckbox('cfg-show-logo', (val) => (config.showLogo = val));
   bindSelect('cfg-brand-logo', (val) => (config.selectedLogo = val));
+  bindSelect('cfg-focal-mode', (val) => (config.focalLengthMode = val as any));
   bindCheckbox('cfg-show-model', (val) => (config.showModel = val));
   bindCheckbox('cfg-show-lens', (val) => (config.showLens = val));
   bindCheckbox('cfg-show-params', (val) => (config.showParams = val));
@@ -311,6 +312,10 @@ function syncUIWithConfig() {
   inputBorderRadius.value = `${config.borderRadius}`;
   inputShadow.value = `${config.shadowRadius}`;
   inputBlurIntensity.value = `${config.blurIntensity}`;
+
+  // Update Focal Length Mode Select
+  const focalSelect = document.getElementById('cfg-focal-mode') as HTMLSelectElement | null;
+  if (focalSelect) focalSelect.value = config.focalLengthMode || 'physical';
 
   // Update Template Active Card
   document.querySelectorAll('.template-card').forEach((card) => {

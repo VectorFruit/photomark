@@ -103,19 +103,24 @@ pub fn read_exif_from_path<P: AsRef<Path>>(path: P) -> ExifData {
         }
     }
 
-    // Focal Length
+    // Focal Length (Physical focal length of the lens)
     if let Some(field) = exif.get_field(Tag::FocalLength, In::PRIMARY) {
         match field.value {
             Value::Rational(ref v) if !v.is_empty() => {
                 let fl = v[0].to_f64();
                 if fl > 0.0 {
-                    exif_data.focal_length = Some(format!("{:.0}mm", fl));
+                    if (fl.fract()).abs() < 0.05 {
+                        exif_data.focal_length = Some(format!("{:.0}mm", fl));
+                    } else {
+                        exif_data.focal_length = Some(format!("{:.1}mm", fl));
+                    }
                 }
             }
             _ => {
-                let s = field.display_value().to_string();
-                if !s.is_empty() {
-                    exif_data.focal_length = Some(format!("{}mm", clean_string(&s)));
+                let s = clean_string(&field.display_value().to_string());
+                let val_clean = s.trim_end_matches("mm").trim();
+                if !val_clean.is_empty() {
+                    exif_data.focal_length = Some(format!("{}mm", val_clean));
                 }
             }
         }
@@ -123,10 +128,10 @@ pub fn read_exif_from_path<P: AsRef<Path>>(path: P) -> ExifData {
 
     // 35mm Equivalent Focal Length
     if let Some(field) = exif.get_field(Tag::FocalLengthIn35mmFilm, In::PRIMARY) {
-        let s = field.display_value().to_string();
-        let clean = clean_string(&s);
-        if !clean.is_empty() {
-            exif_data.focal_length_35mm = Some(format!("{}mm", clean));
+        let s = clean_string(&field.display_value().to_string());
+        let val_clean = s.trim_end_matches("mm").trim();
+        if !val_clean.is_empty() {
+            exif_data.focal_length_35mm = Some(format!("{}mm", val_clean));
         }
     }
 
