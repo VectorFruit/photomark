@@ -1,5 +1,6 @@
 import { ExifData, FrameConfig } from '../types';
 import { detectBrandId, loadLogoImage } from './logoManager';
+import { drawDeepFrostedBackground } from './blurEngine';
 
 export async function renderPhotoFrame(
   image: HTMLImageElement,
@@ -20,7 +21,7 @@ export async function renderPhotoFrame(
 
   const textColor = isDark ? '#f3f4f6' : '#111827';
   const subTextColor = isDark ? '#9ca3af' : '#6b7280';
-  const dividerColor = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.12)';
+  const dividerColor = isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.12)';
 
   // Determine Logo
   const brandId = config.selectedLogo === 'auto' ? detectBrandId(exif.make, exif.model) : config.selectedLogo;
@@ -125,7 +126,7 @@ export async function renderPhotoFrame(
 }
 
 // -----------------------------------------------------------------------------
-// 1. Template: Classic Bottom Bar (经典底栏 / 支持可调毛玻璃相框)
+// 1. Template: Classic Bottom Bar (经典底栏 / 支持可调深度毛玻璃相框)
 // -----------------------------------------------------------------------------
 function renderBottomBar(
   canvas: HTMLCanvasElement,
@@ -157,7 +158,7 @@ function renderBottomBar(
 
   // Background Rendering
   if (isFrosted) {
-    drawFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
+    drawDeepFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else if (config.backgroundType === 'dark') {
     ctx.fillStyle = '#121316';
     ctx.fillRect(0, 0, canvasW, canvasH);
@@ -273,7 +274,7 @@ function renderBottomBar(
 }
 
 // -----------------------------------------------------------------------------
-// 2. Template: Gallery Border (画廊全包相框 / 支持毛玻璃相框)
+// 2. Template: Gallery Border (画廊全包相框 / 支持可调深度毛玻璃相框)
 // -----------------------------------------------------------------------------
 function renderBorderFrame(
   canvas: HTMLCanvasElement,
@@ -302,7 +303,7 @@ function renderBorderFrame(
 
   // Background
   if (isFrosted) {
-    drawFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
+    drawDeepFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else if (config.backgroundType === 'dark') {
     ctx.fillStyle = '#14151a';
     ctx.fillRect(0, 0, canvasW, canvasH);
@@ -410,7 +411,7 @@ function renderPolaroid(
   canvas.height = canvasH;
 
   if (isFrosted) {
-    drawFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
+    drawDeepFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else {
     ctx.fillStyle = config.customBackgroundColor || '#fbfaf8';
     ctx.fillRect(0, 0, canvasW, canvasH);
@@ -522,30 +523,6 @@ function renderMinimalBadge(
   ctx.fillStyle = '#ffffff';
   ctx.fillText(summary, curX, midY);
   ctx.restore();
-}
-
-// -----------------------------------------------------------------------------
-// Helpers
-// -----------------------------------------------------------------------------
-function drawFrostedBackground(
-  ctx: CanvasRenderingContext2D,
-  img: HTMLImageElement,
-  canvasW: number,
-  canvasH: number,
-  blurIntensity = 55
-) {
-  ctx.save();
-  // Scaled blur radius proportional to canvas width
-  const blurPx = Math.max(10, Math.round((blurIntensity || 55) * (canvasW / 1400)));
-  
-  ctx.filter = `blur(${blurPx}px) brightness(0.82) saturate(1.45)`;
-  ctx.drawImage(img, -canvasW * 0.15, -canvasH * 0.15, canvasW * 1.3, canvasH * 1.3);
-  ctx.filter = 'none';
-  ctx.restore();
-
-  // Dark frosted glass overlay
-  ctx.fillStyle = 'rgba(10, 12, 18, 0.38)';
-  ctx.fillRect(0, 0, canvasW, canvasH);
 }
 
 function drawPhotoWithOptionalShadow(
