@@ -93,13 +93,21 @@ yarn tauri dev
 
 ## 📦 打包与分发
 
-### 1. Arch Linux 原生打包 (PKGBUILD)
+### 1. Windows 安装包构建 (.exe / .msi)
+在 Windows 环境下（PowerShell 或 CMD）执行：
+```powershell
+yarn install
+yarn tauri build
+# 产物位于 src-tauri/target/release/bundle/nsis/ (包含安装包与可执行文件)
+```
+
+### 2. Arch Linux 原生打包 (PKGBUILD)
 项目根目录内置标准 `PKGBUILD`，直接执行：
 ```bash
 makepkg -sric
 ```
 
-### 2. AppImage 打包
+### 3. Linux AppImage 打包
 执行内置自动化封包脚本，生成符合 [AppImage 官方规范](https://docs.appimage.org) 的跨发行版通用单文件：
 ```bash
 ./build-appimage.sh

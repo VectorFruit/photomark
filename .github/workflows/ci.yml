@@ -1,4 +1,4 @@
-name: CI & AppImage Build
+name: CI & Multi-Platform Build
 
 on:
   push:
@@ -15,7 +15,7 @@ on:
 
 jobs:
   check:
-    name: TypeCheck & Rust Lint
+    name: CodeCheck (Frontend & Rust)
     runs-on: ubuntu-22.04
 
     steps:
@@ -59,8 +59,8 @@ jobs:
       - name: Cargo Check
         run: cargo check --manifest-path src-tauri/Cargo.toml
 
-  build-appimage:
-    name: Build AppImage (x86_64)
+  build-linux-appimage:
+    name: Build Linux AppImage (x86_64)
     needs: check
     runs-on: ubuntu-22.04
 
@@ -105,18 +105,61 @@ jobs:
           chmod +x ./build-appimage.sh
           ./build-appimage.sh
 
-      - name: Upload AppImage Artifact
+      - name: Upload Linux AppImage Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: photomark-x86_64.AppImage
+          name: photomark-linux-x86_64.AppImage
           path: dist-appimage/*.AppImage
+          if-no-files-found: error
+          retention-days: 14
+
+  build-windows:
+    name: Build Windows Installer (x64)
+    needs: check
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Install frontend dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build Windows Application & Installers
+        run: yarn tauri build
+
+      - name: Prepare Windows Artifacts
+        shell: bash
+        run: |
+          mkdir -p dist-windows
+          find src-tauri/target/release/bundle -type f \( -name "*.exe" -o -name "*.msi" \) -exec cp {} dist-windows/ \;
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: photomark-windows-x64-installers
+          path: dist-windows/*
           if-no-files-found: error
           retention-days: 14
 
   release:
     name: Create GitHub Release
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: build-appimage
+    needs: [build-linux-appimage, build-windows]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -125,16 +168,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download AppImage Artifact
+      - name: Download Linux Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: photomark-x86_64.AppImage
-          path: dist-appimage
+          name: photomark-linux-x86_64.AppImage
+          path: release-assets
 
-      - name: Publish Release with Assets
+      - name: Download Windows Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: photomark-windows-x64-installers
+          path: release-assets
+
+      - name: Publish Release with All Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: dist-appimage/*.AppImage
+          files: release-assets/*
           draft: false
           prerelease: false
           generate_release_notes: true
