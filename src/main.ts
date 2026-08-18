@@ -491,7 +491,7 @@ async function handleExportCurrent() {
 
     showProgressModal('正在导出原画相框照片...', '读取原始完整分辨率像素...', 25);
 
-    // 1. Load FULL original resolution image
+    // 1. Load FULL original resolution image (Untouched Raw Bytes)
     const fullResDataUrl: string = await invoke('load_full_photo', {
       path: currentPhoto.path,
       orientation: currentPhoto.exif.orientation,
@@ -509,8 +509,8 @@ async function handleExportCurrent() {
 
     showProgressModal('正在编码与写入文件...', `分辨率: ${exportCanvas.width} × ${exportCanvas.height}`, 85);
 
-    const mime = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
-    const base64Data = exportCanvas.toDataURL(mime, quality / 100);
+    // Capture lossless PNG buffer from canvas for zero transmission loss
+    const base64Data = exportCanvas.toDataURL('image/png');
 
     await invoke('save_rendered_photo', {
       outputPath: savePath,
@@ -546,7 +546,6 @@ async function handleBatchExport() {
     const format = formatSelect.value;
     const quality = parseInt(qualitySelect.value, 10);
     const ext = format === 'jpeg' ? 'jpg' : format;
-    const mime = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
 
     showProgressModal('准备批量导出...', `共 ${photos.length} 张照片`, 5);
 
@@ -572,7 +571,7 @@ async function handleBatchExport() {
 
       const canvas = document.createElement('canvas');
       await renderPhotoFrame(fullImg, item.exif, config, canvas);
-      const base64Image = canvas.toDataURL(mime, quality / 100);
+      const base64Image = canvas.toDataURL('image/png');
 
       const outName = item.filename.replace(/\.[^/.]+$/, '') + `_framed.${ext}`;
       const outPath = `${outputDir}/${outName}`;

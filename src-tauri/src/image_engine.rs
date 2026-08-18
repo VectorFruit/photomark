@@ -72,7 +72,12 @@ pub fn load_full_image_data_url<P: AsRef<Path>>(path: P, orientation: Option<u32
     Ok(data_url)
 }
 
-pub fn save_base64_image<P: AsRef<Path>>(output_path: P, base64_data: &str, _format: &str, _quality: u8) -> Result<(), String> {
+pub fn save_base64_image<P: AsRef<Path>>(
+    output_path: P,
+    base64_data: &str,
+    format: &str,
+    quality: u8,
+) -> Result<(), String> {
     let raw_b64 = if let Some(idx) = base64_data.find(";base64,") {
         &base64_data[idx + 8..]
     } else if let Some(idx) = base64_data.find(",") {
@@ -86,6 +91,21 @@ pub fn save_base64_image<P: AsRef<Path>>(output_path: P, base64_data: &str, _for
 
     if let Some(parent) = output_path.as_ref().parent() {
         std::fs::create_dir_all(parent).map_err(|e| format!("Failed to create parent dir: {}", e))?;
+    }
+
+    // If saving as JPEG from a lossless PNG canvas buffer, encode in Rust with exact quality
+    if (format.eq_ignore_ascii_case("jpeg") || format.eq_ignore_ascii_case("jpg"))
+        && bytes.starts_with(&[0x89, 0x50, 0x4E, 0x47])
+    {
+        let img = image::load_from_memory(&bytes)
+            .map_err(|e| format!("Failed to decode image buffer: {}", e))?;
+        let mut buffer = Cursor::new(Vec::new());
+        let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut buffer, quality);
+        encoder.encode_image(&img)
+            .map_err(|e| format!("Failed to encode JPEG: {}", e))?;
+        std::fs::write(&output_path, buffer.into_inner())
+            .map_err(|e| format!("Failed to write output file: {}", e))?;
+        return Ok(());
     }
 
     std::fs::write(&output_path, bytes)
