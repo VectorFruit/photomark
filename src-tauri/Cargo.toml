@@ -1,6 +1,6 @@
 [package]
 name = "photomark"
-version = "0.1.0"
+version = "1.0.1"
 description = "A modern, lightweight photo EXIF watermark and frame studio"
 authors = ["vectorfruit"]
 edition = "2021"

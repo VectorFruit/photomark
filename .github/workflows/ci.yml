@@ -184,6 +184,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: release-assets/*
+          body_path: CHANGELOG.md
           draft: false
           prerelease: false
           generate_release_notes: true
