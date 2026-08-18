@@ -116,4 +116,4 @@ git commit -m "perf(blur): optimize box blur array iteration using TypedArrays"
 
 ## 📄 协议
 
-当您向 **PhotoMark** 贡献代码时，即表示您同意将所提交的代码以 [MIT License](LICENSE) 协议发布。
+当您向 **PhotoMark** 贡献代码时，即表示您同意将所提交的代码以 [GNU General Public License v3.0 (GPLv3)](LICENSE) 协议发布。

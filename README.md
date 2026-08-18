@@ -5,7 +5,7 @@
 **现代极速相机 EXIF 参数水印与相框工坊**  
 *A modern, ultra-lightweight photo EXIF watermark & frame studio built with Tauri 2.0 and Rust.*
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Tauri](https://img.shields.io/badge/Tauri-2.0-24C8D8.svg?logo=tauri&logoColor=white)](https://tauri.app)
 [![Rust](https://img.shields.io/badge/Rust-1.80+-dea584.svg?logo=rust&logoColor=white)](https://www.rust-lang.org)
 [![Vite](https://img.shields.io/badge/Vite-6.0+-646CFF.svg?logo=vite&logoColor=white)](https://vitejs.dev)
@@ -132,8 +132,15 @@ photomark/
 ├── PKGBUILD                   # Arch Linux 打包规范
 ├── build-appimage.sh          # AppImage 一键打包脚本
 ├── CONTRIBUTING.md            # 贡献指南
+├── LICENSE                    # GNU General Public License v3.0
 └── README.md                  # 项目说明
 ```
+
+---
+
+## ⚖️ 商标免责声明 (Trademark Disclaimer)
+
+本软件中包含的所有相机品牌名称、徽标及商标（包括但不限于 Leica, Hasselblad, Sony, Canon, Nikon, Fujifilm 等）均归其各自的商标注册所有者所有。本项目引用上述标识仅用于 EXIF 元数据可视化展示与事实指示，与各品牌方无任何商业关联、从属关系或官方授权背书。
 
 ---
 
@@ -145,4 +152,4 @@ photomark/
 
 ## 📄 开源协议
 
-本项目基于 [MIT License](LICENSE) 开源。
+本项目基于 **[GNU General Public License v3.0 (GPLv3)](LICENSE)** 开源。

@@ -6,7 +6,7 @@ pkgrel=1
 pkgdesc="A modern, ultra-lightweight photo EXIF watermark and frame studio (Clean-Room Tauri 2.0 implementation)"
 arch=('x86_64')
 url="https://github.com/vectorfruit/photomark"
-license=('MIT')
+license=('GPL-3.0-or-later')
 depends=(
   'cairo'
   'gdk-pixbuf2'
