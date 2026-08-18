@@ -16,6 +16,8 @@ let photos: PhotoItem[] = [];
 let activeIndex = -1;
 let currentZoom = 1.0;
 let currentTheme: 'dark' | 'light' = (localStorage.getItem('photomark_theme') as 'dark' | 'light') || 'dark';
+const UI_SCALES = [0.8, 0.85, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5];
+let currentUiScale = parseFloat(localStorage.getItem('photomark_ui_scale') || '1.0');
 
 const config: FrameConfig = { ...DEFAULT_FRAME_CONFIG };
 
@@ -27,6 +29,11 @@ const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasEle
 const canvasContainer = document.getElementById('canvas-container') as HTMLDivElement;
 const zoomLevelEl = document.getElementById('zoom-level') as HTMLSpanElement;
 const toastEl = document.getElementById('toast') as HTMLDivElement;
+
+// UI Scale DOM
+const selectUiScale = document.getElementById('select-ui-scale') as HTMLSelectElement;
+const btnUiScaleDown = document.getElementById('btn-ui-scale-down') as HTMLButtonElement;
+const btnUiScaleUp = document.getElementById('btn-ui-scale-up') as HTMLButtonElement;
 
 // Theme Toggle DOM
 const themeToggleBtn = document.getElementById('btn-theme-toggle') as HTMLButtonElement;
@@ -59,10 +66,24 @@ const previewImageCache: Map<string, HTMLImageElement> = new Map();
 
 async function init() {
   applyTheme(currentTheme);
+  applyUiScale(currentUiScale);
   bindEvents();
   setupProgressListeners();
   updateValueBadges();
   renderPhotoList();
+}
+
+function applyUiScale(scale: number) {
+  currentUiScale = Math.min(1.5, Math.max(0.8, Math.round(scale * 100) / 100));
+  (document.body.style as any).zoom = `${currentUiScale}`;
+  localStorage.setItem('photomark_ui_scale', `${currentUiScale}`);
+
+  if (selectUiScale) {
+    selectUiScale.value = `${currentUiScale}`;
+    if (!selectUiScale.value) {
+      selectUiScale.value = `${currentUiScale}`;
+    }
+  }
 }
 
 function applyTheme(theme: 'dark' | 'light') {
@@ -118,6 +139,23 @@ function updateValueBadges() {
 }
 
 function bindEvents() {
+  // UI Scale Select & Step Buttons
+  selectUiScale?.addEventListener('change', () => {
+    applyUiScale(parseFloat(selectUiScale.value));
+  });
+
+  btnUiScaleDown?.addEventListener('click', () => {
+    const idx = UI_SCALES.findIndex((s) => s >= currentUiScale);
+    const nextIdx = Math.max(0, (idx === -1 ? UI_SCALES.length - 1 : idx) - 1);
+    applyUiScale(UI_SCALES[nextIdx]);
+  });
+
+  btnUiScaleUp?.addEventListener('click', () => {
+    const idx = UI_SCALES.findIndex((s) => s > currentUiScale);
+    const nextIdx = idx === -1 ? UI_SCALES.length - 1 : idx;
+    applyUiScale(UI_SCALES[nextIdx]);
+  });
+
   // Theme Toggle Button
   themeToggleBtn?.addEventListener('click', () => {
     applyTheme(currentTheme === 'dark' ? 'light' : 'dark');

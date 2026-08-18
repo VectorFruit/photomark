@@ -17,6 +17,24 @@
       </div>
 
       <div class="header-actions">
+        <!-- UI Scale Toolbar -->
+        <div class="ui-scale-group" title="调节界面整体缩放比例">
+          <span class="scale-label">UI 缩放:</span>
+          <button id="btn-ui-scale-down" class="tool-btn-sm" title="缩小界面">-</button>
+          <select id="select-ui-scale" class="scale-select">
+            <option value="0.8">80%</option>
+            <option value="0.85">85%</option>
+            <option value="0.9">90%</option>
+            <option value="1" selected>100% (默认)</option>
+            <option value="1.1">110%</option>
+            <option value="1.2">120%</option>
+            <option value="1.3">130%</option>
+            <option value="1.4">140%</option>
+            <option value="1.5">150%</option>
+          </select>
+          <button id="btn-ui-scale-up" class="tool-btn-sm" title="放大界面">+</button>
+        </div>
+
         <button id="btn-theme-toggle" class="tool-btn" title="切换浅色/深色模式">
           <span id="theme-icon">☀️</span> <span id="theme-text">浅色模式</span>
         </button>
