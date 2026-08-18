@@ -58,7 +58,6 @@ export async function renderPhotoFrame(
         imgH,
         config,
         isFrosted,
-        isDark,
         textColor,
         subTextColor,
         dividerColor,
@@ -79,15 +78,12 @@ export async function renderPhotoFrame(
         imgH,
         config,
         isFrosted,
-        isDark,
         textColor,
         subTextColor,
-        dividerColor,
         modelText,
         lensText,
         paramsText,
         dateText,
-        noteText,
         logoImg
       );
       break;
@@ -129,7 +125,7 @@ export async function renderPhotoFrame(
 }
 
 // -----------------------------------------------------------------------------
-// 1. Template: Classic Bottom Bar (经典底栏 / 支持毛玻璃相框)
+// 1. Template: Classic Bottom Bar (经典底栏 / 支持可调毛玻璃相框)
 // -----------------------------------------------------------------------------
 function renderBottomBar(
   canvas: HTMLCanvasElement,
@@ -139,7 +135,6 @@ function renderBottomBar(
   imgH: number,
   config: FrameConfig,
   isFrosted: boolean,
-  _isDark: boolean,
   textColor: string,
   subTextColor: string,
   dividerColor: string,
@@ -162,7 +157,7 @@ function renderBottomBar(
 
   // Background Rendering
   if (isFrosted) {
-    drawFrostedBackground(ctx, img, canvasW, canvasH);
+    drawFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else if (config.backgroundType === 'dark') {
     ctx.fillStyle = '#121316';
     ctx.fillRect(0, 0, canvasW, canvasH);
@@ -178,7 +173,7 @@ function renderBottomBar(
   const photoX = padX;
   const photoY = padTop;
   const shadowBlur = isFrosted ? Math.max(config.shadowRadius, 35) : config.shadowRadius;
-  const shadowOpacity = isFrosted ? Math.max(config.shadowOpacity, 0.4) : config.shadowOpacity;
+  const shadowOpacity = isFrosted ? Math.max(config.shadowOpacity, 0.45) : config.shadowOpacity;
 
   drawPhotoWithOptionalShadow(
     ctx,
@@ -204,8 +199,8 @@ function renderBottomBar(
 
   // If frosted blur, apply text drop shadow for pristine legibility
   if (isFrosted) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+    ctx.shadowBlur = 8;
     ctx.shadowOffsetY = 2;
   }
 
@@ -272,7 +267,6 @@ function renderBottomBar(
     ctx.fillText(paramsText, currentRightX, midY);
   }
 
-  // Reset shadow
   ctx.shadowColor = 'transparent';
   ctx.shadowBlur = 0;
   ctx.shadowOffsetY = 0;
@@ -289,15 +283,12 @@ function renderBorderFrame(
   imgH: number,
   config: FrameConfig,
   isFrosted: boolean,
-  _isDark: boolean,
   textColor: string,
   subTextColor: string,
-  _dividerColor: string,
   modelText: string,
   lensText: string,
   paramsText: string,
   dateText: string,
-  _noteText: string,
   logoImg: HTMLImageElement | null
 ) {
   const pad = Math.round(Math.min(imgW, imgH) * (config.paddingPercent / 100));
@@ -311,7 +302,7 @@ function renderBorderFrame(
 
   // Background
   if (isFrosted) {
-    drawFrostedBackground(ctx, img, canvasW, canvasH);
+    drawFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else if (config.backgroundType === 'dark') {
     ctx.fillStyle = '#14151a';
     ctx.fillRect(0, 0, canvasW, canvasH);
@@ -325,7 +316,7 @@ function renderBorderFrame(
 
   // Draw Photo with shadow
   const shadowBlur = isFrosted ? Math.max(config.shadowRadius, 35) : config.shadowRadius;
-  const shadowOpacity = isFrosted ? Math.max(config.shadowOpacity, 0.4) : config.shadowOpacity;
+  const shadowOpacity = isFrosted ? Math.max(config.shadowOpacity, 0.45) : config.shadowOpacity;
 
   drawPhotoWithOptionalShadow(
     ctx,
@@ -347,8 +338,8 @@ function renderBorderFrame(
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
 
   if (isFrosted) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+    ctx.shadowBlur = 8;
     ctx.shadowOffsetY = 2;
   }
 
@@ -419,7 +410,7 @@ function renderPolaroid(
   canvas.height = canvasH;
 
   if (isFrosted) {
-    drawFrostedBackground(ctx, img, canvasW, canvasH);
+    drawFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else {
     ctx.fillStyle = config.customBackgroundColor || '#fbfaf8';
     ctx.fillRect(0, 0, canvasW, canvasH);
@@ -442,8 +433,8 @@ function renderPolaroid(
   const midY = bottomAreaY + (bottomExtra - pad) / 2 + pad * 0.5;
 
   if (isFrosted) {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+    ctx.shadowBlur = 8;
     ctx.shadowOffsetY = 2;
   }
 
@@ -511,8 +502,8 @@ function renderMinimalBadge(
   const badgeY = imgH - badgeH - Math.round(imgH * 0.03);
 
   ctx.save();
-  ctx.fillStyle = 'rgba(15, 17, 23, 0.72)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+  ctx.fillStyle = 'rgba(15, 17, 23, 0.75)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
   ctx.lineWidth = 1;
   roundRect(ctx, badgeX, badgeY, badgeW, badgeH, Math.round(badgeH / 2));
   ctx.fill();
@@ -536,15 +527,24 @@ function renderMinimalBadge(
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
-function drawFrostedBackground(ctx: CanvasRenderingContext2D, img: HTMLImageElement, canvasW: number, canvasH: number) {
+function drawFrostedBackground(
+  ctx: CanvasRenderingContext2D,
+  img: HTMLImageElement,
+  canvasW: number,
+  canvasH: number,
+  blurIntensity = 55
+) {
   ctx.save();
-  ctx.filter = 'blur(45px) brightness(0.8) saturate(1.4)';
-  ctx.drawImage(img, -canvasW * 0.1, -canvasH * 0.1, canvasW * 1.2, canvasH * 1.2);
+  // Scaled blur radius proportional to canvas width
+  const blurPx = Math.max(10, Math.round((blurIntensity || 55) * (canvasW / 1400)));
+  
+  ctx.filter = `blur(${blurPx}px) brightness(0.82) saturate(1.45)`;
+  ctx.drawImage(img, -canvasW * 0.15, -canvasH * 0.15, canvasW * 1.3, canvasH * 1.3);
   ctx.filter = 'none';
   ctx.restore();
 
-  // Dark frosted overlay
-  ctx.fillStyle = 'rgba(12, 14, 20, 0.35)';
+  // Dark frosted glass overlay
+  ctx.fillStyle = 'rgba(10, 12, 18, 0.38)';
   ctx.fillRect(0, 0, canvasW, canvasH);
 }
 
@@ -564,7 +564,7 @@ function drawPhotoWithOptionalShadow(
   if (shadowBlur > 0 && shadowOpacity > 0) {
     ctx.shadowColor = `rgba(0, 0, 0, ${shadowOpacity})`;
     ctx.shadowBlur = shadowBlur;
-    ctx.shadowOffsetY = Math.round(shadowBlur * 0.35);
+    ctx.shadowOffsetY = Math.round(shadowBlur * 0.38);
   }
 
   if (radius > 0) {

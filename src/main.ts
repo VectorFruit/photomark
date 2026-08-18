@@ -1,35 +1,23 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { open, save } from '@tauri-apps/plugin-dialog';
-import { BackgroundType, FrameConfig, FrameTemplateId, ParseProgressEvent, PhotoItem } from './types';
+import {
+  BackgroundType,
+  DEFAULT_FRAME_CONFIG,
+  FrameConfig,
+  FrameTemplateId,
+  ParseProgressEvent,
+  PhotoItem,
+} from './types';
 import { renderPhotoFrame } from './renderer/canvasRenderer';
 
-// Default State
+// Application State
 let photos: PhotoItem[] = [];
 let activeIndex = -1;
 let currentZoom = 1.0;
+let currentTheme: 'dark' | 'light' = (localStorage.getItem('photomark_theme') as 'dark' | 'light') || 'dark';
 
-const config: FrameConfig = {
-  template: 'bottom_bar',
-  backgroundType: 'white',
-  customBackgroundColor: '#ffffff',
-  fontFamily: 'Inter, -apple-system, sans-serif',
-  fontSizeScale: 1.0,
-  paddingPercent: 4,
-  bottomBarHeightPercent: 12,
-  shadowRadius: 15,
-  shadowOpacity: 0.25,
-  borderRadius: 0,
-  showLogo: true,
-  selectedLogo: 'auto',
-  customNote: '',
-  showMake: true,
-  showModel: true,
-  showLens: true,
-  showParams: true,
-  showDate: true,
-  showCustomNote: false,
-};
+const config: FrameConfig = { ...DEFAULT_FRAME_CONFIG };
 
 // DOM Elements
 const photoListEl = document.getElementById('photo-list') as HTMLDivElement;
@@ -40,6 +28,11 @@ const canvasContainer = document.getElementById('canvas-container') as HTMLDivEl
 const zoomLevelEl = document.getElementById('zoom-level') as HTMLSpanElement;
 const toastEl = document.getElementById('toast') as HTMLDivElement;
 
+// Theme Toggle DOM
+const themeToggleBtn = document.getElementById('btn-theme-toggle') as HTMLButtonElement;
+const themeIconEl = document.getElementById('theme-icon') as HTMLSpanElement;
+const themeTextEl = document.getElementById('theme-text') as HTMLSpanElement;
+
 // Progress Modal DOM
 const progressModalEl = document.getElementById('progress-modal') as HTMLDivElement;
 const progressTitleEl = document.getElementById('progress-title') as HTMLDivElement;
@@ -47,26 +40,54 @@ const progressFillEl = document.getElementById('progress-fill') as HTMLDivElemen
 const progressStatusEl = document.getElementById('progress-status') as HTMLSpanElement;
 const progressPercentEl = document.getElementById('progress-percent') as HTMLSpanElement;
 
-// Image Cache (for preview)
+// Slider Value Badges & Inputs
+const blurRowEl = document.getElementById('row-blur-intensity') as HTMLDivElement;
+const valBlurEl = document.getElementById('val-blur-intensity') as HTMLSpanElement;
+const valPaddingEl = document.getElementById('val-padding') as HTMLSpanElement;
+const valFontScaleEl = document.getElementById('val-font-scale') as HTMLSpanElement;
+const valBorderRadiusEl = document.getElementById('val-border-radius') as HTMLSpanElement;
+const valShadowEl = document.getElementById('val-shadow') as HTMLSpanElement;
+
+const inputPadding = document.getElementById('cfg-padding') as HTMLInputElement;
+const inputFontScale = document.getElementById('cfg-font-scale') as HTMLInputElement;
+const inputBorderRadius = document.getElementById('cfg-border-radius') as HTMLInputElement;
+const inputShadow = document.getElementById('cfg-shadow') as HTMLInputElement;
+const inputBlurIntensity = document.getElementById('cfg-blur-intensity') as HTMLInputElement;
+
+// Image Cache (for fast preview)
 const previewImageCache: Map<string, HTMLImageElement> = new Map();
 
 async function init() {
+  applyTheme(currentTheme);
   bindEvents();
   setupProgressListeners();
+  updateValueBadges();
   renderPhotoList();
 }
 
+function applyTheme(theme: 'dark' | 'light') {
+  currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('photomark_theme', theme);
+
+  if (theme === 'light') {
+    themeIconEl.textContent = '🌙';
+    themeTextEl.textContent = '深色模式';
+  } else {
+    themeIconEl.textContent = '☀️';
+    themeTextEl.textContent = '浅色模式';
+  }
+}
+
 function setupProgressListeners() {
-  // Listen for parse progress
   listen<ParseProgressEvent>('parse-progress', (event) => {
     const { current, total, filename, percent } = event.payload;
     showProgressModal('正在解析照片 EXIF...', `(${current}/${total}) ${filename}`, percent);
   });
 
-  // Listen for batch export progress
   listen<ParseProgressEvent>('batch-progress', (event) => {
     const { current, total, filename, percent } = event.payload;
-    showProgressModal('正在批量导出照片...', `(${current}/${total}) ${filename}`, percent);
+    showProgressModal('正在批量导出原画照片...', `(${current}/${total}) ${filename}`, percent);
   });
 }
 
@@ -84,18 +105,75 @@ function hideProgressModal() {
   }, 400);
 }
 
+function updateValueBadges() {
+  if (valPaddingEl) valPaddingEl.textContent = `${config.paddingPercent}%`;
+  if (valFontScaleEl) valFontScaleEl.textContent = `${Math.round(config.fontSizeScale * 100)}%`;
+  if (valBorderRadiusEl) valBorderRadiusEl.textContent = `${config.borderRadius}px`;
+  if (valShadowEl) valShadowEl.textContent = `${config.shadowRadius}`;
+  if (valBlurEl) valBlurEl.textContent = `${config.blurIntensity}`;
+
+  if (blurRowEl) {
+    blurRowEl.style.display = config.backgroundType === 'frosted_blur' ? 'flex' : 'none';
+  }
+}
+
 function bindEvents() {
+  // Theme Toggle Button
+  themeToggleBtn?.addEventListener('click', () => {
+    applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+  });
+
   // Import Buttons
   document.getElementById('btn-import-photos')?.addEventListener('click', handleImportDialog);
   emptyQueueEl?.addEventListener('click', handleImportDialog);
 
-  // Clear All
+  // Clear All Photos
   document.getElementById('btn-clear-all')?.addEventListener('click', () => {
     photos = [];
     activeIndex = -1;
     previewImageCache.clear();
     renderPhotoList();
     clearCanvas();
+  });
+
+  // Global Reset All Config Button
+  document.getElementById('btn-reset-all')?.addEventListener('click', () => {
+    Object.assign(config, DEFAULT_FRAME_CONFIG);
+    syncUIWithConfig();
+    triggerReRender();
+    showToast('已重置所有参数为默认配置');
+  });
+
+  // Single Slider Reset Buttons
+  document.querySelectorAll('.btn-reset-single').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const resetType = btn.getAttribute('data-reset');
+      switch (resetType) {
+        case 'padding':
+          config.paddingPercent = DEFAULT_FRAME_CONFIG.paddingPercent;
+          inputPadding.value = `${config.paddingPercent}`;
+          break;
+        case 'font-scale':
+          config.fontSizeScale = DEFAULT_FRAME_CONFIG.fontSizeScale;
+          inputFontScale.value = `${Math.round(config.fontSizeScale * 100)}`;
+          break;
+        case 'border-radius':
+          config.borderRadius = DEFAULT_FRAME_CONFIG.borderRadius;
+          inputBorderRadius.value = `${config.borderRadius}`;
+          break;
+        case 'shadow':
+          config.shadowRadius = DEFAULT_FRAME_CONFIG.shadowRadius;
+          config.shadowOpacity = DEFAULT_FRAME_CONFIG.shadowOpacity;
+          inputShadow.value = `${config.shadowRadius}`;
+          break;
+        case 'blur-intensity':
+          config.blurIntensity = DEFAULT_FRAME_CONFIG.blurIntensity;
+          inputBlurIntensity.value = `${config.blurIntensity}`;
+          break;
+      }
+      updateValueBadges();
+      triggerReRender();
+    });
   });
 
   // Template Buttons
@@ -114,11 +192,13 @@ function bindEvents() {
       document.querySelectorAll('.bg-type-btn').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       config.backgroundType = btn.getAttribute('data-bg') as BackgroundType;
-      
+
       const customRow = document.getElementById('custom-color-row');
       if (customRow) {
         customRow.style.display = config.backgroundType === 'custom' ? 'flex' : 'none';
       }
+
+      updateValueBadges();
       triggerReRender();
     });
   });
@@ -141,12 +221,36 @@ function bindEvents() {
     config.showCustomNote = !!val;
   });
 
-  bindRange('cfg-padding', (val) => (config.paddingPercent = val));
-  bindRange('cfg-font-scale', (val) => (config.fontSizeScale = val / 100));
-  bindRange('cfg-border-radius', (val) => (config.borderRadius = val));
-  bindRange('cfg-shadow', (val) => {
-    config.shadowRadius = val;
-    config.shadowOpacity = val > 0 ? 0.28 : 0;
+  // Sliders with Live Badge Updates
+  inputPadding?.addEventListener('input', () => {
+    config.paddingPercent = parseInt(inputPadding.value, 10);
+    updateValueBadges();
+    triggerReRender();
+  });
+
+  inputFontScale?.addEventListener('input', () => {
+    config.fontSizeScale = parseInt(inputFontScale.value, 10) / 100;
+    updateValueBadges();
+    triggerReRender();
+  });
+
+  inputBorderRadius?.addEventListener('input', () => {
+    config.borderRadius = parseInt(inputBorderRadius.value, 10);
+    updateValueBadges();
+    triggerReRender();
+  });
+
+  inputShadow?.addEventListener('input', () => {
+    config.shadowRadius = parseInt(inputShadow.value, 10);
+    config.shadowOpacity = config.shadowRadius > 0 ? 0.28 : 0;
+    updateValueBadges();
+    triggerReRender();
+  });
+
+  inputBlurIntensity?.addEventListener('input', () => {
+    config.blurIntensity = parseInt(inputBlurIntensity.value, 10);
+    updateValueBadges();
+    triggerReRender();
   });
 
   // Zoom Toolbar
@@ -163,6 +267,26 @@ function bindEvents() {
   window.addEventListener('drop', handleFileDrop);
 }
 
+function syncUIWithConfig() {
+  inputPadding.value = `${config.paddingPercent}`;
+  inputFontScale.value = `${Math.round(config.fontSizeScale * 100)}`;
+  inputBorderRadius.value = `${config.borderRadius}`;
+  inputShadow.value = `${config.shadowRadius}`;
+  inputBlurIntensity.value = `${config.blurIntensity}`;
+
+  // Update Template Active Card
+  document.querySelectorAll('.template-card').forEach((card) => {
+    card.classList.toggle('active', card.getAttribute('data-template') === config.template);
+  });
+
+  // Update Background Button Active
+  document.querySelectorAll('.bg-type-btn').forEach((btn) => {
+    btn.classList.toggle('active', btn.getAttribute('data-bg') === config.backgroundType);
+  });
+
+  updateValueBadges();
+}
+
 // -----------------------------------------------------------------------------
 // Photo Queue Management
 // -----------------------------------------------------------------------------
@@ -173,7 +297,22 @@ async function handleImportDialog() {
       filters: [
         {
           name: 'Images',
-          extensions: ['jpg', 'jpeg', 'png', 'webp', 'tiff', 'tif', 'JPG', 'JPEG', 'PNG', 'ARW', 'CR2', 'CR3', 'NEF', 'RAF'],
+          extensions: [
+            'jpg',
+            'jpeg',
+            'png',
+            'webp',
+            'tiff',
+            'tif',
+            'JPG',
+            'JPEG',
+            'PNG',
+            'ARW',
+            'CR2',
+            'CR3',
+            'NEF',
+            'RAF',
+          ],
         },
       ],
     });
@@ -350,7 +489,7 @@ async function handleExportCurrent() {
 
     if (!savePath) return;
 
-    showProgressModal('正在导出原画相框照片...', '读取原始高分辨率像素...', 25);
+    showProgressModal('正在导出原画相框照片...', '读取原始完整分辨率像素...', 25);
 
     // 1. Load FULL original resolution image
     const fullResDataUrl: string = await invoke('load_full_photo', {
@@ -358,7 +497,7 @@ async function handleExportCurrent() {
       orientation: currentPhoto.exif.orientation,
     });
 
-    showProgressModal('正在渲染原画相框...', '生成高分辨率排版...', 60);
+    showProgressModal('正在渲染原画相框...', '生成高分辨率矢量排版...', 60);
 
     const fullImg = new Image();
     fullImg.src = fullResDataUrl;
@@ -447,7 +586,7 @@ async function handleBatchExport() {
       });
     }
 
-    showProgressModal('多线程并行写入磁盘...', 'Rust Rayon 并行处理中...', 85);
+    showProgressModal('多线程并行写入磁盘...', 'Rust Rayon 并发保存中...', 85);
 
     const results: any[] = await invoke('batch_export', { items: batchTasks });
     const successCount = results.filter((r) => r.success).length;
@@ -491,14 +630,6 @@ function bindInput(id: string, setter: (val: string) => void) {
   const el = document.getElementById(id) as HTMLInputElement | null;
   el?.addEventListener('input', () => {
     setter(el.value);
-    triggerReRender();
-  });
-}
-
-function bindRange(id: string, setter: (val: number) => void) {
-  const el = document.getElementById(id) as HTMLInputElement | null;
-  el?.addEventListener('input', () => {
-    setter(parseInt(el.value, 10));
     triggerReRender();
   });
 }

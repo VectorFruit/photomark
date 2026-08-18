@@ -37,6 +37,7 @@ export interface FrameConfig {
   shadowRadius: number; // 0 to 50
   shadowOpacity: number; // 0 to 1
   borderRadius: number; // 0 to 40
+  blurIntensity: number; // 10 to 120
   showLogo: boolean;
   selectedLogo: string; // 'auto' or specific brand key
   customNote: string;
@@ -45,10 +46,33 @@ export interface FrameConfig {
   showMake: boolean;
   showModel: boolean;
   showLens: boolean;
-  showParams: boolean; // Aperture + Shutter + ISO + Focal
+  showParams: boolean;
   showDate: boolean;
   showCustomNote: boolean;
 }
+
+export const DEFAULT_FRAME_CONFIG: FrameConfig = {
+  template: 'bottom_bar',
+  backgroundType: 'white',
+  customBackgroundColor: '#ffffff',
+  fontFamily: 'Inter, -apple-system, sans-serif',
+  fontSizeScale: 1.0,
+  paddingPercent: 4,
+  bottomBarHeightPercent: 12,
+  shadowRadius: 15,
+  shadowOpacity: 0.28,
+  borderRadius: 0,
+  blurIntensity: 55,
+  showLogo: true,
+  selectedLogo: 'auto',
+  customNote: '',
+  showMake: true,
+  showModel: true,
+  showLens: true,
+  showParams: true,
+  showDate: true,
+  showCustomNote: false,
+};
 
 export interface ExportSettings {
   format: 'jpeg' | 'png' | 'webp';

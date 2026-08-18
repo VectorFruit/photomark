@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logos/sony-w.svg" />
@@ -17,6 +17,9 @@
       </div>
 
       <div class="header-actions">
+        <button id="btn-theme-toggle" class="tool-btn" title="切换浅色/深色模式">
+          <span id="theme-icon">☀️</span> <span id="theme-text">浅色模式</span>
+        </button>
         <button id="btn-import-photos" class="btn btn-secondary">
           <span>+ 添加照片</span>
         </button>
@@ -64,6 +67,14 @@
 
       <!-- Right Sidebar: Inspector -->
       <aside class="sidebar-right">
+        <!-- Header with Reset All -->
+        <div class="inspector-header">
+          <span class="inspector-title">相框与参数配置</span>
+          <button id="btn-reset-all" class="btn-reset-text" title="恢复所有参数为默认配置">
+            ↺ 重置全部参数
+          </button>
+        </div>
+
         <!-- 1. Frame Template -->
         <div class="settings-group">
           <div class="group-title">相框模板</div>
@@ -82,6 +93,15 @@
             <div class="bg-type-btn active" data-bg="white">纯白相框</div>
             <div class="bg-type-btn" data-bg="dark">深黑相框</div>
             <div class="bg-type-btn" data-bg="frosted_blur">✨ 毛玻璃虚化</div>
+          </div>
+
+          <!-- Frosted Blur Slider -->
+          <div class="control-block" id="row-blur-intensity" style="display: none; margin-top: 10px">
+            <div class="control-row">
+              <span class="control-label">毛玻璃模糊强度 <span class="val-badge" id="val-blur-intensity">55</span></span>
+              <button class="btn-reset-single" data-reset="blur-intensity" title="恢复默认模糊度">↺</button>
+            </div>
+            <input type="range" id="cfg-blur-intensity" min="15" max="120" value="55" />
           </div>
 
           <div class="control-row" id="custom-color-row" style="display: none; margin-top: 8px">
@@ -138,23 +158,39 @@
         <div class="settings-group">
           <div class="group-title">相框细节微调</div>
 
-          <div class="control-row">
-            <span class="control-label">边距留白</span>
+          <!-- Padding Slider -->
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">边距留白 <span class="val-badge" id="val-padding">4%</span></span>
+              <button class="btn-reset-single" data-reset="padding" title="恢复默认边距">↺</button>
+            </div>
             <input type="range" id="cfg-padding" min="2" max="15" value="4" />
           </div>
 
-          <div class="control-row">
-            <span class="control-label">字体大小</span>
+          <!-- Font Scale Slider -->
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">字体大小 <span class="val-badge" id="val-font-scale">100%</span></span>
+              <button class="btn-reset-single" data-reset="font-scale" title="恢复默认字号">↺</button>
+            </div>
             <input type="range" id="cfg-font-scale" min="80" max="150" value="100" />
           </div>
 
-          <div class="control-row">
-            <span class="control-label">圆角弧度</span>
+          <!-- Border Radius Slider -->
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">圆角弧度 <span class="val-badge" id="val-border-radius">0px</span></span>
+              <button class="btn-reset-single" data-reset="border-radius" title="恢复默认圆角">↺</button>
+            </div>
             <input type="range" id="cfg-border-radius" min="0" max="30" value="0" />
           </div>
 
-          <div class="control-row">
-            <span class="control-label">照片立体阴影</span>
+          <!-- Shadow Slider -->
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">照片立体阴影 <span class="val-badge" id="val-shadow">15</span></span>
+              <button class="btn-reset-single" data-reset="shadow" title="恢复默认阴影">↺</button>
+            </div>
             <input type="range" id="cfg-shadow" min="0" max="50" value="15" />
           </div>
         </div>
