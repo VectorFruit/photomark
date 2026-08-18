@@ -98,10 +98,10 @@
           <!-- Frosted Blur Slider -->
           <div class="control-block" id="row-blur-intensity" style="display: none; margin-top: 10px">
             <div class="control-row">
-              <span class="control-label">毛玻璃模糊强度 <span class="val-badge" id="val-blur-intensity">55</span></span>
+              <span class="control-label">毛玻璃模糊强度 <span class="val-badge" id="val-blur-intensity">60</span></span>
               <button class="btn-reset-single" data-reset="blur-intensity" title="恢复默认模糊度">↺</button>
             </div>
-            <input type="range" id="cfg-blur-intensity" min="15" max="120" value="55" />
+            <input type="range" id="cfg-blur-intensity" min="15" max="150" value="60" />
           </div>
 
           <div class="control-row" id="custom-color-row" style="display: none; margin-top: 8px">
@@ -202,24 +202,24 @@
           <div class="control-row">
             <span class="control-label">画质保障</span>
             <select id="export-quality-select">
-              <option value="100">原始品质 (100% 最高无损)</option>
-              <option value="95" selected>超高画质 (95% 推荐)</option>
-              <option value="90">高画质 (90%)</option>
-              <option value="85">标准压缩 (85%)</option>
+              <option value="100" selected>100% (原始最高质量)</option>
+              <option value="95">95% (超高画质)</option>
+              <option value="90">90% (高质量)</option>
+              <option value="85">85% (标准压缩)</option>
             </select>
           </div>
 
           <div class="control-row">
             <span class="control-label">导出格式</span>
             <select id="export-format">
-              <option value="jpeg">JPEG (专业摄影通用)</option>
-              <option value="png">PNG (100% 无损透明)</option>
-              <option value="webp">WebP (现代高效)</option>
+              <option value="jpeg" selected>JPEG</option>
+              <option value="png">PNG</option>
+              <option value="webp">WebP</option>
             </select>
           </div>
 
           <div class="export-note">
-            ✓ 导出将读取原始高分辨率照片 (6000×4000+)，保障完整千万级像素与清晰度。
+            ✓ 导出将直接读取原始高分辨率照片 (6000×4000+)，保障完整千万级像素与无损画质。
           </div>
 
           <button id="btn-batch-export" class="btn btn-primary btn-block" style="margin-top: 10px">

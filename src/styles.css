@@ -497,6 +497,21 @@ select, input[type="text"] {
   transition: border-color 0.15s ease;
 }
 
+select {
+  color-scheme: dark;
+}
+
+[data-theme="light"] select {
+  color-scheme: light;
+}
+
+select option,
+select optgroup {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  padding: 6px 8px;
+}
+
 select:focus, input[type="text"]:focus {
   border-color: var(--border-focus);
 }

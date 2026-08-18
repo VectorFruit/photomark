@@ -2,7 +2,7 @@ use std::io::Cursor;
 use std::path::Path;
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD as BASE64;
-use image::{DynamicImage, GenericImageView, ImageFormat};
+use image::{DynamicImage, GenericImageView};
 
 pub fn load_and_orient_image<P: AsRef<Path>>(path: P, orientation: Option<u32>) -> Result<DynamicImage, String> {
     let img = image::open(&path).map_err(|e| format!("Failed to open image: {}", e))?;
@@ -26,7 +26,8 @@ pub fn generate_thumbnail<P: AsRef<Path>>(path: P, max_edge: u32, orientation: O
     let mut buffer = Cursor::new(Vec::new());
     
     // Encode as JPEG with high quality for fast preview
-    thumb.write_to(&mut buffer, ImageFormat::Jpeg)
+    let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut buffer, 90);
+    encoder.encode_image(&thumb)
         .map_err(|e| format!("Failed to encode thumbnail: {}", e))?;
 
     let base64_str = BASE64.encode(buffer.into_inner());
@@ -36,11 +37,33 @@ pub fn generate_thumbnail<P: AsRef<Path>>(path: P, max_edge: u32, orientation: O
 }
 
 pub fn load_full_image_data_url<P: AsRef<Path>>(path: P, orientation: Option<u32>) -> Result<String, String> {
-    let img = load_and_orient_image(&path, orientation)?;
+    let path_ref = path.as_ref();
+    let ext = path_ref.extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("")
+        .to_lowercase();
+
+    let need_rotation = matches!(orientation, Some(3 | 6 | 8));
+
+    // If no rotation needed and file is standard JPEG/PNG/WebP, read 100% UNTOUCHED RAW BYTES directly!
+    // This avoids double compression artifacts and guarantees 100% master original fidelity.
+    if !need_rotation && matches!(ext.as_str(), "jpg" | "jpeg" | "png" | "webp") {
+        let bytes = std::fs::read(path_ref).map_err(|e| format!("Failed to read raw file bytes: {}", e))?;
+        let mime = match ext.as_str() {
+            "png" => "image/png",
+            "webp" => "image/webp",
+            _ => "image/jpeg",
+        };
+        let b64 = BASE64.encode(bytes);
+        return Ok(format!("data:{};base64,{}", mime, b64));
+    }
+
+    // If rotation is required or RAW format, decode and encode with 100% max quality
+    let img = load_and_orient_image(path_ref, orientation)?;
     let mut buffer = Cursor::new(Vec::new());
-    
-    // Encode at 100% full original resolution
-    img.write_to(&mut buffer, ImageFormat::Jpeg)
+
+    let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut buffer, 100);
+    encoder.encode_image(&img)
         .map_err(|e| format!("Failed to encode full image: {}", e))?;
 
     let base64_str = BASE64.encode(buffer.into_inner());
