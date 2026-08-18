@@ -38,11 +38,8 @@ build() {
   cd "${srcdir}/${pkgname}"
 
   export NODE_ENV=production
-  # 1. 编译前端产物
-  yarn build
-
-  # 2. 编译 Rust 原生二进制
-  cargo build --release --manifest-path src-tauri/Cargo.toml
+  # 编译前端并将静态资源完整嵌入 Rust 原生二进制中
+  yarn tauri build --no-bundle
 }
 
 package() {

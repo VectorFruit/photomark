@@ -12,7 +12,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP_DIR="${PROJECT_ROOT}/build-appimage-dir/AppDir"
 OUTPUT_DIR="${PROJECT_ROOT}/dist-appimage"
 ARCH="${ARCH:-x86_64}"
-OUTPUT_APPIMAGE="${OUTPUT_DIR}/${APP_NAME}-${ARCH}.AppImage"
+OUTPUT_APPIMAGE="${OUTPUT_DIR}/${APP_NAME}-linux-${ARCH}.AppImage"
 
 echo "================================================================"
 echo " 构建目标: ${APP_DISPLAY_NAME} (${APP_NAME})"
@@ -20,16 +20,16 @@ echo " 技术架构: Tauri 2.0 (Rust 图像内核 + Vite 前端)"
 echo " 目标架构: ${ARCH}"
 echo "================================================================"
 
-# 1. 编译前端与 Rust 原生可执行二进制
-echo "==> 步骤 1/4: 编译前端与 Rust Release 二进制..."
+# 1. 编译前端与打包嵌入式二进制
+echo "==> 步骤 1/4: 编译前端与打包嵌入式 Release 二进制..."
 cd "${PROJECT_ROOT}"
 
 if [ ! -d "node_modules" ]; then
     yarn install
 fi
 
-yarn build
-cargo build --release --manifest-path src-tauri/Cargo.toml
+# 使用 tauri build 确保静态前端资源完整内嵌至二进制文件，杜绝 localhost 连接错误
+yarn tauri build --no-bundle
 
 # 2. 构造标准 AppDir 结构
 echo "==> 步骤 2/4: 构造标准 AppDir 目录结构..."
