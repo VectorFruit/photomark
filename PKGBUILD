@@ -1,7 +1,7 @@
 # Maintainer: vectorfruit <vectorfruit@local>
 
 pkgname=photomark
-pkgver=1.0.1
+pkgver=1.1.0
 pkgrel=1
 pkgdesc="A modern, ultra-lightweight photo EXIF watermark and frame studio (Clean-Room Tauri 2.0 implementation)"
 arch=('x86_64')
