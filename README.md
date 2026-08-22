@@ -14,6 +14,8 @@
 
 </div>
 
+> **语言 / Language:** [中文](./README.md) | [English](./README.en.md)
+
 ---
 
 ## 🌟 为什么选择 PhotoMark？
@@ -144,14 +146,17 @@ photomark/
 │   │   ├── blurEngine.ts      # 自研多级金字塔高斯模糊卷积算法
 │   │   └── logoManager.ts     # 相机品牌矢量 Logo 自动匹配与缓存
 │   ├── main.ts                # 主控控制器（事件绑定、UI 缩放、主题切换）
+│   ├── i18n.ts                # i18n 翻译字典与 DOM 翻译
 │   ├── styles.css             # 深浅双模现代设计系统
 │   └── types.ts               # TypeScript 接口模型
 ├── public/logos/              # 20+ 款品牌高精度矢量 SVG
 ├── PKGBUILD                   # Arch Linux 打包规范
 ├── build-appimage.sh          # AppImage 一键打包脚本
-├── CONTRIBUTING.md            # 贡献指南
+├── CONTRIBUTING.md            # 贡献指南 (中文)
+├── CONTRIBUTING.en.md         # Contributing Guide (English)
 ├── LICENSE                    # GNU General Public License v3.0
-└── README.md                  # 项目说明
+└── README.md                  # 项目说明 (中文)
+   README.en.md                # Project documentation (English)
 ```
 
 ---
@@ -164,7 +169,7 @@ photomark/
 
 ## 🤝 参与贡献
 
-欢迎提交 Issue 或 Pull Request！详细贡献规范请参考 [CONTRIBUTING.md](CONTRIBUTING.md)。
+欢迎提交 Issue 或 Pull Request！详细贡献规范请参考 [CONTRIBUTING.md](CONTRIBUTING.md)（[English Guide: CONTRIBUTING.en.md](CONTRIBUTING.en.md)）。
 
 ---
 

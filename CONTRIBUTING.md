@@ -4,6 +4,8 @@
 
 为了保证代码库的整洁、稳定与高效协作，请在提交代码前仔细阅读本指南。
 
+> **语言 / Language:** [中文](./CONTRIBUTING.md) | [English](./CONTRIBUTING.en.md)
+
 ---
 
 ## 🛠️ 本地开发环境准备
