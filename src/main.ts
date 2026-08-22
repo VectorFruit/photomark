@@ -107,6 +107,7 @@ async function init() {
   syncExportSettingsUI();
   updateValueBadges();
   renderPhotoList();
+  clearCanvas();
 }
 
 function applyUiScale(scale: number) {
@@ -998,6 +999,8 @@ async function doRender() {
     return;
   }
 
+  canvasContainer.style.display = 'flex';
+
   const currentPhoto = photos[activeIndex];
   let img = previewImageCache.get(currentPhoto.path);
 
@@ -1018,6 +1021,7 @@ function clearCanvas() {
     previewCanvas.width = 0;
     previewCanvas.height = 0;
   }
+  canvasContainer.style.display = 'none';
 }
 
 function setZoom(val: number) {
