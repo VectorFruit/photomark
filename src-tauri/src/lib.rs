@@ -3,7 +3,7 @@ mod exif_reader;
 mod image_engine;
 mod commands;
 
-use commands::{load_photos, load_full_photo, save_rendered_photo, batch_export};
+use commands::{load_photos, load_full_photo, save_rendered_photo, batch_export, resolve_unique_path};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -15,7 +15,8 @@ pub fn run() {
             load_photos,
             load_full_photo,
             save_rendered_photo,
-            batch_export
+            batch_export,
+            resolve_unique_path
         ])
         .run(tauri::generate_context!())
         .expect("error while running photomark tauri application");

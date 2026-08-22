@@ -50,7 +50,7 @@ export async function renderPhotoFrame(
 
   // Build text strings
   const modelText = config.showModel
-    ? (exif.model || exif.make || 'Camera')
+    ? (exif.model || exif.make || '')
     : (config.showMake ? (exif.make || '') : '');
 
   const lensText = config.showLens && exif.lens_model ? exif.lens_model : '';
@@ -447,7 +447,12 @@ function renderPolaroid(
   if (isFrosted) {
     drawDeepFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else {
-    ctx.fillStyle = config.customBackgroundColor || '#fbfaf8';
+    ctx.fillStyle =
+      config.backgroundType === 'dark'
+        ? '#121316'
+        : config.backgroundType === 'custom'
+          ? config.customBackgroundColor || '#fbfaf8'
+          : '#fbfaf8';
     ctx.fillRect(0, 0, canvasW, canvasH);
     ctx.strokeStyle = 'rgba(0,0,0,0.06)';
     ctx.lineWidth = 1;
@@ -493,17 +498,19 @@ function renderPolaroid(
     ctx.fillStyle = subTextColor;
     ctx.fillText(subLine, leftX, midY);
 
-    ctx.font = `italic 400 ${subFontSize * 0.95}px ${fontFam}`;
-    ctx.fillStyle = isFrosted ? '#e0e7ff' : '#4b5563';
-    ctx.fillText(`✍️ ${noteText}`, leftX, midY + fontSize * 0.95);
+    drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isFrosted);
   } else if (subLine || hasNote) {
     ctx.font = `600 ${fontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(modelText, leftX, midY - fontSize * 0.6);
 
-    ctx.font = `400 ${subFontSize}px ${fontFam}`;
-    ctx.fillStyle = subTextColor;
-    ctx.fillText(subLine || noteText, leftX, midY + subFontSize * 0.8);
+    if (subLine) {
+      ctx.font = `400 ${subFontSize}px ${fontFam}`;
+      ctx.fillStyle = subTextColor;
+      ctx.fillText(subLine, leftX, midY + subFontSize * 0.8);
+    } else {
+      drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isFrosted);
+    }
   } else {
     ctx.font = `600 ${fontSize * 1.1}px ${fontFam}`;
     ctx.fillStyle = textColor;
@@ -564,6 +571,9 @@ function renderMinimalBadge(
   const extraParts = [noteText, dateText].filter(Boolean).join('  ');
   const summary = [modelText, paramsText, extraParts].filter(Boolean).join('  |  ');
 
+  // No text and no logo: keep the photo untouched instead of an empty badge
+  if (!summary && !logoImg) return;
+
   ctx.font = `500 ${fontSize}px ${fontFam}`;
   const textW = ctx.measureText(summary).width;
   const logoH = Math.round(fontSize * 1.1);
@@ -596,6 +606,39 @@ function renderMinimalBadge(
   ctx.fillStyle = '#ffffff';
   ctx.fillText(summary, curX, midY);
   ctx.restore();
+}
+
+// Handwritten-style signature note (polaroid template):
+// script font stack with graceful fallbacks + a subtle hand-drawn underline.
+const SIGNATURE_FONT_STACK =
+  "'Snell Roundhand', 'Apple Chancery', 'Brush Script MT', 'Segoe Script', 'Ink Free', 'URW Chancery L', 'Z003', cursive";
+
+function drawSignatureNote(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  size: number,
+  isFrosted: boolean
+) {
+  const color = isFrosted ? '#e0e7ff' : '#4b5563';
+  ctx.font = `italic 500 ${Math.round(size * 0.95)}px ${SIGNATURE_FONT_STACK}`;
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+
+  const w = ctx.measureText(text).width;
+  if (w > 4) {
+    ctx.save();
+    ctx.globalAlpha = 0.4;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1, Math.round(size * 0.07));
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x, y + size * 0.5);
+    ctx.quadraticCurveTo(x + w * 0.5, y + size * 0.3, x + w, y + size * 0.5);
+    ctx.stroke();
+    ctx.restore();
+  }
 }
 
 function drawPhotoWithOptionalShadow(

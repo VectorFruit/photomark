@@ -12,7 +12,12 @@
     <!-- App Header -->
     <header>
       <div class="brand">
-        <div class="brand-icon">📷</div>
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9a2 2 0 0 1 2-2h2l1.6-2.2a1 1 0 0 1 .8-.4h5.2a1 1 0 0 1 .8.4L17 7h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"></path>
+            <circle cx="12" cy="13" r="3.4"></circle>
+          </svg>
+        </div>
         <span>PhotoMark</span>
       </div>
 
@@ -36,13 +41,13 @@
         </div>
 
         <button id="btn-theme-toggle" class="tool-btn" title="切换浅色/深色模式">
-          <span id="theme-icon">☀️</span> <span id="theme-text">浅色模式</span>
+          <span id="theme-text">浅色模式</span>
         </button>
         <button id="btn-import-photos" class="btn btn-secondary">
           <span>+ 添加照片</span>
         </button>
         <button id="btn-export-current" class="btn btn-primary">
-          <span>导出当前原画照片</span>
+          <span>导出当前照片</span>
         </button>
       </div>
     </header>
@@ -61,7 +66,9 @@
         </div>
 
         <div id="empty-queue" class="empty-queue">
-          <div style="font-size: 32px">📁</div>
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+          </svg>
           <div style="font-size: 13px; font-weight: 500">拖入照片或点击导入</div>
           <div style="font-size: 11px">支持 JPG, JPEG, PNG, WebP, TIFF</div>
         </div>
@@ -110,7 +117,8 @@
           <div class="bg-type-grid">
             <div class="bg-type-btn active" data-bg="white">纯白相框</div>
             <div class="bg-type-btn" data-bg="dark">深黑相框</div>
-            <div class="bg-type-btn" data-bg="frosted_blur">✨ 毛玻璃虚化</div>
+            <div class="bg-type-btn" data-bg="frosted_blur">毛玻璃虚化</div>
+            <div class="bg-type-btn" data-bg="custom">自定义颜色</div>
           </div>
 
           <!-- Frosted Blur Slider -->
@@ -224,15 +232,15 @@
 
         <!-- 6. Export Settings -->
         <div class="settings-group">
-          <div class="group-title">导出配置 (原画无损保障)</div>
+          <div class="group-title">导出设置</div>
           
           <div class="control-row">
-            <span class="control-label">画质保障</span>
+            <span class="control-label">画质</span>
             <select id="export-quality-select">
-              <option value="100" selected>100% (原始最高质量)</option>
-              <option value="95">95% (超高画质)</option>
-              <option value="90">90% (高质量)</option>
-              <option value="85">85% (标准压缩)</option>
+              <option value="100" selected>100%</option>
+              <option value="95">95%</option>
+              <option value="90">90%</option>
+              <option value="85">85%</option>
             </select>
           </div>
 
@@ -245,12 +253,20 @@
             </select>
           </div>
 
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">文件名模板</span>
+            </div>
+            <input type="text" id="export-filename-template" value="{filename}_framed" placeholder="{filename}_framed" />
+            <div class="export-note">可用变量: {filename} {model} {make} {lens} {date} {index} {width} {height}</div>
+          </div>
+
           <div class="export-note">
-            ✓ 导出将直接读取原始高分辨率照片 (6000×4000+)，保障完整千万级像素与无损画质。
+            导出保持原分辨率；JPEG 质量在上方选择。
           </div>
 
           <button id="btn-batch-export" class="btn btn-primary btn-block" style="margin-top: 10px">
-            ⚡ 批量导出全部照片
+            批量导出全部照片
           </button>
         </div>
       </aside>
@@ -267,11 +283,18 @@
           <span id="progress-status">准备中...</span>
           <span id="progress-percent">0%</span>
         </div>
+        <div id="progress-failures" class="progress-failures" style="display: none"></div>
+        <div class="progress-actions">
+          <button id="btn-progress-cancel" class="btn btn-secondary btn-block" title="取消当前任务">取消任务</button>
+        </div>
       </div>
     </div>
 
     <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
+
+    <!-- Hidden file input for browser (non-Tauri) mode -->
+    <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" multiple style="display: none" />
 
     <script type="module" src="/src/main.ts"></script>
   </body>

@@ -94,6 +94,41 @@ pub async fn save_rendered_photo(
     Ok(true)
 }
 
+
+/// Resolve a non-conflicting output path inside `output_dir`.
+/// If `filename` already exists, append `(1)`, `(2)`, ... before the extension.
+#[tauri::command]
+pub fn resolve_unique_path(output_dir: String, filename: String) -> Result<String, String> {
+    let dir = Path::new(&output_dir);
+    let candidate = dir.join(&filename);
+    if !candidate.exists() {
+        return Ok(candidate.to_string_lossy().to_string());
+    }
+
+    let stem = Path::new(&filename)
+        .file_stem()
+        .map(|s| s.to_string_lossy().to_string())
+        .unwrap_or_else(|| filename.clone());
+    let ext = Path::new(&filename)
+        .extension()
+        .map(|s| s.to_string_lossy().to_string())
+        .unwrap_or_default();
+
+    for i in 1..=9999 {
+        let name = if ext.is_empty() {
+            format!("{}({})", stem, i)
+        } else {
+            format!("{}({}).{}", stem, i, ext)
+        };
+        let candidate = dir.join(&name);
+        if !candidate.exists() {
+            return Ok(candidate.to_string_lossy().to_string());
+        }
+    }
+
+    Err("无法为输出文件生成唯一名称（同名文件过多）".to_string())
+}
+
 #[tauri::command]
 pub async fn batch_export(app: AppHandle, items: Vec<BatchExportItem>) -> Result<Vec<ExportResult>, String> {
     let total = items.len();

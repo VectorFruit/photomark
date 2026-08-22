@@ -1,6 +1,6 @@
 [package]
 name = "photomark"
-version = "1.1.0"
+version = "1.1.1"
 description = "A modern, lightweight photo EXIF watermark and frame studio"
 authors = ["vectorfruit"]
 edition = "2021"
@@ -20,6 +20,6 @@ tauri-plugin-fs = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 kamadak-exif = "0.6"
-image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"] }
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp", "tiff"] }
 base64 = "0.22"
 rayon = "1.10"

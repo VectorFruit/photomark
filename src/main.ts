@@ -4,6 +4,7 @@ import { open, save } from '@tauri-apps/plugin-dialog';
 import {
   BackgroundType,
   DEFAULT_FRAME_CONFIG,
+  ExifData,
   FrameConfig,
   FrameTemplateId,
   ParseProgressEvent,
@@ -12,6 +13,8 @@ import {
 import { renderPhotoFrame } from './renderer/canvasRenderer';
 
 // Application State
+const isTauri = typeof window !== 'undefined' && !!(window as any).__TAURI_INTERNALS__;
+
 let photos: PhotoItem[] = [];
 let activeIndex = -1;
 let currentZoom = 1.0;
@@ -21,6 +24,25 @@ let currentUiScale = parseFloat(localStorage.getItem('photomark_ui_scale') || '1
 
 const config: FrameConfig = { ...DEFAULT_FRAME_CONFIG };
 
+const CONFIG_STORAGE_KEY = 'photomark_frame_config';
+const EXPORT_STORAGE_KEY = 'photomark_export_settings';
+const DEFAULT_FILENAME_TEMPLATE = '{filename}_framed';
+
+interface ExportSettings {
+  format: 'jpeg' | 'png' | 'webp';
+  quality: number;
+  filenameTemplate: string;
+}
+
+let exportSettings: ExportSettings = {
+  format: 'jpeg',
+  quality: 100,
+  filenameTemplate: DEFAULT_FILENAME_TEMPLATE,
+};
+
+let exportCancelled = false;
+let keepProgressModalOpen = false;
+
 // DOM Elements
 const photoListEl = document.getElementById('photo-list') as HTMLDivElement;
 const photoCountEl = document.getElementById('photo-count') as HTMLSpanElement;
@@ -29,6 +51,7 @@ const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasEle
 const canvasContainer = document.getElementById('canvas-container') as HTMLDivElement;
 const zoomLevelEl = document.getElementById('zoom-level') as HTMLSpanElement;
 const toastEl = document.getElementById('toast') as HTMLDivElement;
+const fileInputEl = document.getElementById('file-input') as HTMLInputElement;
 
 // UI Scale DOM
 const selectUiScale = document.getElementById('select-ui-scale') as HTMLSelectElement;
@@ -37,7 +60,6 @@ const btnUiScaleUp = document.getElementById('btn-ui-scale-up') as HTMLButtonEle
 
 // Theme Toggle DOM
 const themeToggleBtn = document.getElementById('btn-theme-toggle') as HTMLButtonElement;
-const themeIconEl = document.getElementById('theme-icon') as HTMLSpanElement;
 const themeTextEl = document.getElementById('theme-text') as HTMLSpanElement;
 
 // Progress Modal DOM
@@ -46,6 +68,8 @@ const progressTitleEl = document.getElementById('progress-title') as HTMLDivElem
 const progressFillEl = document.getElementById('progress-fill') as HTMLDivElement;
 const progressStatusEl = document.getElementById('progress-status') as HTMLSpanElement;
 const progressPercentEl = document.getElementById('progress-percent') as HTMLSpanElement;
+const progressCancelBtn = document.getElementById('btn-progress-cancel') as HTMLButtonElement | null;
+const progressFailuresEl = document.getElementById('progress-failures') as HTMLDivElement | null;
 
 // Slider Value Badges & Inputs
 const blurRowEl = document.getElementById('row-blur-intensity') as HTMLDivElement;
@@ -67,8 +91,11 @@ const previewImageCache: Map<string, HTMLImageElement> = new Map();
 async function init() {
   applyTheme(currentTheme);
   applyUiScale(currentUiScale);
+  loadPersistedState();
   bindEvents();
   setupProgressListeners();
+  syncUIWithConfig();
+  syncExportSettingsUI();
   updateValueBadges();
   renderPhotoList();
 }
@@ -92,15 +119,117 @@ function applyTheme(theme: 'dark' | 'light') {
   localStorage.setItem('photomark_theme', theme);
 
   if (theme === 'light') {
-    themeIconEl.textContent = '🌙';
     themeTextEl.textContent = '深色模式';
   } else {
-    themeIconEl.textContent = '☀️';
     themeTextEl.textContent = '浅色模式';
   }
 }
 
+function loadPersistedState() {
+  try {
+    const savedConfig = localStorage.getItem(CONFIG_STORAGE_KEY);
+    if (savedConfig) {
+      const parsed = JSON.parse(savedConfig);
+      if (parsed && typeof parsed === 'object') {
+        Object.assign(config, { ...DEFAULT_FRAME_CONFIG, ...parsed });
+      }
+    }
+  } catch {
+    // ignore corrupted persisted config
+  }
+
+  try {
+    const savedExport = localStorage.getItem(EXPORT_STORAGE_KEY);
+    if (savedExport) {
+      const parsed = JSON.parse(savedExport);
+      if (parsed && typeof parsed === 'object') {
+        if (['jpeg', 'png', 'webp'].includes(parsed.format)) exportSettings.format = parsed.format;
+        if (typeof parsed.quality === 'number' && parsed.quality >= 70 && parsed.quality <= 100) {
+          exportSettings.quality = parsed.quality;
+        }
+        if (typeof parsed.filenameTemplate === 'string') {
+          exportSettings.filenameTemplate = parsed.filenameTemplate;
+        }
+      }
+    }
+  } catch {
+    // ignore corrupted persisted export settings
+  }
+}
+
+function persistConfig() {
+  try {
+    localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
+  } catch {
+    // localStorage may be unavailable
+  }
+}
+
+function persistExportSettings() {
+  try {
+    localStorage.setItem(EXPORT_STORAGE_KEY, JSON.stringify(exportSettings));
+  } catch {
+    // localStorage may be unavailable
+  }
+}
+
+function syncExportSettingsUI() {
+  const formatEl = document.getElementById('export-format') as HTMLSelectElement | null;
+  const qualityEl = document.getElementById('export-quality-select') as HTMLSelectElement | null;
+  const templateEl = document.getElementById('export-filename-template') as HTMLInputElement | null;
+  if (formatEl) formatEl.value = exportSettings.format;
+  if (qualityEl) qualityEl.value = exportSettings.quality + '';
+  if (templateEl) templateEl.value = exportSettings.filenameTemplate;
+}
+
+function sanitizeFilenamePart(input: string): string {
+  return input.replace(/[\\/:*?"<>|\s]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
+function sanitizeFilename(input: string): string {
+  return sanitizeFilenamePart(input) || 'photo';
+}
+
+function buildOutputName(item: PhotoItem, index: number): string {
+  const template = (exportSettings.filenameTemplate || DEFAULT_FILENAME_TEMPLATE).trim() || DEFAULT_FILENAME_TEMPLATE;
+  const base = item.filename.replace(/\.[^/.]+$/, '');
+  const model = sanitizeFilenamePart(item.exif.model || item.exif.make || 'camera') || 'camera';
+  const make = sanitizeFilenamePart(item.exif.make || 'camera') || 'camera';
+  const lens = sanitizeFilenamePart(item.exif.lens_model || '') || '';
+  const date = item.exif.datetime ? String(item.exif.datetime).replace(/[^\d]/g, '').slice(0, 12) : '';
+  const width = item.exif.width || 0;
+  const height = item.exif.height || 0;
+  const tokens: Record<string, string> = {
+    '{filename}': base,
+    '{model}': model,
+    '{make}': make,
+    '{lens}': lens,
+    '{date}': date,
+    '{index}': String(index + 1),
+    '{width}': String(width),
+    '{height}': String(height),
+  };
+  let name = template;
+  for (const [key, value] of Object.entries(tokens)) {
+    name = name.split(key).join(value);
+  }
+  const ext = exportSettings.format === 'jpeg' ? 'jpg' : exportSettings.format;
+  return sanitizeFilename(name) + '.' + ext;
+}
+
+async function resolveUniqueOutputPath(outputDir: string, filename: string): Promise<string> {
+  if (!isTauri) return outputDir + '/' + filename;
+  try {
+    return await invoke('resolve_unique_path', { outputDir, filename });
+  } catch {
+    return outputDir + '/' + filename;
+  }
+}
+
 function setupProgressListeners() {
+  // Browser mode has no Rust-side progress events
+  if (!isTauri) return;
+
   listen<ParseProgressEvent>('parse-progress', (event) => {
     const { current, total, filename, percent } = event.payload;
     showProgressModal('正在解析照片 EXIF...', `(${current}/${total}) ${filename}`, percent);
@@ -108,16 +237,18 @@ function setupProgressListeners() {
 
   listen<ParseProgressEvent>('batch-progress', (event) => {
     const { current, total, filename, percent } = event.payload;
-    showProgressModal('正在批量导出原画照片...', `(${current}/${total}) ${filename}`, percent);
+    showProgressModal('正在批量导出...', `(${current}/${total}) ${filename}`, percent);
   });
 }
 
-function showProgressModal(title: string, status: string, percent: number) {
+function showProgressModal(title: string, status: string, percent: number, showCancel = false) {
   progressModalEl.style.display = 'flex';
   progressTitleEl.textContent = title;
   progressStatusEl.textContent = status;
-  progressPercentEl.textContent = `${percent}%`;
-  progressFillEl.style.width = `${percent}%`;
+  progressPercentEl.textContent = percent + '%';
+  progressFillEl.style.width = percent + '%';
+  if (progressCancelBtn) progressCancelBtn.style.display = showCancel ? 'block' : 'none';
+  if (progressFailuresEl) progressFailuresEl.style.display = 'none';
 }
 
 function hideProgressModal() {
@@ -164,6 +295,14 @@ function bindEvents() {
   // Import Buttons
   document.getElementById('btn-import-photos')?.addEventListener('click', handleImportDialog);
   emptyQueueEl?.addEventListener('click', handleImportDialog);
+
+  // Browser mode: hidden file input
+  fileInputEl?.addEventListener('change', async () => {
+    if (fileInputEl.files && fileInputEl.files.length > 0) {
+      await importBrowserFiles(Array.from(fileInputEl.files));
+      fileInputEl.value = '';
+    }
+  });
 
   // Clear All Photos
   document.getElementById('btn-clear-all')?.addEventListener('click', () => {
@@ -301,6 +440,34 @@ function bindEvents() {
   document.getElementById('btn-export-current')?.addEventListener('click', handleExportCurrent);
   document.getElementById('btn-batch-export')?.addEventListener('click', handleBatchExport);
 
+  // Export Settings Persistence
+  const exportFormatEl = document.getElementById('export-format') as HTMLSelectElement | null;
+  const exportQualityEl = document.getElementById('export-quality-select') as HTMLSelectElement | null;
+  const exportTemplateEl = document.getElementById('export-filename-template') as HTMLInputElement | null;
+  exportFormatEl?.addEventListener('change', () => {
+    exportSettings.format = exportFormatEl.value as ExportSettings['format'];
+    persistExportSettings();
+  });
+  exportQualityEl?.addEventListener('change', () => {
+    exportSettings.quality = parseInt(exportQualityEl.value, 10);
+    persistExportSettings();
+  });
+  exportTemplateEl?.addEventListener('input', () => {
+    exportSettings.filenameTemplate = exportTemplateEl.value;
+    persistExportSettings();
+  });
+
+  // Progress Cancel / Result Close
+  progressCancelBtn?.addEventListener('click', () => {
+    if (keepProgressModalOpen) {
+      keepProgressModalOpen = false;
+      hideProgressModal();
+      return;
+    }
+    exportCancelled = true;
+    if (progressCancelBtn) progressCancelBtn.textContent = '正在取消...';
+  });
+
   // Drag & Drop
   window.addEventListener('dragover', (e) => e.preventDefault());
   window.addEventListener('drop', handleFileDrop);
@@ -349,6 +516,12 @@ function syncUIWithConfig() {
     btn.classList.toggle('active', btn.getAttribute('data-bg') === config.backgroundType);
   });
 
+  // Keep custom color row in sync (reset-all / persisted config)
+  const customRow = document.getElementById('custom-color-row');
+  if (customRow) {
+    customRow.style.display = config.backgroundType === 'custom' ? 'flex' : 'none';
+  }
+
   updateValueBadges();
 }
 
@@ -356,6 +529,11 @@ function syncUIWithConfig() {
 // Photo Queue Management
 // -----------------------------------------------------------------------------
 async function handleImportDialog() {
+  if (!isTauri) {
+    fileInputEl?.click();
+    return;
+  }
+
   try {
     const selected = await open({
       multiple: true,
@@ -395,6 +573,12 @@ async function handleFileDrop(e: DragEvent) {
   const files = e.dataTransfer?.files;
   if (!files || files.length === 0) return;
 
+  // Browser mode: use File objects directly
+  if (!isTauri) {
+    await importBrowserFiles(Array.from(files));
+    return;
+  }
+
   const paths: string[] = [];
   for (let i = 0; i < files.length; i++) {
     const p = (files[i] as any).path || files[i].name;
@@ -425,6 +609,213 @@ async function importPaths(paths: string[]) {
   } finally {
     hideProgressModal();
   }
+}
+
+// -----------------------------------------------------------------------------
+// Browser Mode (no Tauri runtime): import via file picker, EXIF parsed in-page
+// -----------------------------------------------------------------------------
+const BROWSER_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+
+async function importBrowserFiles(files: File[]) {
+  const imageFiles = files.filter(
+    (f) => BROWSER_IMAGE_TYPES.has(f.type) || /\.(jpe?g|png|webp)$/i.test(f.name)
+  );
+  if (imageFiles.length === 0) {
+    showToast('没有可导入的图片文件');
+    return;
+  }
+
+  try {
+    showProgressModal('正在解析照片...', '正在读取文件...', 5);
+    const newItems: PhotoItem[] = [];
+
+    for (let i = 0; i < imageFiles.length; i++) {
+      const file = imageFiles[i];
+      try {
+        const exif = await parseExifInBrowser(file);
+        const thumbnail = await makeThumbnail(file);
+        newItems.push({
+          id: `${file.name}-${file.size}-${i}`,
+          path: `browser://${file.name}#${i}`,
+          filename: file.name,
+          size_bytes: file.size,
+          exif,
+          thumbnail_data_url: thumbnail,
+          sourceFile: file,
+        });
+      } catch (err) {
+        console.warn('解析失败，已跳过:', file.name, err);
+      }
+      showProgressModal(
+        '正在解析照片 EXIF...',
+        `(${i + 1}/${imageFiles.length}) ${file.name}`,
+        Math.round(((i + 1) / imageFiles.length) * 90)
+      );
+    }
+
+    if (newItems.length > 0) {
+      photos.push(...newItems);
+      if (activeIndex === -1) activeIndex = 0;
+      renderPhotoList();
+      triggerReRender();
+      showToast(`成功导入 ${newItems.length} 张照片`);
+    }
+  } catch (err) {
+    showToast(`导入失败: ${err}`);
+  } finally {
+    hideProgressModal();
+  }
+}
+
+async function parseExifInBrowser(file: File): Promise<ExifData> {
+  const exifr = await import('exifr');
+  const raw: any = (await exifr.parse(file)) || {};
+  const exif: ExifData = {};
+
+  // exifr names tags per-IFD; some files store tags flattened into IFD0
+  // where exifr leaves numeric keys, so resolve by name first, then by tag id.
+  const getTag = (names: string[], id: number): any => {
+    for (const n of names) {
+      const v = raw[n];
+      if (v !== undefined && v !== null) return v;
+    }
+    return raw[id];
+  };
+
+  const make = getTag(['Make'], 271);
+  if (make) exif.make = String(make).trim();
+  const model = getTag(['Model'], 272);
+  if (model) exif.model = String(model).trim();
+  const lens = getTag(['LensModel'], 42036);
+  if (lens) exif.lens_model = String(lens).trim();
+
+  const fNumber = exifToNumber(getTag(['FNumber'], 33437));
+  if (fNumber !== undefined) exif.f_number = `f/${trimNumber(fNumber, 1)}`.replace('.0', '');
+
+  const exposure = exifToNumber(getTag(['ExposureTime'], 33434));
+  if (exposure !== undefined && exposure > 0) {
+    exif.exposure_time =
+      exposure >= 1 ? `${trimNumber(exposure, 1)}s` : `1/${Math.round(1 / exposure)}s`;
+  }
+
+  const iso = exifToNumber(getTag(['ISO', 'PhotographicSensitivity'], 34855));
+  if (iso !== undefined) exif.iso = `ISO ${iso}`;
+
+  const focal = exifToNumber(getTag(['FocalLength'], 37386));
+  if (focal !== undefined) exif.focal_length = `${trimNumber(focal, 1)}mm`;
+  const focal35 = exifToNumber(getTag(['FocalLengthIn35mmFormat', 'FocalLengthIn35mmFilm'], 41989));
+  if (focal35 !== undefined) exif.focal_length_35mm = `${trimNumber(focal35, 1)}mm`;
+
+  const dt = getTag(['DateTimeOriginal'], 36867);
+  if (dt) exif.datetime = formatExifDateTime(dt);
+
+  const bias = exifToNumber(getTag(['ExposureCompensation', 'ExposureBiasValue'], 37380));
+  if (bias !== undefined && Math.abs(bias) > 0.01) {
+    const sign = bias > 0 ? '+' : '';
+    exif.exposure_bias = `${sign}${trimNumber(bias, 1)} EV`;
+  }
+
+  const orientation = getTag(['Orientation'], 274);
+  if (typeof orientation === 'number') {
+    exif.orientation = orientation;
+  } else if (typeof orientation === 'string') {
+    exif.orientation = ORIENTATION_MAP[orientation];
+  }
+
+  const width = exifToNumber(getTag(['ExifImageWidth', 'PixelXDimension'], 40962));
+  if (width !== undefined) exif.width = width;
+  const height = exifToNumber(getTag(['ExifImageHeight', 'PixelYDimension'], 40963));
+  if (height !== undefined) exif.height = height;
+
+  return exif;
+}
+
+const ORIENTATION_MAP: Record<string, number> = {
+  'Horizontal (normal)': 1,
+  'Mirror horizontal': 2,
+  'Rotate 180': 3,
+  'Mirror vertical': 4,
+  'Mirror horizontal and rotate 270 CW': 5,
+  'Rotate 90 CW': 6,
+  'Mirror horizontal and rotate 90 CW': 7,
+  'Rotate 270 CW': 8,
+};
+
+/** Normalize an exifr value to a number: accepts plain numbers, [num, denom] arrays and {0:num,1:denom} objects. */
+function exifToNumber(v: any): number | undefined {
+  if (typeof v === 'number') return v;
+  if (Array.isArray(v) && v.length >= 2) {
+    const num = Number(v[0]);
+    const den = Number(v[1]);
+    return den ? num / den : undefined;
+  }
+  if (v && typeof v === 'object' && v[0] !== undefined && v[1] !== undefined) {
+    const num = Number(v[0]);
+    const den = Number(v[1]);
+    return den ? num / den : undefined;
+  }
+  return undefined;
+}
+
+function trimNumber(v: number, digits: number): string {
+  return v.toFixed(digits).replace(/\.?0+$/, '');
+}
+
+function formatExifDateTime(d: unknown): string {
+  if (d instanceof Date) {
+    // exifr interprets EXIF wall-clock time in the local timezone
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  if (typeof d === 'string') {
+    const m = d.match(/^(\d{4})[:/-](\d{2})[:/-](\d{2})[ T](\d{2}):(\d{2})/);
+    if (m) return `${m[1]}-${m[2]}-${m[3]} ${m[4]}:${m[5]}`;
+    return d;
+  }
+  return '';
+}
+
+function loadImageFromFile(file: File): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('无法解码图片'));
+    };
+    img.src = url;
+  });
+}
+
+async function makeThumbnail(file: File): Promise<string> {
+  const img = await loadImageFromFile(file);
+  const maxSide = 512;
+  const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const h = Math.max(1, Math.round(img.naturalHeight * scale));
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  c.getContext('2d')?.drawImage(img, 0, 0, w, h);
+  URL.revokeObjectURL(img.src);
+  return c.toDataURL('image/jpeg', 0.82);
+}
+
+function canvasToBlob(canvas: HTMLCanvasElement, format: string, quality: number): Promise<Blob | null> {
+  const mime = format === 'png' ? 'image/png' : format === 'webp' ? 'image/webp' : 'image/jpeg';
+  return new Promise((resolve) => canvas.toBlob(resolve, mime, quality / 100));
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
 
 function renderPhotoList() {
@@ -487,6 +878,7 @@ function renderPhotoList() {
 let renderTimer: any = null;
 
 function triggerReRender() {
+  persistConfig();
   if (renderTimer) clearTimeout(renderTimer);
   renderTimer = setTimeout(doRender, 30);
 }
@@ -535,14 +927,18 @@ async function handleExportCurrent() {
   }
 
   const currentPhoto = photos[activeIndex];
-  const formatSelect = document.getElementById('export-format') as HTMLSelectElement;
-  const qualitySelect = document.getElementById('export-quality-select') as HTMLSelectElement;
 
-  const format = formatSelect.value;
-  const quality = parseInt(qualitySelect.value, 10);
+  // Browser mode: export via canvas download
+  if (!isTauri) {
+    await handleExportCurrentBrowser(currentPhoto);
+    return;
+  }
+
+  const format = exportSettings.format;
+  const quality = exportSettings.quality;
   const ext = format === 'jpeg' ? 'jpg' : format;
 
-  const defaultName = currentPhoto.filename.replace(/\.[^/.]+$/, '') + `_framed.${ext}`;
+  const defaultName = buildOutputName(currentPhoto, activeIndex);
 
   try {
     const savePath = await save({
@@ -552,27 +948,24 @@ async function handleExportCurrent() {
 
     if (!savePath) return;
 
-    showProgressModal('正在导出原画相框照片...', '读取原始完整分辨率像素...', 25);
+    showProgressModal('正在导出照片...', '读取原始分辨率像素...', 25);
 
-    // 1. Load FULL original resolution image (Untouched Raw Bytes)
     const fullResDataUrl: string = await invoke('load_full_photo', {
       path: currentPhoto.path,
       orientation: currentPhoto.exif.orientation,
     });
 
-    showProgressModal('正在渲染原画相框...', '生成高分辨率矢量排版...', 60);
+    showProgressModal('正在渲染照片...', '生成相框排版...', 60);
 
     const fullImg = new Image();
     fullImg.src = fullResDataUrl;
     await new Promise((res) => (fullImg.onload = res));
 
-    // 2. Render on full-resolution offscreen canvas
     const exportCanvas = document.createElement('canvas');
     await renderPhotoFrame(fullImg, currentPhoto.exif, config, exportCanvas);
 
-    showProgressModal('正在编码与写入文件...', `分辨率: ${exportCanvas.width} × ${exportCanvas.height}`, 85);
+    showProgressModal('正在编码与写入文件...', '分辨率: ' + exportCanvas.width + ' × ' + exportCanvas.height, 85);
 
-    // Capture lossless PNG buffer from canvas for zero transmission loss
     const base64Data = exportCanvas.toDataURL('image/png');
 
     await invoke('save_rendered_photo', {
@@ -582,88 +975,208 @@ async function handleExportCurrent() {
       quality,
     });
 
-    showToast(`✓ 原画照片已保存 (${exportCanvas.width}×${exportCanvas.height}): ${savePath}`);
+    showToast('已保存 (' + exportCanvas.width + '×' + exportCanvas.height + '): ' + savePath);
   } catch (err) {
-    showToast(`导出失败: ${err}`);
+    showToast('导出失败: ' + err);
+  } finally {
+    hideProgressModal();
+  }
+}
+
+async function handleExportCurrentBrowser(item: PhotoItem) {
+  if (!item.sourceFile) {
+    showToast('文件句柄缺失，请重新导入');
+    return;
+  }
+
+  const format = exportSettings.format;
+  const quality = exportSettings.quality;
+  const defaultName = buildOutputName(item, activeIndex);
+
+  try {
+    showProgressModal('正在导出照片...', '读取原始分辨率像素...', 25);
+
+    const img = await loadImageFromFile(item.sourceFile);
+
+    showProgressModal('正在渲染照片...', '生成相框排版...', 60);
+
+    const exportCanvas = document.createElement('canvas');
+    await renderPhotoFrame(img, item.exif, config, exportCanvas);
+
+    showProgressModal('正在写入文件...', '分辨率: ' + exportCanvas.width + ' × ' + exportCanvas.height, 85);
+
+    const blob = await canvasToBlob(exportCanvas, format, quality);
+    if (blob) downloadBlob(blob, defaultName);
+    showToast('已保存 (' + exportCanvas.width + '×' + exportCanvas.height + '): ' + defaultName);
+  } catch (err) {
+    showToast('导出失败: ' + err);
   } finally {
     hideProgressModal();
   }
 }
 
 async function handleBatchExport() {
+  // Browser mode: sequential downloads
+  if (!isTauri) {
+    await handleBatchExportBrowser();
+    return;
+  }
+
   if (photos.length === 0) {
     showToast('列表为空，请先添加照片');
     return;
   }
 
+  const outputDir = await open({
+    directory: true,
+    multiple: false,
+  });
+  if (!outputDir || typeof outputDir !== 'string') return;
+
+  const format = exportSettings.format;
+  const quality = exportSettings.quality;
+  const failures: { filename: string; error: string }[] = [];
+  let successCount = 0;
+
+  exportCancelled = false;
+  keepProgressModalOpen = false;
+
   try {
-    const outputDir = await open({
-      directory: true,
-      multiple: false,
-    });
+    showProgressModal('准备批量导出...', '共 ' + photos.length + ' 张照片', 5, true);
+    if (progressCancelBtn) {
+      progressCancelBtn.style.display = 'block';
+      progressCancelBtn.textContent = '取消任务';
+    }
+    if (progressFailuresEl) progressFailuresEl.style.display = 'none';
 
-    if (!outputDir || typeof outputDir !== 'string') return;
+    for (let i = 0; i < photos.length; i++) {
+      if (exportCancelled) {
+        showToast('已取消导出，完成 ' + successCount + ' / ' + photos.length + ' 张');
+        return;
+      }
 
-    const formatSelect = document.getElementById('export-format') as HTMLSelectElement;
-    const qualitySelect = document.getElementById('export-quality-select') as HTMLSelectElement;
-    const format = formatSelect.value;
-    const quality = parseInt(qualitySelect.value, 10);
-    const ext = format === 'jpeg' ? 'jpg' : format;
+      const item = photos[i];
+      showProgressModal(
+        '正在渲染照片...',
+        '(' + (i + 1) + '/' + photos.length + ') ' + item.filename,
+        Math.round(((i + 1) / photos.length) * 65),
+        true
+      );
 
-    showProgressModal('准备批量导出...', `共 ${photos.length} 张照片`, 5);
+      try {
+        const fullResDataUrl: string = await invoke('load_full_photo', {
+          path: item.path,
+          orientation: item.exif.orientation,
+        });
 
-    const batchTasks = [];
+        const fullImg = new Image();
+        fullImg.src = fullResDataUrl;
+        await new Promise((res) => (fullImg.onload = res));
 
+        const canvas = document.createElement('canvas');
+        await renderPhotoFrame(fullImg, item.exif, config, canvas);
+        const base64Data = canvas.toDataURL('image/png');
+
+        showProgressModal(
+          '正在写入文件...',
+          '(' + (i + 1) + '/' + photos.length + ') ' + item.filename,
+          70 + Math.round(((i + 1) / photos.length) * 25),
+          true
+        );
+
+        const outName = buildOutputName(item, i);
+        const outPath = await resolveUniqueOutputPath(outputDir, outName);
+        await invoke('save_rendered_photo', {
+          outputPath: outPath,
+          base64Data,
+          format,
+          quality,
+        });
+        successCount++;
+      } catch (err) {
+        failures.push({ filename: item.filename, error: String(err) });
+      }
+    }
+
+    if (exportCancelled) {
+      showToast('已取消导出，完成 ' + successCount + ' / ' + photos.length + ' 张');
+      return;
+    }
+
+    if (failures.length === 0) {
+      showToast('批量导出完成: ' + successCount + ' / ' + photos.length + ' 张');
+    } else {
+      showProgressModal(
+        '部分照片导出失败',
+        '成功 ' + successCount + ' / ' + photos.length + ' 张，失败 ' + failures.length + ' 张',
+        100,
+        true
+      );
+      keepProgressModalOpen = true;
+      if (progressFailuresEl) {
+        progressFailuresEl.style.display = 'block';
+        const items = failures
+          .slice(0, 8)
+          .map((f) => '<li>' + f.filename + ': ' + f.error + '</li>')
+          .join('');
+        progressFailuresEl.innerHTML = '<div class="failure-title">失败明细 (前 8 条)</div><ul>' + items + '</ul>';
+      }
+      if (progressCancelBtn) {
+        progressCancelBtn.style.display = 'block';
+        progressCancelBtn.textContent = '关闭';
+      }
+    }
+  } catch (err) {
+    showToast('批量导出失败: ' + err);
+  } finally {
+    if (!keepProgressModalOpen) hideProgressModal();
+  }
+}
+
+async function handleBatchExportBrowser() {
+  if (photos.length === 0) {
+    showToast('列表为空，请先添加照片');
+    return;
+  }
+
+  const format = exportSettings.format;
+  const quality = exportSettings.quality;
+
+  showProgressModal('准备批量导出...', '共 ' + photos.length + ' 张照片', 5);
+
+  let ok = 0;
+  try {
     for (let i = 0; i < photos.length; i++) {
       const item = photos[i];
       showProgressModal(
-        '正在渲染原画照片...',
-        `(${i + 1}/${photos.length}) ${item.filename}`,
-        Math.round(((i + 1) / photos.length) * 70)
+        '正在渲染照片...',
+        '(' + (i + 1) + '/' + photos.length + ') ' + item.filename,
+        Math.round(((i + 1) / photos.length) * 80)
       );
 
-      // Load full-resolution image
-      const fullResDataUrl: string = await invoke('load_full_photo', {
-        path: item.path,
-        orientation: item.exif.orientation,
-      });
-
-      const fullImg = new Image();
-      fullImg.src = fullResDataUrl;
-      await new Promise((res) => (fullImg.onload = res));
-
-      const canvas = document.createElement('canvas');
-      await renderPhotoFrame(fullImg, item.exif, config, canvas);
-      const base64Image = canvas.toDataURL('image/png');
-
-      const outName = item.filename.replace(/\.[^/.]+$/, '') + `_framed.${ext}`;
-      const outPath = `${outputDir}/${outName}`;
-
-      batchTasks.push({
-        photo_path: item.path,
-        output_path: outPath,
-        base64_image: base64Image,
-        format,
-        quality,
-      });
+      if (!item.sourceFile) continue;
+      try {
+        const img = await loadImageFromFile(item.sourceFile);
+        const canvas = document.createElement('canvas');
+        await renderPhotoFrame(img, item.exif, config, canvas);
+        const blob = await canvasToBlob(canvas, format, quality);
+        const outName = buildOutputName(item, i);
+        if (blob) downloadBlob(blob, outName);
+        ok++;
+      } catch (err) {
+        console.warn('导出失败:', item.filename, err);
+      }
+      await new Promise((r) => setTimeout(r, 350));
     }
-
-    showProgressModal('多线程并行写入磁盘...', 'Rust Rayon 并发保存中...', 85);
-
-    const results: any[] = await invoke('batch_export', { items: batchTasks });
-    const successCount = results.filter((r) => r.success).length;
-
-    showToast(`✓ 批量导出完成: 成功 ${successCount} / ${photos.length}`);
+    showToast('批量导出完成: ' + ok + ' / ' + photos.length + ' 张');
   } catch (err) {
-    showToast(`批量导出失败: ${err}`);
+    showToast('批量导出失败: ' + err);
   } finally {
     hideProgressModal();
   }
 }
 
-// -----------------------------------------------------------------------------
-// UI Helpers
-// -----------------------------------------------------------------------------
+
 function showToast(msg: string) {
   toastEl.textContent = msg;
   toastEl.style.display = 'block';

@@ -24,9 +24,11 @@ export const BRAND_LOGOS: BrandLogo[] = [
 
 const imageCache: Map<string, HTMLImageElement> = new Map();
 
-export function detectBrandId(make?: string, model?: string): string {
-  const text = `${make || ''} ${model || ''}`.toLowerCase();
-  
+export function detectBrandId(make?: string, model?: string): string | null {
+  const text = `${make || ''} ${model || ''}`.toLowerCase().trim();
+
+  if (!text) return null;
+
   if (text.includes('sony')) return 'sony';
   if (text.includes('canon')) return 'canon';
   if (text.includes('nikon')) return 'nikon';
@@ -42,11 +44,14 @@ export function detectBrandId(make?: string, model?: string): string {
   if (text.includes('apple') || text.includes('iphone')) return 'apple';
   if (text.includes('zeiss')) return 'zeiss';
 
-  return 'sony'; // Default fallback
+  // Unknown brand: no logo instead of a wrong fallback
+  return null;
 }
 
-export async function loadLogoImage(brandId: string, isDarkTheme: boolean): Promise<HTMLImageElement | null> {
-  const brand = BRAND_LOGOS.find(b => b.id === brandId) || BRAND_LOGOS[0];
+export async function loadLogoImage(brandId: string | null, isDarkTheme: boolean): Promise<HTMLImageElement | null> {
+  if (!brandId) return null;
+  const brand = BRAND_LOGOS.find((b) => b.id === brandId);
+  if (!brand) return null;
   const url = isDarkTheme ? brand.lightSvg : brand.darkSvg;
 
   if (imageCache.has(url)) {

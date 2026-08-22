@@ -21,6 +21,8 @@ export interface PhotoItem {
   size_bytes: number;
   exif: ExifData;
   thumbnail_data_url?: string;
+  /** Browser mode: original file handle (Tauri mode loads from disk instead) */
+  sourceFile?: File;
 }
 
 export type FrameTemplateId = 'bottom_bar' | 'border' | 'polaroid' | 'minimal_badge';
