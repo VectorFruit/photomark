@@ -44,9 +44,12 @@ export async function renderPhotoFrame(
   const subTextColor = isDark ? '#9ca3af' : '#6b7280';
   const dividerColor = isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.12)';
 
-  // Determine Logo
+  // Determine Logo (minimal badge is a glass pill, so keep both color variants available)
   const brandId = config.selectedLogo === 'auto' ? detectBrandId(exif.make, exif.model) : config.selectedLogo;
-  const logoImg = config.showLogo ? await loadLogoImage(brandId, isDark) : null;
+  const isMinimalBadge = config.template === 'minimal_badge';
+  const logoLightImg = config.showLogo ? await loadLogoImage(brandId, true) : null;
+  const logoDarkImg = config.showLogo ? await loadLogoImage(brandId, false) : null;
+  const logoImg = isMinimalBadge ? null : (isDark ? logoLightImg : logoDarkImg);
 
   // Build text strings
   const modelText = config.showModel
@@ -141,7 +144,8 @@ export async function renderPhotoFrame(
         paramsText,
         dateText,
         noteText,
-        logoImg
+        logoLightImg,
+        logoDarkImg
       );
       break;
   }
@@ -557,7 +561,8 @@ function renderMinimalBadge(
   paramsText: string,
   dateText: string,
   noteText: string,
-  logoImg: HTMLImageElement | null
+  logoLightImg: HTMLImageElement | null,
+  logoDarkImg: HTMLImageElement | null
 ) {
   canvas.width = imgW;
   canvas.height = imgH;
@@ -572,9 +577,29 @@ function renderMinimalBadge(
   const summary = [modelText, paramsText, extraParts].filter(Boolean).join('  |  ');
 
   // No text and no logo: keep the photo untouched instead of an empty badge
-  if (!summary && !logoImg) return;
+  if (!summary && !logoLightImg && !logoDarkImg) return;
 
-  ctx.font = `500 ${fontSize}px ${fontFam}`;
+  // Sample the bottom-right corner and pick a glass style that keeps contrast
+  let useLightBadge = false;
+  try {
+    const sampleW = Math.max(1, Math.round(imgW * 0.35));
+    const sampleH = Math.max(1, Math.round(imgH * 0.18));
+    const sample = ctx.getImageData(imgW - sampleW, imgH - sampleH, sampleW, sampleH).data;
+    let sum = 0;
+    let count = 0;
+    for (let i = 0; i < sample.length; i += 4) {
+      sum += 0.2126 * sample[i] + 0.7152 * sample[i + 1] + 0.0722 * sample[i + 2];
+      count++;
+    }
+    useLightBadge = (sum / count) < 128;
+  } catch {
+    // If sampling fails, keep the classic dark pill
+    useLightBadge = false;
+  }
+
+  const logoImg = useLightBadge ? logoDarkImg : logoLightImg;
+
+  ctx.font = '500 ' + fontSize + 'px ' + fontFam;
   const textW = ctx.measureText(summary).width;
   const logoH = Math.round(fontSize * 1.1);
   const logoW = logoImg ? Math.round((logoImg.width / logoImg.height) * logoH) : 0;
@@ -586,12 +611,24 @@ function renderMinimalBadge(
   const badgeY = imgH - badgeH - Math.round(imgH * 0.03);
 
   ctx.save();
-  ctx.fillStyle = 'rgba(15, 17, 23, 0.75)';
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  if (useLightBadge) {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.18)';
+  } else {
+    ctx.fillStyle = 'rgba(15, 17, 23, 0.75)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+  }
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetY = 2;
   ctx.lineWidth = 1;
   roundRect(ctx, badgeX, badgeY, badgeW, badgeH, Math.round(badgeH / 2));
   ctx.fill();
   ctx.stroke();
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
 
   let curX = badgeX + pad;
   const midY = badgeY + badgeH / 2;
@@ -603,7 +640,7 @@ function renderMinimalBadge(
 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = useLightBadge ? '#111827' : '#ffffff';
   ctx.fillText(summary, curX, midY);
   ctx.restore();
 }

@@ -18,8 +18,8 @@ export const BRAND_LOGOS: BrandLogo[] = [
   { id: 'ricoh', name: 'RICOH', lightSvg: '/logos/ricoh-w.svg', darkSvg: '/logos/ricoh-b.svg' },
   { id: 'pentax', name: 'PENTAX', lightSvg: '/logos/pentax-w.svg', darkSvg: '/logos/pentax-b.svg' },
   { id: 'sigma', name: 'SIGMA', lightSvg: '/logos/sigma-w.svg', darkSvg: '/logos/sigma-b.svg' },
-  { id: 'apple', name: 'Apple', lightSvg: '/logos/apple.svg', darkSvg: '/logos/apple.svg' },
-  { id: 'zeiss', name: 'ZEISS', lightSvg: '/logos/zeiss.svg', darkSvg: '/logos/zeiss.svg' },
+  { id: 'apple', name: 'Apple', lightSvg: '/logos/apple-w.svg', darkSvg: '/logos/apple.svg' },
+  { id: 'zeiss', name: 'ZEISS', lightSvg: '/logos/zeiss-w.svg', darkSvg: '/logos/zeiss.svg' },
 ];
 
 const imageCache: Map<string, HTMLImageElement> = new Map();
