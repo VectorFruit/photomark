@@ -81,6 +81,7 @@
           <span id="zoom-level" style="font-size: 11px; font-weight: 600; min-width: 38px; text-align: center">100%</span>
           <button id="btn-zoom-in" class="tool-btn" title="放大">+</button>
           <button id="btn-zoom-fit" class="tool-btn" title="适应屏幕">适应</button>
+          <button id="btn-compare-original" class="tool-btn" title="按住查看原图">👁 原图</button>
         </div>
 
         <div class="viewport" id="viewport-area">
@@ -104,10 +105,46 @@
         <div class="settings-group">
           <div class="group-title">相框模板</div>
           <div class="template-grid">
-            <div class="template-card active" data-template="bottom_bar">经典底栏</div>
-            <div class="template-card" data-template="border">画廊相框</div>
-            <div class="template-card" data-template="polaroid">拍立得即显</div>
-            <div class="template-card" data-template="minimal_badge">极简微章</div>
+            <div class="template-card active" data-template="bottom_bar">
+              <svg class="template-preview" viewBox="0 0 120 80" aria-hidden="true">
+                <rect x="12" y="8" width="96" height="44" fill="currentColor" opacity="0.30" />
+                <rect x="12" y="8" width="96" height="44" fill="none" stroke="currentColor" opacity="0.25" />
+                <rect x="12" y="58" width="96" height="16" fill="currentColor" opacity="0.16" />
+                <rect x="18" y="63" width="26" height="3" fill="currentColor" opacity="0.55" />
+                <rect x="18" y="69" width="18" height="2" fill="currentColor" opacity="0.25" />
+                <rect x="88" y="66" width="14" height="2.5" fill="currentColor" opacity="0.35" />
+              </svg>
+              <span>经典底栏</span>
+            </div>
+            <div class="template-card" data-template="border">
+              <svg class="template-preview" viewBox="0 0 120 80" aria-hidden="true">
+                <rect x="8" y="6" width="104" height="68" fill="currentColor" opacity="0.06" />
+                <rect x="20" y="12" width="80" height="44" fill="currentColor" opacity="0.30" />
+                <rect x="20" y="12" width="80" height="44" fill="none" stroke="currentColor" opacity="0.25" />
+                <rect x="62" y="60" width="32" height="2" fill="currentColor" opacity="0.45" />
+                <rect x="54" y="65" width="48" height="2" fill="currentColor" opacity="0.25" />
+              </svg>
+              <span>画廊相框</span>
+            </div>
+            <div class="template-card" data-template="polaroid">
+              <svg class="template-preview" viewBox="0 0 120 80" aria-hidden="true">
+                <rect x="18" y="6" width="84" height="54" fill="currentColor" opacity="0.28" />
+                <rect x="18" y="6" width="84" height="54" fill="none" stroke="currentColor" opacity="0.20" />
+                <rect x="22" y="62" width="30" height="3" fill="currentColor" opacity="0.5" />
+                <rect x="22" y="68" width="22" height="2" fill="currentColor" opacity="0.22" />
+                <rect x="76" y="64" width="22" height="2" fill="currentColor" opacity="0.30" />
+              </svg>
+              <span>拍立得即显</span>
+            </div>
+            <div class="template-card" data-template="minimal_badge">
+              <svg class="template-preview" viewBox="0 0 120 80" aria-hidden="true">
+                <rect x="10" y="6" width="100" height="68" fill="currentColor" opacity="0.30" />
+                <rect x="52" y="58" width="54" height="14" rx="7" fill="currentColor" opacity="0.5" />
+                <rect x="58" y="63" width="22" height="2.5" fill="#ffffff" opacity="0.8" />
+                <rect x="82" y="63" width="18" height="2.5" fill="#ffffff" opacity="0.6" />
+              </svg>
+              <span>极简微章</span>
+            </div>
           </div>
         </div>
 
@@ -192,6 +229,16 @@
         <!-- 5. Style & Layout Tuning -->
         <div class="settings-group">
           <div class="group-title">相框细节微调</div>
+
+          <div class="control-row">
+            <span class="control-label">字体族</span>
+            <select id="cfg-font-family" style="width: 150px">
+              <option value="Inter, -apple-system, sans-serif" selected>Inter / 系统</option>
+              <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">系统 UI / 中文</option>
+              <option value="Georgia, 'Noto Serif SC', serif">衬线 / 杂志</option>
+              <option value="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, monospace">等宽 / 胶片</option>
+            </select>
+          </div>
 
           <!-- Padding Slider -->
           <div class="control-block">

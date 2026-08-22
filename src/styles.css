@@ -224,6 +224,15 @@ header {
   border-color: var(--accent);
 }
 
+.photo-card.dragging {
+  opacity: 0.55;
+}
+
+.photo-card.drag-over {
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
+}
+
 .photo-thumb {
   width: 52px;
   height: 52px;
@@ -426,6 +435,24 @@ header {
   display: flex;
   align-items: center;
   gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.group-title::after {
+  content: '−';
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: transform 0.15s ease;
+}
+
+.settings-group.collapsed .group-title::after {
+  content: '+';
+}
+
+.settings-group.collapsed > :not(.group-title) {
+  display: none !important;
 }
 
 /* Template Selector Grid */
@@ -436,7 +463,7 @@ header {
 }
 
 .template-card {
-  padding: 10px 8px;
+  padding: 8px;
   background-color: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -445,6 +472,23 @@ header {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.template-preview {
+  width: 100%;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-input);
+  color: var(--text-secondary);
+  transition: color 0.15s ease;
+}
+
+.template-card.active .template-preview {
+  color: var(--accent);
 }
 
 .template-card:hover {
@@ -740,6 +784,18 @@ input[type="range"] {
   z-index: 100;
   display: none;
   animation: slideIn 0.2s ease;
+}
+
+.toast.success {
+  border-left-color: var(--success);
+}
+
+.toast.error {
+  border-left-color: var(--danger);
+}
+
+.toast.info {
+  border-left-color: var(--accent);
 }
 
 @keyframes slideIn {

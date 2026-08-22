@@ -18,7 +18,14 @@ const isTauri = typeof window !== 'undefined' && !!(window as any).__TAURI_INTER
 let photos: PhotoItem[] = [];
 let activeIndex = -1;
 let currentZoom = 1.0;
-let currentTheme: 'dark' | 'light' = (localStorage.getItem('photomark_theme') as 'dark' | 'light') || 'dark';
+let panX = 0;
+let panY = 0;
+let isPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+let isComparing = false;
+let dragFromIndex = -1;
+let currentTheme: 'dark' | 'light' | 'system' = (localStorage.getItem('photomark_theme') as 'dark' | 'light' | 'system') || 'system';
 const UI_SCALES = [0.8, 0.85, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5];
 let currentUiScale = parseFloat(localStorage.getItem('photomark_ui_scale') || '1.0');
 
@@ -49,6 +56,8 @@ const photoCountEl = document.getElementById('photo-count') as HTMLSpanElement;
 const emptyQueueEl = document.getElementById('empty-queue') as HTMLDivElement;
 const previewCanvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
 const canvasContainer = document.getElementById('canvas-container') as HTMLDivElement;
+const viewportEl = document.getElementById('viewport-area') as HTMLDivElement | null;
+const compareBtn = document.getElementById('btn-compare-original') as HTMLButtonElement | null;
 const zoomLevelEl = document.getElementById('zoom-level') as HTMLSpanElement;
 const toastEl = document.getElementById('toast') as HTMLDivElement;
 const fileInputEl = document.getElementById('file-input') as HTMLInputElement;
@@ -113,12 +122,22 @@ function applyUiScale(scale: number) {
   }
 }
 
-function applyTheme(theme: 'dark' | 'light') {
+function resolveTheme(theme: 'dark' | 'light' | 'system'): 'dark' | 'light' {
+  if (theme === 'system') {
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+  return theme;
+}
+
+function applyTheme(theme: 'dark' | 'light' | 'system') {
   currentTheme = theme;
-  document.documentElement.setAttribute('data-theme', theme);
+  const resolved = resolveTheme(theme);
+  document.documentElement.setAttribute('data-theme', resolved);
   localStorage.setItem('photomark_theme', theme);
 
-  if (theme === 'light') {
+  if (theme === 'system') {
+    themeTextEl.textContent = '跟随系统';
+  } else if (resolved === 'light') {
     themeTextEl.textContent = '深色模式';
   } else {
     themeTextEl.textContent = '浅色模式';
@@ -287,9 +306,24 @@ function bindEvents() {
     applyUiScale(UI_SCALES[nextIdx]);
   });
 
-  // Theme Toggle Button
+  // Theme Toggle Button (dark -> light -> system)
   themeToggleBtn?.addEventListener('click', () => {
-    applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    const order: ('dark' | 'light' | 'system')[] = ['dark', 'light', 'system'];
+    const next = order[(order.indexOf(currentTheme) + 1) % 3];
+    applyTheme(next);
+  });
+
+  // Follow OS theme changes while in system mode
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => {
+    if (currentTheme === 'system') applyTheme('system');
+  });
+
+  // Collapsible Inspector Groups
+  document.querySelectorAll('.settings-group .group-title').forEach((title) => {
+    title.addEventListener('click', () => {
+      const group = (title as HTMLElement).closest('.settings-group');
+      group?.classList.toggle('collapsed');
+    });
   });
 
   // Import Buttons
@@ -318,7 +352,7 @@ function bindEvents() {
     Object.assign(config, DEFAULT_FRAME_CONFIG);
     syncUIWithConfig();
     triggerReRender();
-    showToast('已重置所有参数为默认配置');
+    showToast('已重置所有参数为默认配置', 'info');
   });
 
   // Single Slider Reset Buttons
@@ -390,6 +424,7 @@ function bindEvents() {
   bindCheckbox('cfg-show-logo', (val) => (config.showLogo = val));
   bindSelect('cfg-brand-logo', (val) => (config.selectedLogo = val));
   bindSelect('cfg-focal-mode', (val) => (config.focalLengthMode = val as any));
+  bindSelect('cfg-font-family', (val) => (config.fontFamily = val));
   bindCheckbox('cfg-show-model', (val) => (config.showModel = val));
   bindCheckbox('cfg-show-lens', (val) => (config.showLens = val));
   bindCheckbox('cfg-show-params', (val) => (config.showParams = val));
@@ -435,6 +470,45 @@ function bindEvents() {
   document.getElementById('btn-zoom-in')?.addEventListener('click', () => setZoom(currentZoom + 0.15));
   document.getElementById('btn-zoom-out')?.addEventListener('click', () => setZoom(Math.max(0.2, currentZoom - 0.15)));
   document.getElementById('btn-zoom-fit')?.addEventListener('click', () => setZoom(1.0));
+
+  // Original / Result Compare
+  compareBtn?.addEventListener('mousedown', () => {
+    isComparing = true;
+    drawOriginalPreview();
+  });
+  compareBtn?.addEventListener('mouseup', () => {
+    if (isComparing) {
+      isComparing = false;
+      triggerReRender();
+    }
+  });
+  compareBtn?.addEventListener('mouseleave', () => {
+    if (isComparing) {
+      isComparing = false;
+      triggerReRender();
+    }
+  });
+
+  // Pan when zoomed in
+  viewportEl?.addEventListener('pointerdown', (e) => {
+    if (currentZoom <= 1.01) return;
+    isPanning = true;
+    panStartX = e.clientX - panX;
+    panStartY = e.clientY - panY;
+    viewportEl.style.cursor = 'grabbing';
+  });
+  viewportEl?.addEventListener('pointermove', (e) => {
+    if (!isPanning) return;
+    panX = e.clientX - panStartX;
+    panY = e.clientY - panStartY;
+    applyCanvasTransform();
+  });
+  window.addEventListener('pointerup', () => {
+    if (isPanning) {
+      isPanning = false;
+      if (viewportEl) viewportEl.style.cursor = '';
+    }
+  });
 
   // Export Buttons
   document.getElementById('btn-export-current')?.addEventListener('click', handleExportCurrent);
@@ -483,6 +557,10 @@ function syncUIWithConfig() {
   // Update Focal Length Mode Select
   const focalSelect = document.getElementById('cfg-focal-mode') as HTMLSelectElement | null;
   if (focalSelect) focalSelect.value = config.focalLengthMode || 'physical';
+
+  // Update Font Family Select
+  const fontFamilySelect = document.getElementById('cfg-font-family') as HTMLSelectElement | null;
+  if (fontFamilySelect) fontFamilySelect.value = config.fontFamily || 'Inter, -apple-system, sans-serif';
 
   // Update Inputs & Checkboxes
   const customNoteInput = document.getElementById('cfg-custom-note') as HTMLInputElement | null;
@@ -564,7 +642,7 @@ async function handleImportDialog() {
       await importPaths([selected]);
     }
   } catch (err) {
-    showToast(`导入失败: ${err}`);
+    showToast(`导入失败: ${err}`, 'error');
   }
 }
 
@@ -602,10 +680,10 @@ async function importPaths(paths: string[]) {
       }
       renderPhotoList();
       triggerReRender();
-      showToast(`成功导入 ${newItems.length} 张照片`);
+      showToast(`成功导入 ${newItems.length} 张照片`, 'success');
     }
   } catch (err) {
-    showToast(`解析失败: ${err}`);
+    showToast(`解析失败: ${err}`, 'error');
   } finally {
     hideProgressModal();
   }
@@ -621,7 +699,7 @@ async function importBrowserFiles(files: File[]) {
     (f) => BROWSER_IMAGE_TYPES.has(f.type) || /\.(jpe?g|png|webp)$/i.test(f.name)
   );
   if (imageFiles.length === 0) {
-    showToast('没有可导入的图片文件');
+    showToast('没有可导入的图片文件', 'info');
     return;
   }
 
@@ -658,10 +736,10 @@ async function importBrowserFiles(files: File[]) {
       if (activeIndex === -1) activeIndex = 0;
       renderPhotoList();
       triggerReRender();
-      showToast(`成功导入 ${newItems.length} 张照片`);
+      showToast(`成功导入 ${newItems.length} 张照片`, 'success');
     }
   } catch (err) {
-    showToast(`导入失败: ${err}`);
+    showToast(`导入失败: ${err}`, 'error');
   } finally {
     hideProgressModal();
   }
@@ -819,13 +897,15 @@ function downloadBlob(blob: Blob, filename: string) {
 }
 
 function renderPhotoList() {
-  photoCountEl.textContent = `${photos.length}`;
+  photoCountEl.textContent = String(photos.length);
   emptyQueueEl.style.display = photos.length === 0 ? 'flex' : 'none';
   photoListEl.innerHTML = '';
 
   photos.forEach((photo, idx) => {
     const card = document.createElement('div');
-    card.className = `photo-card ${idx === activeIndex ? 'active' : ''}`;
+    card.className = 'photo-card ' + (idx === activeIndex ? 'active' : '');
+    card.draggable = true;
+    card.dataset.index = String(idx);
 
     const thumb = document.createElement('img');
     thumb.className = 'photo-thumb';
@@ -841,8 +921,9 @@ function renderPhotoList() {
     const badge = document.createElement('div');
     badge.className = 'photo-exif-badge';
     const camera = photo.exif.model || photo.exif.make || 'No EXIF';
-    const lens = photo.exif.lens_model ? ` | ${photo.exif.lens_model}` : '';
-    badge.textContent = `${camera}${lens}`;
+    const lens = photo.exif.lens_model ? ' | ' + photo.exif.lens_model : '';
+    const dims = photo.exif.width && photo.exif.height ? ' | ' + photo.exif.width + '×' + photo.exif.height : '';
+    badge.textContent = camera + lens + dims;
 
     meta.appendChild(name);
     meta.appendChild(badge);
@@ -861,6 +942,34 @@ function renderPhotoList() {
     card.appendChild(thumb);
     card.appendChild(meta);
     card.appendChild(delBtn);
+
+    card.addEventListener('dragstart', () => {
+      dragFromIndex = idx;
+      card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      card.classList.remove('drag-over');
+      dragFromIndex = -1;
+    });
+    card.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', (e) => {
+      e.preventDefault();
+      card.classList.remove('drag-over');
+      if (dragFromIndex < 0 || dragFromIndex === idx) return;
+      const moved = photos.splice(dragFromIndex, 1)[0];
+      photos.splice(idx, 0, moved);
+      if (activeIndex === dragFromIndex) activeIndex = idx;
+      else if (dragFromIndex < activeIndex && idx >= activeIndex) activeIndex--;
+      else if (dragFromIndex > activeIndex && idx <= activeIndex) activeIndex++;
+      dragFromIndex = -1;
+      renderPhotoList();
+      triggerReRender();
+    });
 
     card.onclick = () => {
       activeIndex = idx;
@@ -913,8 +1022,27 @@ function clearCanvas() {
 
 function setZoom(val: number) {
   currentZoom = val;
-  canvasContainer.style.transform = `scale(${currentZoom})`;
-  zoomLevelEl.textContent = `${Math.round(currentZoom * 100)}%`;
+  if (currentZoom <= 1.01) {
+    panX = 0;
+    panY = 0;
+  }
+  applyCanvasTransform();
+  zoomLevelEl.textContent = Math.round(currentZoom * 100) + '%';
+}
+
+function applyCanvasTransform() {
+  canvasContainer.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + currentZoom + ')';
+}
+
+function drawOriginalPreview() {
+  const currentPhoto = photos[activeIndex];
+  if (!currentPhoto) return;
+  const img = previewImageCache.get(currentPhoto.path);
+  const ctx = previewCanvas.getContext('2d');
+  if (!img || !ctx) return;
+  previewCanvas.width = img.naturalWidth || img.width;
+  previewCanvas.height = img.naturalHeight || img.height;
+  ctx.drawImage(img, 0, 0, previewCanvas.width, previewCanvas.height);
 }
 
 // -----------------------------------------------------------------------------
@@ -922,7 +1050,7 @@ function setZoom(val: number) {
 // -----------------------------------------------------------------------------
 async function handleExportCurrent() {
   if (activeIndex < 0 || activeIndex >= photos.length) {
-    showToast('当前没有选中任何照片');
+    showToast('当前没有选中任何照片', 'info');
     return;
   }
 
@@ -975,9 +1103,9 @@ async function handleExportCurrent() {
       quality,
     });
 
-    showToast('已保存 (' + exportCanvas.width + '×' + exportCanvas.height + '): ' + savePath);
+    showToast('已保存 (' + exportCanvas.width + '×' + exportCanvas.height + '): ' + savePath, 'success');
   } catch (err) {
-    showToast('导出失败: ' + err);
+    showToast('导出失败: ' + err, 'error');
   } finally {
     hideProgressModal();
   }
@@ -985,7 +1113,7 @@ async function handleExportCurrent() {
 
 async function handleExportCurrentBrowser(item: PhotoItem) {
   if (!item.sourceFile) {
-    showToast('文件句柄缺失，请重新导入');
+    showToast('文件句柄缺失，请重新导入', 'error');
     return;
   }
 
@@ -1007,9 +1135,9 @@ async function handleExportCurrentBrowser(item: PhotoItem) {
 
     const blob = await canvasToBlob(exportCanvas, format, quality);
     if (blob) downloadBlob(blob, defaultName);
-    showToast('已保存 (' + exportCanvas.width + '×' + exportCanvas.height + '): ' + defaultName);
+    showToast('已保存 (' + exportCanvas.width + '×' + exportCanvas.height + '): ' + defaultName, 'success');
   } catch (err) {
-    showToast('导出失败: ' + err);
+    showToast('导出失败: ' + err, 'error');
   } finally {
     hideProgressModal();
   }
@@ -1023,7 +1151,7 @@ async function handleBatchExport() {
   }
 
   if (photos.length === 0) {
-    showToast('列表为空，请先添加照片');
+    showToast('列表为空，请先添加照片', 'info');
     return;
   }
 
@@ -1051,7 +1179,7 @@ async function handleBatchExport() {
 
     for (let i = 0; i < photos.length; i++) {
       if (exportCancelled) {
-        showToast('已取消导出，完成 ' + successCount + ' / ' + photos.length + ' 张');
+        showToast('已取消导出，完成 ' + successCount + ' / ' + photos.length + ' 张', 'info');
         return;
       }
 
@@ -1099,12 +1227,12 @@ async function handleBatchExport() {
     }
 
     if (exportCancelled) {
-      showToast('已取消导出，完成 ' + successCount + ' / ' + photos.length + ' 张');
+      showToast('已取消导出，完成 ' + successCount + ' / ' + photos.length + ' 张', 'info');
       return;
     }
 
     if (failures.length === 0) {
-      showToast('批量导出完成: ' + successCount + ' / ' + photos.length + ' 张');
+      showToast('批量导出完成: ' + successCount + ' / ' + photos.length + ' 张', 'success');
     } else {
       showProgressModal(
         '部分照片导出失败',
@@ -1127,7 +1255,7 @@ async function handleBatchExport() {
       }
     }
   } catch (err) {
-    showToast('批量导出失败: ' + err);
+    showToast('批量导出失败: ' + err, 'error');
   } finally {
     if (!keepProgressModalOpen) hideProgressModal();
   }
@@ -1135,7 +1263,7 @@ async function handleBatchExport() {
 
 async function handleBatchExportBrowser() {
   if (photos.length === 0) {
-    showToast('列表为空，请先添加照片');
+    showToast('列表为空，请先添加照片', 'info');
     return;
   }
 
@@ -1168,19 +1296,23 @@ async function handleBatchExportBrowser() {
       }
       await new Promise((r) => setTimeout(r, 350));
     }
-    showToast('批量导出完成: ' + ok + ' / ' + photos.length + ' 张');
+    showToast('批量导出完成: ' + ok + ' / ' + photos.length + ' 张', 'success');
   } catch (err) {
-    showToast('批量导出失败: ' + err);
+    showToast('批量导出失败: ' + err, 'error');
   } finally {
     hideProgressModal();
   }
 }
 
 
-function showToast(msg: string) {
+let toastTimer: any = null;
+
+function showToast(msg: string, type: 'success' | 'error' | 'info' = 'info') {
   toastEl.textContent = msg;
+  toastEl.className = 'toast ' + type;
   toastEl.style.display = 'block';
-  setTimeout(() => {
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
     toastEl.style.display = 'none';
   }, 3500);
 }
