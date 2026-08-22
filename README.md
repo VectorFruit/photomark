@@ -46,7 +46,7 @@
 ### 3. 相机品牌矢量 Logo 自动匹配
 内置 20+ 款主流相机与光学品牌高精度矢量 Logo，根据 EXIF 自动识别并匹配深浅色版：
 * 索尼 (Sony)、佳能 (Canon)、尼康 (Nikon)、徕卡 (Leica)、富士 (Fujifilm)
-* 哈苏 (Hasselblad)、松下 (Panasonic)、奥林巴斯 (Olympus)、大疆 (DJI)、理光 (Ricoh)、蔡司 (Zeiss)、苹果 (Apple) 等。
+* 哈苏 (Hasselblad)、松下 (Panasonic)、奥林巴斯 (Olympus)、大疆 (DJI)、理光 (Ricoh)、蔡司 (Zeiss) 等。
 
 ### 4. 极致人机交互体验
 * **实时进度条**：Tauri 2.0 异步事件驱动，照片解析与批量导出具备实时动态进度弹窗。

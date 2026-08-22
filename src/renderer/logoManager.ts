@@ -18,7 +18,6 @@ export const BRAND_LOGOS: BrandLogo[] = [
   { id: 'ricoh', name: 'RICOH', lightSvg: '/logos/ricoh-w.svg', darkSvg: '/logos/ricoh-b.svg' },
   { id: 'pentax', name: 'PENTAX', lightSvg: '/logos/pentax-w.svg', darkSvg: '/logos/pentax-b.svg' },
   { id: 'sigma', name: 'SIGMA', lightSvg: '/logos/sigma-w.svg', darkSvg: '/logos/sigma-b.svg' },
-  { id: 'apple', name: 'Apple', lightSvg: '/logos/apple-w.svg', darkSvg: '/logos/apple.svg' },
   { id: 'zeiss', name: 'ZEISS', lightSvg: '/logos/zeiss-w.svg', darkSvg: '/logos/zeiss.svg' },
 ];
 
@@ -41,7 +40,6 @@ export function detectBrandId(make?: string, model?: string): string | null {
   if (text.includes('ricoh') || text.includes('gr iii') || text.includes('gr ii')) return 'ricoh';
   if (text.includes('pentax')) return 'pentax';
   if (text.includes('sigma')) return 'sigma';
-  if (text.includes('apple') || text.includes('iphone')) return 'apple';
   if (text.includes('zeiss')) return 'zeiss';
 
   // Unknown brand: no logo instead of a wrong fallback
