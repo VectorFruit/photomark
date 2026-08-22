@@ -11,6 +11,7 @@ import {
   PhotoItem,
 } from './types';
 import { renderPhotoFrame } from './renderer/canvasRenderer';
+import { applyLanguage, getStoredLang, setStoredLang, translateText } from './i18n';
 
 // Application State
 const isTauri = typeof window !== 'undefined' && !!(window as any).__TAURI_INTERNALS__;
@@ -71,6 +72,9 @@ const btnUiScaleUp = document.getElementById('btn-ui-scale-up') as HTMLButtonEle
 const themeToggleBtn = document.getElementById('btn-theme-toggle') as HTMLButtonElement;
 const themeTextEl = document.getElementById('theme-text') as HTMLSpanElement;
 
+// Language DOM
+const selectLanguageEl = document.getElementById('select-language') as HTMLSelectElement | null;
+
 // Progress Modal DOM
 const progressModalEl = document.getElementById('progress-modal') as HTMLDivElement;
 const progressTitleEl = document.getElementById('progress-title') as HTMLDivElement;
@@ -106,6 +110,8 @@ async function init() {
   syncUIWithConfig();
   syncExportSettingsUI();
   updateValueBadges();
+  if (selectLanguageEl) selectLanguageEl.value = getStoredLang();
+  applyLanguage();
   renderPhotoList();
   clearCanvas();
 }
@@ -137,11 +143,11 @@ function applyTheme(theme: 'dark' | 'light' | 'system') {
   localStorage.setItem('photomark_theme', theme);
 
   if (theme === 'system') {
-    themeTextEl.textContent = '跟随系统';
+    themeTextEl.textContent = translateText('跟随系统');
   } else if (resolved === 'light') {
-    themeTextEl.textContent = '深色模式';
+    themeTextEl.textContent = translateText('深色模式');
   } else {
-    themeTextEl.textContent = '浅色模式';
+    themeTextEl.textContent = translateText('浅色模式');
   }
 }
 
@@ -263,8 +269,8 @@ function setupProgressListeners() {
 
 function showProgressModal(title: string, status: string, percent: number, showCancel = false) {
   progressModalEl.style.display = 'flex';
-  progressTitleEl.textContent = title;
-  progressStatusEl.textContent = status;
+  progressTitleEl.textContent = translateText(title);
+  progressStatusEl.textContent = translateText(status);
   progressPercentEl.textContent = percent + '%';
   progressFillEl.style.width = percent + '%';
   if (progressCancelBtn) progressCancelBtn.style.display = showCancel ? 'block' : 'none';
@@ -317,6 +323,12 @@ function bindEvents() {
   // Follow OS theme changes while in system mode
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => {
     if (currentTheme === 'system') applyTheme('system');
+  });
+
+  // Language Switcher
+  selectLanguageEl?.addEventListener('change', () => {
+    setStoredLang(selectLanguageEl.value as 'zh' | 'en');
+    applyLanguage();
   });
 
   // Collapsible Inspector Groups
@@ -540,7 +552,7 @@ function bindEvents() {
       return;
     }
     exportCancelled = true;
-    if (progressCancelBtn) progressCancelBtn.textContent = '正在取消...';
+    if (progressCancelBtn) progressCancelBtn.textContent = translateText('正在取消...');
   });
 
   // Drag & Drop
@@ -921,7 +933,7 @@ function renderPhotoList() {
 
     const badge = document.createElement('div');
     badge.className = 'photo-exif-badge';
-    const camera = photo.exif.model || photo.exif.make || 'No EXIF';
+    const camera = photo.exif.model || photo.exif.make || (getStoredLang() === 'zh' ? '无 EXIF' : 'No EXIF');
     const lens = photo.exif.lens_model ? ' | ' + photo.exif.lens_model : '';
     const dims = photo.exif.width && photo.exif.height ? ' | ' + photo.exif.width + '×' + photo.exif.height : '';
     badge.textContent = camera + lens + dims;
@@ -1177,7 +1189,7 @@ async function handleBatchExport() {
     showProgressModal('准备批量导出...', '共 ' + photos.length + ' 张照片', 5, true);
     if (progressCancelBtn) {
       progressCancelBtn.style.display = 'block';
-      progressCancelBtn.textContent = '取消任务';
+      progressCancelBtn.textContent = translateText('取消任务');
     }
     if (progressFailuresEl) progressFailuresEl.style.display = 'none';
 
@@ -1251,11 +1263,11 @@ async function handleBatchExport() {
           .slice(0, 8)
           .map((f) => '<li>' + f.filename + ': ' + f.error + '</li>')
           .join('');
-        progressFailuresEl.innerHTML = '<div class="failure-title">失败明细 (前 8 条)</div><ul>' + items + '</ul>';
+        progressFailuresEl.innerHTML = translateText('<div class="failure-title">失败明细 (前 8 条)</div><ul>' + items + '</ul>');
       }
       if (progressCancelBtn) {
         progressCancelBtn.style.display = 'block';
-        progressCancelBtn.textContent = '关闭';
+        progressCancelBtn.textContent = translateText('关闭');
       }
     }
   } catch (err) {
@@ -1312,7 +1324,7 @@ async function handleBatchExportBrowser() {
 let toastTimer: any = null;
 
 function showToast(msg: string, type: 'success' | 'error' | 'info' = 'info') {
-  toastEl.textContent = msg;
+  toastEl.textContent = translateText(msg);
   toastEl.className = 'toast ' + type;
   toastEl.style.display = 'block';
   if (toastTimer) clearTimeout(toastTimer);
