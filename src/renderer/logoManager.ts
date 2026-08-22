@@ -20,6 +20,20 @@ export const BRAND_LOGOS: BrandLogo[] = [
   { id: 'sigma', name: 'SIGMA', lightSvg: '/logos/sigma-w.svg', darkSvg: '/logos/sigma-b.svg' },
   { id: 'apple', name: 'Apple', lightSvg: '/logos/apple-w.svg', darkSvg: '/logos/apple.svg' },
   { id: 'zeiss', name: 'ZEISS', lightSvg: '/logos/zeiss-w.svg', darkSvg: '/logos/zeiss.svg' },
+  { id: 'xiaomi', name: 'Xiaomi', lightSvg: '/logos/xiaomi-w.svg', darkSvg: '/logos/xiaomi-b.svg' },
+  { id: 'huawei', name: 'HUAWEI', lightSvg: '/logos/huawei-w.svg', darkSvg: '/logos/huawei-b.svg' },
+  { id: 'honor', name: 'HONOR', lightSvg: '/logos/honor-w.svg', darkSvg: '/logos/honor-b.svg' },
+  { id: 'oppo', name: 'OPPO', lightSvg: '/logos/oppo-w.svg', darkSvg: '/logos/oppo-b.svg' },
+  { id: 'vivo', name: 'vivo', lightSvg: '/logos/vivo-w.svg', darkSvg: '/logos/vivo-b.svg' },
+  { id: 'oneplus', name: 'OnePlus', lightSvg: '/logos/oneplus-w.svg', darkSvg: '/logos/oneplus-b.svg' },
+  { id: 'realme', name: 'realme', lightSvg: '/logos/realme-w.svg', darkSvg: '/logos/realme-b.svg' },
+  { id: 'samsung', name: 'SAMSUNG', lightSvg: '/logos/samsung-w.svg', darkSvg: '/logos/samsung-b.svg' },
+  { id: 'google', name: 'Google Pixel', lightSvg: '/logos/google-w.svg', darkSvg: '/logos/google-b.svg' },
+  { id: 'motorola', name: 'Motorola', lightSvg: '/logos/motorola-w.svg', darkSvg: '/logos/motorola-b.svg' },
+  { id: 'nokia', name: 'NOKIA', lightSvg: '/logos/nokia-w.svg', darkSvg: '/logos/nokia-b.svg' },
+  { id: 'meizu', name: 'MEIZU', lightSvg: '/logos/meizu-w.svg', darkSvg: '/logos/meizu-b.svg' },
+  { id: 'zte', name: 'ZTE', lightSvg: '/logos/zte-w.svg', darkSvg: '/logos/zte-b.svg' },
+  { id: 'lenovo', name: 'Lenovo', lightSvg: '/logos/lenovo-w.svg', darkSvg: '/logos/lenovo-b.svg' },
 ];
 
 const imageCache: Map<string, HTMLImageElement> = new Map();
@@ -41,6 +55,20 @@ export function detectBrandId(make?: string, model?: string): string | null {
   if (text.includes('ricoh') || text.includes('gr iii') || text.includes('gr ii')) return 'ricoh';
   if (text.includes('pentax')) return 'pentax';
   if (text.includes('sigma')) return 'sigma';
+  if (text.includes('honor') || text.includes('荣耀')) return 'honor';
+  if (text.includes('huawei') || text.includes('华为')) return 'huawei';
+  if (text.includes('xiaomi') || text.includes('redmi') || text.includes('mi ') || text.startsWith('mi ')) return 'xiaomi';
+  if (text.includes('oppo')) return 'oppo';
+  if (text.includes('vivo') || text.includes('iqoo')) return 'vivo';
+  if (text.includes('oneplus') || text.includes('one plus')) return 'oneplus';
+  if (text.includes('realme') || text.includes('真我')) return 'realme';
+  if (text.includes('samsung')) return 'samsung';
+  if (text.includes('google') || text.includes('pixel')) return 'google';
+  if (text.includes('motorola')) return 'motorola';
+  if (text.includes('nokia')) return 'nokia';
+  if (text.includes('meizu') || text.includes('魅族')) return 'meizu';
+  if (text.includes('zte') || text.includes('中兴')) return 'zte';
+  if (text.includes('lenovo') || text.includes('联想')) return 'lenovo';
   if (text.includes('apple') || text.includes('iphone')) return 'apple';
   if (text.includes('zeiss')) return 'zeiss';
 

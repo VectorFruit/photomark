@@ -43,10 +43,12 @@
 * **可调毛玻璃模糊度**：自研 3-Pass 卷积模糊引擎，支持 15 ~ 150 深度渐变调节。
 * **立体投影与圆角**：自由调节主图阴影深度（Drop Shadow）与圆角弧度。
 
-### 3. 相机品牌矢量 Logo 自动匹配
-内置 20+ 款主流相机与光学品牌高精度矢量 Logo，根据 EXIF 自动识别并匹配深浅色版：
+### 3. 相机 / 手机品牌矢量 Logo 自动匹配
+内置 30+ 款主流相机、光学与手机品牌高精度矢量 Logo，根据 EXIF 自动识别并匹配深浅色版：
 * 索尼 (Sony)、佳能 (Canon)、尼康 (Nikon)、徕卡 (Leica)、富士 (Fujifilm)
-* 哈苏 (Hasselblad)、松下 (Panasonic)、奥林巴斯 (Olympus)、大疆 (DJI)、理光 (Ricoh)、蔡司 (Zeiss)、苹果 (Apple) 等。
+* 哈苏 (Hasselblad)、松下 (Panasonic)、奥林巴斯 (Olympus)、大疆 (DJI)、理光 (Ricoh)、蔡司 (Zeiss)、苹果 (Apple)
+* 小米 (Xiaomi)、华为 (HUAWEI)、荣耀 (HONOR)、OPPO、vivo、一加 (OnePlus)、真我 (realme)
+* 三星 (Samsung)、Google Pixel、摩托罗拉 (Motorola)、诺基亚 (Nokia)、魅族 (MEIZU)、中兴 (ZTE)、联想 (Lenovo) 等。
 
 ### 4. 极致人机交互体验
 * **实时进度条**：Tauri 2.0 异步事件驱动，照片解析与批量导出具备实时动态进度弹窗。
@@ -145,7 +147,7 @@ photomark/
 │   ├── main.ts                # 主控控制器（事件绑定、UI 缩放、主题切换）
 │   ├── styles.css             # 深浅双模现代设计系统
 │   └── types.ts               # TypeScript 接口模型
-├── public/logos/              # 20+ 款品牌高精度矢量 SVG
+├── public/logos/              # 30+ 款品牌高精度矢量 SVG
 ├── PKGBUILD                   # Arch Linux 打包规范
 ├── build-appimage.sh          # AppImage 一键打包脚本
 ├── CONTRIBUTING.md            # 贡献指南
