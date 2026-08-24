@@ -1,0 +1,638 @@
+{
+ "version": "exiftool-nikon-lensids",
+ "count": 158,
+ "lenses": [
+  {
+   "spec": "10-17|3.5-4.5",
+   "name": "Tokina AT-X 107 AF DX Fisheye (AF 10-17mm f/3.5-4.5)"
+  },
+  {
+   "spec": "10-20|4.5-5.6",
+   "name": "AF-P DX Nikkor 10-20mm f/4.5-5.6G VR"
+  },
+  {
+   "spec": "10-24|3.5-4.5",
+   "name": "AF-S DX Nikkor 10-24mm f/3.5-4.5G ED"
+  },
+  {
+   "spec": "10.5|2.8",
+   "name": "AF DX Fisheye-Nikkor 10.5mm f/2.8G ED"
+  },
+  {
+   "spec": "100-300|4",
+   "name": "Tokina AT-X 340 AF (AF 100-300mm f/4)"
+  },
+  {
+   "spec": "100-400|4.5-6.3",
+   "name": "Tamron 100-400mm f/4.5-6.3 Di VC USD"
+  },
+  {
+   "spec": "100|2",
+   "name": "Zeiss Milvus 100mm f/2 Macro"
+  },
+  {
+   "spec": "100|2.8",
+   "name": "Tokina AT-X M100 AF PRO D (AF 100mm f/2.8 Macro)"
+  },
+  {
+   "spec": "105|1.4",
+   "name": "AF-S Nikkor 105mm f/1.4E ED"
+  },
+  {
+   "spec": "105|2",
+   "name": "AF DC-Nikkor 105mm f/2D"
+  },
+  {
+   "spec": "105|2.5",
+   "name": "Nikkor 105mm f/2.5 AiS"
+  },
+  {
+   "spec": "105|2.8",
+   "name": "AF Micro-Nikkor 105mm f/2.8"
+  },
+  {
+   "spec": "11-16|2.8",
+   "name": "Tokina AT-X 116 PRO DX (AF 11-16mm f/2.8)"
+  },
+  {
+   "spec": "11-18|4.5-5.6",
+   "name": "Tamron SP AF 11-18mm f/4.5-5.6 Di II LD Aspherical (IF) (A13)"
+  },
+  {
+   "spec": "11-20|2.8",
+   "name": "Tokina AT-X 11-20 F2.8 PRO DX (AF 11-20mm f/2.8)"
+  },
+  {
+   "spec": "11|4",
+   "name": "Irix 11mm f/4 Firefly"
+  },
+  {
+   "spec": "12-24|4",
+   "name": "Tokina AT-X 124 AF PRO DX (AF 12-24mm f/4)"
+  },
+  {
+   "spec": "12-28|4",
+   "name": "Tokina AT-X 12-28 PRO DX (AF 12-28mm f/4)"
+  },
+  {
+   "spec": "120-300|2.8",
+   "name": "AF-S Nikkor 120-300mm f/2.8E FL ED SR VR"
+  },
+  {
+   "spec": "1200-1700|5.6-8",
+   "name": "Zoom-Nikkor 1200-1700mm f/5.6-8 P ED IF"
+  },
+  {
+   "spec": "12|2.8",
+   "name": "Samyang 12mm f/2.8 ED AS NCS Fish-Eye"
+  },
+  {
+   "spec": "135|2",
+   "name": "AF DC-Nikkor 135mm f/2"
+  },
+  {
+   "spec": "14-24|2.8",
+   "name": "AF-S Zoom-Nikkor 14-24mm f/2.8G ED"
+  },
+  {
+   "spec": "14|2.4",
+   "name": "Samyang 14mm f/2.4 Premium"
+  },
+  {
+   "spec": "14|2.8",
+   "name": "AF Nikkor ED 14mm f/2.8D"
+  },
+  {
+   "spec": "15-30|2.8",
+   "name": "Tamron SP 15-30mm f/2.8 Di VC USD (A012)"
+  },
+  {
+   "spec": "150-600|5-6.3",
+   "name": "Tamron SP AF 150-600mm f/5-6.3 VC USD (A011)"
+  },
+  {
+   "spec": "15|2.4",
+   "name": "Irix 15mm f/2.4 Firefly"
+  },
+  {
+   "spec": "16-28|2.8",
+   "name": "Tokina AT-X 16-28 AF PRO FX (AF 16-28mm f/2.8)"
+  },
+  {
+   "spec": "16-300|3.5-6.3",
+   "name": "Tamron 16-300mm f/3.5-6.3 Di II VC PZD (B016)"
+  },
+  {
+   "spec": "16-35|4",
+   "name": "AF-S Nikkor 16-35mm f/4G ED VR"
+  },
+  {
+   "spec": "16-50|2.8",
+   "name": "Tokina AT-X 165 PRO DX (AF 16-50mm f/2.8)"
+  },
+  {
+   "spec": "16-80|2.8-4",
+   "name": "AF-S DX Nikkor 16-80mm f/2.8-4E ED VR"
+  },
+  {
+   "spec": "16-85|3.5-5.6",
+   "name": "AF-S DX VR Zoom-Nikkor 16-85mm f/3.5-5.6G ED"
+  },
+  {
+   "spec": "16|2",
+   "name": "Samyang 16mm f/2.0 ED AS UMC CS"
+  },
+  {
+   "spec": "16|2.8",
+   "name": "AF Fisheye Nikkor 16mm f/2.8D"
+  },
+  {
+   "spec": "17-35|2.8",
+   "name": "AF-S Nikkor 17-35mm f/2.8D IF-ED"
+  },
+  {
+   "spec": "17-35|2.8-4",
+   "name": "Tamron SP AF 17-35mm f/2.8-4 Di LD Aspherical (IF) (A05)"
+  },
+  {
+   "spec": "17-35|4",
+   "name": "Tokina AT-X 17-35 F4 PRO FX (AF 17-35mm f/4)"
+  },
+  {
+   "spec": "17-50|2.8",
+   "name": "Tamron SP AF 17-50mm f/2.8 XR Di II LD Aspherical (IF) (A16)"
+  },
+  {
+   "spec": "17-55|2.8",
+   "name": "AF-S DX Zoom-Nikkor 17-55mm f/2.8G IF-ED"
+  },
+  {
+   "spec": "17|3.5",
+   "name": "Tokina AT-X 17 AF PRO (AF 17mm f/3.5)"
+  },
+  {
+   "spec": "18-105|3.5-5.6",
+   "name": "AF-S DX VR Zoom-Nikkor 18-105mm f/3.5-5.6G ED"
+  },
+  {
+   "spec": "18-135|3.5-5.6",
+   "name": "AF-S DX Zoom-Nikkor 18-135mm f/3.5-5.6G IF-ED"
+  },
+  {
+   "spec": "18-140|3.5-5.6",
+   "name": "AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"
+  },
+  {
+   "spec": "18-200|3.5-5.6",
+   "name": "AF-S DX VR Zoom-Nikkor 18-200mm f/3.5-5.6G IF-ED"
+  },
+  {
+   "spec": "18-200|3.5-6.3",
+   "name": "Tamron AF 18-200mm f/3.5-6.3 XR Di II LD Aspherical (IF) (A14)"
+  },
+  {
+   "spec": "18-250|3.5-6.3",
+   "name": "Tamron AF 18-250mm f/3.5-6.3 Di II LD Aspherical (IF) Macro (A18)"
+  },
+  {
+   "spec": "18-270|3.5-6.3",
+   "name": "Tamron AF 18-270mm f/3.5-6.3 Di II VC LD Aspherical (IF) Macro (B003)"
+  },
+  {
+   "spec": "18-300|3.5-5.6",
+   "name": "AF-S DX Nikkor 18-300mm f/3.5-5.6G ED VR"
+  },
+  {
+   "spec": "18-300|3.5-6.3",
+   "name": "AF-S DX Nikkor 18-300mm f/3.5-6.3G ED VR"
+  },
+  {
+   "spec": "18-35|3.5-4.5",
+   "name": "AF Zoom-Nikkor 18-35mm f/3.5-4.5D IF-ED"
+  },
+  {
+   "spec": "18-400|3.5-6.3",
+   "name": "Tamron 18-400mm f/3.5-6.3 Di II VC HLD (B028)"
+  },
+  {
+   "spec": "18-55|3.5-5.6",
+   "name": "AF-S DX Zoom-Nikkor 18-55mm f/3.5-5.6G ED"
+  },
+  {
+   "spec": "18-70|3.5-4.5",
+   "name": "AF-S DX Zoom-Nikkor 18-70mm f/3.5-4.5G IF-ED"
+  },
+  {
+   "spec": "180-400|4",
+   "name": "AF-S Nikkor 180-400mm f/4E TC1.4 FL ED VR"
+  },
+  {
+   "spec": "180|2.8",
+   "name": "AF Nikkor 180mm f/2.8 IF-ED"
+  },
+  {
+   "spec": "180|3.5",
+   "name": "Tamron SP AF 180mm f/3.5 Di Model (B01)"
+  },
+  {
+   "spec": "18|2.8",
+   "name": "AF Nikkor 18mm f/2.8D"
+  },
+  {
+   "spec": "19-35|3.5-4.5",
+   "name": "Tamron AF 19-35mm f/3.5-4.5 (A10)"
+  },
+  {
+   "spec": "19|4",
+   "name": "PC Nikkor 19mm f/4E ED"
+  },
+  {
+   "spec": "20-40|2.7-3.5",
+   "name": "Tamron SP AF 20-40mm f/2.7-3.5 (166D)"
+  },
+  {
+   "spec": "200-400|4",
+   "name": "AF-S VR Zoom-Nikkor 200-400mm f/4G IF-ED"
+  },
+  {
+   "spec": "200-400|5.6",
+   "name": "Tamron AF 200-400mm f/5.6 LD IF (75D)"
+  },
+  {
+   "spec": "200-500|5-6.3",
+   "name": "Tamron SP AF 200-500mm f/5-6.3 Di LD (IF) (A08)"
+  },
+  {
+   "spec": "200-500|5.6",
+   "name": "AF-S Nikkor 200-500mm f/5.6E ED VR"
+  },
+  {
+   "spec": "200|2",
+   "name": "AF-S VR Nikkor 200mm f/2G IF-ED"
+  },
+  {
+   "spec": "200|4",
+   "name": "AF Micro-Nikkor 200mm f/4D IF-ED"
+  },
+  {
+   "spec": "20|1.8",
+   "name": "AF-S Nikkor 20mm f/1.8G ED"
+  },
+  {
+   "spec": "20|2.8",
+   "name": "AF Nikkor 20mm f/2.8"
+  },
+  {
+   "spec": "24-120|3.5-5.6",
+   "name": "AF Zoom-Nikkor 24-120mm f/3.5-5.6D IF"
+  },
+  {
+   "spec": "24-120|4",
+   "name": "AF-S Nikkor 24-120mm f/4G ED VR"
+  },
+  {
+   "spec": "24-135|3.5-5.6",
+   "name": "Tamron SP AF 24-135mm f/3.5-5.6 AD Aspherical (IF) Macro (190D)"
+  },
+  {
+   "spec": "24-200|3.5-5.6",
+   "name": "Tokina AT-X 242 AF (AF 24-200mm f/3.5-5.6)"
+  },
+  {
+   "spec": "24-50|3.3-4.5",
+   "name": "AF Zoom-Nikkor 24-50mm f/3.3-4.5"
+  },
+  {
+   "spec": "24-70|2.8",
+   "name": "AF-S Zoom-Nikkor 24-70mm f/2.8G ED"
+  },
+  {
+   "spec": "24-70|3.5-5.6",
+   "name": "IX-Nikkor 24-70mm f/3.5-5.6"
+  },
+  {
+   "spec": "24-85|2.8-4",
+   "name": "AF Zoom-Nikkor 24-85mm f/2.8-4D IF"
+  },
+  {
+   "spec": "24-85|3.5-4.5",
+   "name": "AF-S Zoom-Nikkor 24-85mm f/3.5-4.5G IF-ED"
+  },
+  {
+   "spec": "24|1.4",
+   "name": "AF-S Nikkor 24mm f/1.4G ED"
+  },
+  {
+   "spec": "24|1.8",
+   "name": "AF-S Nikkor 24mm f/1.8G ED"
+  },
+  {
+   "spec": "24|2.8",
+   "name": "AF Nikkor 24mm f/2.8"
+  },
+  {
+   "spec": "24|3.5",
+   "name": "PC-E Nikkor 24mm f/3.5D ED"
+  },
+  {
+   "spec": "28-100|3.5-5.6",
+   "name": "AF Zoom-Nikkor 28-100mm f/3.5-5.6G"
+  },
+  {
+   "spec": "28-105|2.8",
+   "name": "Tamron SP AF 28-105mm f/2.8 LD Aspherical IF (176D)"
+  },
+  {
+   "spec": "28-105|3.5-4.5",
+   "name": "AF Zoom-Nikkor 28-105mm f/3.5-4.5D IF"
+  },
+  {
+   "spec": "28-200|3.5-5.6",
+   "name": "AF Zoom-Nikkor 28-200mm f/3.5-5.6D IF"
+  },
+  {
+   "spec": "28-200|3.8-5.6",
+   "name": "Tamron AF 28-200mm f/3.8-5.6 XR Aspherical (IF) Macro (A03N)"
+  },
+  {
+   "spec": "28-300|3.5-5.6",
+   "name": "AF-S Nikkor 28-300mm f/3.5-5.6G ED VR"
+  },
+  {
+   "spec": "28-300|3.5-6.3",
+   "name": "Tamron 28-300mm f/3.5-6.3 Di VC PZD A010"
+  },
+  {
+   "spec": "28-70|2.8",
+   "name": "AF-S Zoom-Nikkor 28-70mm f/2.8D IF-ED"
+  },
+  {
+   "spec": "28-70|2.8-4.5",
+   "name": "Tokina AF 287 SD (AF 28-70mm f/2.8-4.5)"
+  },
+  {
+   "spec": "28-70|3.5-4.5",
+   "name": "AF Zoom-Nikkor 28-70mm f/3.5-4.5"
+  },
+  {
+   "spec": "28-75|2.8",
+   "name": "Tamron SP AF 28-75mm f/2.8 XR Di LD Aspherical (IF) Macro (A09)"
+  },
+  {
+   "spec": "28-80|2.8",
+   "name": "Tokina AT-X 280 AF PRO (AF 28-80mm f/2.8)"
+  },
+  {
+   "spec": "28-80|3.3-5.6",
+   "name": "AF Zoom-Nikkor 28-80mm f/3.3-5.6G"
+  },
+  {
+   "spec": "28-80|3.5-5.6",
+   "name": "AF Zoom-Nikkor 28-80mm f/3.5-5.6D"
+  },
+  {
+   "spec": "28-85|3.5-4.5",
+   "name": "AF Zoom-Nikkor 28-85mm f/3.5-4.5"
+  },
+  {
+   "spec": "28|1.4",
+   "name": "AF Nikkor 28mm f/1.4D"
+  },
+  {
+   "spec": "28|1.8",
+   "name": "AF-S Nikkor 28mm f/1.8G"
+  },
+  {
+   "spec": "28|2.8",
+   "name": "AF Nikkor 28mm f/2.8"
+  },
+  {
+   "spec": "30-60|4-5.6",
+   "name": "IX-Nikkor 30-60mm f/4-5.6"
+  },
+  {
+   "spec": "300|2.8",
+   "name": "AF Nikkor 300mm f/2.8 IF-ED"
+  },
+  {
+   "spec": "300|4",
+   "name": "AF Nikkor 300mm f/4 IF-ED"
+  },
+  {
+   "spec": "35-105|3.5-4.5",
+   "name": "AF Zoom-Nikkor 35-105mm f/3.5-4.5"
+  },
+  {
+   "spec": "35-135|3.5-4.5",
+   "name": "AF Zoom-Nikkor 35-135mm f/3.5-4.5"
+  },
+  {
+   "spec": "35-150|2.8-4",
+   "name": "Tamron 35-150mm f/2.8-4 Di VC OSD (A043)"
+  },
+  {
+   "spec": "35-300|4.5-6.7",
+   "name": "Tokina AF 353 (AF 35-300mm f/4.5-6.7)"
+  },
+  {
+   "spec": "35-70|2.8",
+   "name": "AF Zoom-Nikkor 35-70mm f/2.8"
+  },
+  {
+   "spec": "35-70|3.3-4.5",
+   "name": "AF Zoom-Nikkor 35-70mm f/3.3-4.5"
+  },
+  {
+   "spec": "35-80|4-5.6",
+   "name": "AF Zoom-Nikkor 35-80mm f/4-5.6D"
+  },
+  {
+   "spec": "35|1.4",
+   "name": "AF-S Nikkor 35mm f/1.4G"
+  },
+  {
+   "spec": "35|1.8",
+   "name": "AF-S DX Nikkor 35mm f/1.8G"
+  },
+  {
+   "spec": "35|2",
+   "name": "AF Nikkor 35mm f/2"
+  },
+  {
+   "spec": "35|2.8",
+   "name": "Tokina AT-X M35 PRO DX (AF 35mm f/2.8 Macro)"
+  },
+  {
+   "spec": "400|2.8",
+   "name": "AF-I Nikkor 400mm f/2.8D IF-ED"
+  },
+  {
+   "spec": "400|5.6",
+   "name": "Tokina AT-X 400 AF SD (AF 400mm f/5.6)"
+  },
+  {
+   "spec": "40|2.8",
+   "name": "AF-S DX Micro Nikkor 40mm f/2.8G"
+  },
+  {
+   "spec": "45|1.8",
+   "name": "Tamron SP 45mm f/1.8 Di VC USD (F013)"
+  },
+  {
+   "spec": "45|2.8",
+   "name": "Nikkor 45mm f/2.8 P"
+  },
+  {
+   "spec": "50-135|2.8",
+   "name": "Tokina AT-X 535 PRO DX (AF 50-135mm f/2.8)"
+  },
+  {
+   "spec": "500|4",
+   "name": "Nikkor 500mm f/4 P ED IF"
+  },
+  {
+   "spec": "500|5.6",
+   "name": "AF-S Nikkor 500mm f/5.6E PF ED VR"
+  },
+  {
+   "spec": "50|1.4",
+   "name": "AF Nikkor 50mm f/1.4"
+  },
+  {
+   "spec": "50|1.8",
+   "name": "AF Nikkor 50mm f/1.8"
+  },
+  {
+   "spec": "50|2",
+   "name": "Zeiss Milvus 50mm f/2 Macro"
+  },
+  {
+   "spec": "55-200|4-5.6",
+   "name": "AF-S DX Zoom-Nikkor 55-200mm f/4-5.6G ED"
+  },
+  {
+   "spec": "55-300|4.5-5.6",
+   "name": "AF-S DX Nikkor 55-300mm f/4.5-5.6G ED VR"
+  },
+  {
+   "spec": "55|2.8",
+   "name": "AF Micro-Nikkor 55mm f/2.8"
+  },
+  {
+   "spec": "58|1.4",
+   "name": "AF-S Nikkor 58mm f/1.4G"
+  },
+  {
+   "spec": "60-180|4-5.6",
+   "name": "IX-Nikkor 60-180mm f/4-5.6"
+  },
+  {
+   "spec": "60-180|4.5-5.6",
+   "name": "IX-Nikkor 60-180mm f/4.5-5.6"
+  },
+  {
+   "spec": "600|4",
+   "name": "AF-I Nikkor 600mm f/4D IF-ED"
+  },
+  {
+   "spec": "60|2",
+   "name": "Tamron SP AF 60mm f/2.0 Di II Macro 1:1 (G005)"
+  },
+  {
+   "spec": "60|2.8",
+   "name": "AF Micro-Nikkor 60mm f/2.8"
+  },
+  {
+   "spec": "70-180|4.5-5.6",
+   "name": "AF Zoom-Micro Nikkor 70-180mm f/4.5-5.6D ED"
+  },
+  {
+   "spec": "70-200|2.8",
+   "name": "AF-S VR Zoom-Nikkor 70-200mm f/2.8G IF-ED"
+  },
+  {
+   "spec": "70-200|4",
+   "name": "AF-S Nikkor 70-200mm f/4G ED VR"
+  },
+  {
+   "spec": "70-210|4",
+   "name": "AF Zoom-Nikkor 70-210mm f/4"
+  },
+  {
+   "spec": "70-210|4-5.6",
+   "name": "AF Nikkor 70-210mm f/4-5.6"
+  },
+  {
+   "spec": "70-300|4-5.6",
+   "name": "AF Zoom-Nikkor 70-300mm f/4-5.6D ED"
+  },
+  {
+   "spec": "70-300|4.5-5.6",
+   "name": "AF-S VR Zoom-Nikkor 70-300mm f/4.5-5.6G IF-ED"
+  },
+  {
+   "spec": "70-300|4.5-6.3",
+   "name": "AF-P DX Nikkor 70-300mm f/4.5-6.3G VR"
+  },
+  {
+   "spec": "75-240|4.5-5.6",
+   "name": "AF Zoom-Nikkor 75-240mm f/4.5-5.6D"
+  },
+  {
+   "spec": "75-300|4.5-5.6",
+   "name": "AF Zoom-Nikkor 75-300mm f/4.5-5.6"
+  },
+  {
+   "spec": "8-15|3.5-4.5",
+   "name": "AF-S Fisheye Nikkor 8-15mm f/3.5-4.5E ED"
+  },
+  {
+   "spec": "80-200|2.8",
+   "name": "AF Zoom-Nikkor 80-200mm f/2.8 ED"
+  },
+  {
+   "spec": "80-200|4.5-5.6",
+   "name": "AF Zoom-Nikkor 80-200mm f/4.5-5.6D"
+  },
+  {
+   "spec": "80-400|4.5-5.6",
+   "name": "AF VR Zoom-Nikkor 80-400mm f/4.5-5.6D ED"
+  },
+  {
+   "spec": "800|5.6",
+   "name": "AF-S VR Nikkor 800mm f/5.6E FL ED"
+  },
+  {
+   "spec": "85|1.4",
+   "name": "AF Nikkor 85mm f/1.4D IF"
+  },
+  {
+   "spec": "85|1.8",
+   "name": "AF Nikkor 85mm f/1.8"
+  },
+  {
+   "spec": "85|2.8",
+   "name": "PC Micro-Nikkor 85mm f/2.8D"
+  },
+  {
+   "spec": "85|3.5",
+   "name": "AF-S DX Micro Nikkor 85mm f/3.5G ED VR"
+  },
+  {
+   "spec": "8|2.8",
+   "name": "Fisheye Nikkor 8mm f/2.8 AiS"
+  },
+  {
+   "spec": "8|3.5",
+   "name": "Samyang 8mm f/3.5 Fish-Eye CS"
+  },
+  {
+   "spec": "90|2.5",
+   "name": "Tamron SP AF 90mm f/2.5 (52E)"
+  },
+  {
+   "spec": "90|2.8",
+   "name": "Tamron SP AF 90mm f/2.8 Macro 1:1 (72E)"
+  }
+ ]
+}

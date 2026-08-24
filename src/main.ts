@@ -12,6 +12,7 @@ import {
 } from './types';
 import { renderPhotoFrame } from './renderer/canvasRenderer';
 import { applyLanguage, getStoredLang, setStoredLang, translateText } from './i18n';
+import lensDatabase from './lensDatabase.json';
 
 // Application State
 const isTauri = typeof window !== 'undefined' && !!(window as any).__TAURI_INTERNALS__;
@@ -758,31 +759,30 @@ async function importBrowserFiles(files: File[]) {
   }
 }
 
-// Helper: resolve a generic "18-140mm f/3.5-5.6" lens spec back to a readable lens name.
-// Lightroom/Camera Raw writes aux:LensID and aux:Lens into XMP; the numeric ID is
-// usually not readable by itself, so we keep a small Nikon table for common lenses.
+// Helper: resolve generic lens specs back to official lens names.
+// The database is generated from ExifTool's Nikon LensID table and is keyed
+// by the normalized focal-length/aperture spec, which disambiguates lenses
+// that share the same numeric Lightroom LensID.
+interface LensDbEntry { spec: string; name: string; }
+const LENS_DB = (lensDatabase as { lenses: LensDbEntry[] }).lenses;
+const LENS_DB_MAP = new Map(LENS_DB.map((e) => [e.spec, e.name]));
+
 const GENERIC_LENS_SPEC_RE = /^[\d.]+\s*-\s*[\d.]+\s*mm\s*f\/[\d.]+(?:\s*-\s*[\d.]+)?/i;
-const LENS_NAME_BY_ID: Record<number, string> = {
-  160: 'AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR',
-};
-const LENS_NAME_BY_SPEC: Record<string, string> = {
-  '18.0-140.0 mm f/3.5-5.6': 'AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR',
-  '18.0-140.0mm f/3.5-5.6': 'AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR',
-  '18-140mm f/3.5-5.6': 'AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR',
-};
 
-function resolveLensName(lensModel: string, lensId: any, lens: string | undefined): string | null {
+function extractLensSpecKey(text: string): string | null {
+  const m = text.match(/(\d+(?:\.\d+)?)(?:\s*-\s*(\d+(?:\.\d+)?))?\s*mm\s*f\/\s*(\d+(?:\.\d+)?)(?:\s*[-/]\s*(\d+(?:\.\d+)?))?/i);
+  if (!m) return null;
+  const a = String(Number(m[1]));
+  const b = m[2] ? String(Number(m[2])) : '';
+  const c = String(Number(m[3]));
+  const d = m[4] ? String(Number(m[4])) : '';
+  return b ? (d ? a + '-' + b + '|' + c + '-' + d : a + '-' + b + '|' + c) : a + '|' + c;
+}
+
+function resolveLensName(lensModel: string, lens: string | undefined): string | null {
   if (!GENERIC_LENS_SPEC_RE.test(lensModel.trim())) return null;
-
-  const numericId = Number(lensId);
-  if (Number.isInteger(numericId) && LENS_NAME_BY_ID[numericId]) {
-    return LENS_NAME_BY_ID[numericId];
-  }
-
-  const spec = (lens || lensModel).replace(/\s+/g, ' ').trim();
-  if (LENS_NAME_BY_SPEC[spec]) return LENS_NAME_BY_SPEC[spec];
-
-  return null;
+  const key = extractLensSpecKey((lens || lensModel).replace(/\s+/g, ' ').trim());
+  return key ? LENS_DB_MAP.get(key) || null : null;
 }
 async function parseExifInBrowser(file: File): Promise<ExifData> {
   const exifr = await import('exifr');
@@ -809,7 +809,7 @@ async function parseExifInBrowser(file: File): Promise<ExifData> {
   const lens = getTag(['LensModel'], 42036);
   const lensText = lens ? String(lens).trim() : '';
   if (lensText) {
-    const resolved = resolveLensName(lensText, raw.LensID, raw.Lens || raw.LensInfo);
+    const resolved = resolveLensName(lensText, raw.Lens || raw.LensInfo);
     exif.lens_model = resolved || lensText;
   }
 
