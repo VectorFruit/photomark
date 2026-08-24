@@ -1,638 +1,6197 @@
 {
- "version": "exiftool-nikon-lensids",
- "count": 158,
+ "version": "exiftool-lens-ids",
+ "source": "ExifTool lens ID tables (Nikon/Canon/Sony/Sigma/Pentax/Olympus/Panasonic/Minolta/Samsung/Apple)",
+ "count": 1238,
  "lenses": [
   {
+   "make": "canon",
    "spec": "10-17|3.5-4.5",
-   "name": "Tokina AT-X 107 AF DX Fisheye (AF 10-17mm f/3.5-4.5)"
+   "name": "Tokina AT-X 107 AF DX 10-17mm f/3.5-4.5 Fisheye"
   },
   {
-   "spec": "10-20|4.5-5.6",
-   "name": "AF-P DX Nikkor 10-20mm f/4.5-5.6G VR"
+   "make": "canon",
+   "spec": "10-18|4.5-5.6",
+   "name": "Canon EF-S 10-18mm f/4.5-5.6 IS STM"
   },
   {
+   "make": "canon",
+   "spec": "10-18|4.5-6.3",
+   "name": "Canon RF-S 10-18mm F4.5-6.3 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "10-20|3.5",
+   "name": "Sigma 10-20mm f/3.5 EX DC HSM"
+  },
+  {
+   "make": "canon",
+   "spec": "10-20|4",
+   "name": "Canon RF 10-20mm F4 L IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "10-20|4-5.6",
+   "name": "Sigma 10-20mm f/4-5.6"
+  },
+  {
+   "make": "canon",
+   "spec": "10-22|3.5-4.5",
+   "name": "Canon EF-S 10-22mm f/3.5-4.5 USM"
+  },
+  {
+   "make": "canon",
    "spec": "10-24|3.5-4.5",
-   "name": "AF-S DX Nikkor 10-24mm f/3.5-4.5G ED"
+   "name": "Tamron 10-24mm f/3.5-4.5 Di II VC HLD (B023)"
   },
   {
-   "spec": "10.5|2.8",
-   "name": "AF DX Fisheye-Nikkor 10.5mm f/2.8G ED"
+   "make": "canon",
+   "spec": "100-200|4.5",
+   "name": "Canon EF 100-200mm f/4.5A"
   },
   {
+   "make": "canon",
+   "spec": "100-300|2.8",
+   "name": "Canon RF 100-300mm F2.8L IS USM + RF1.4x"
+  },
+  {
+   "make": "canon",
    "spec": "100-300|4",
-   "name": "Tokina AT-X 340 AF (AF 100-300mm f/4)"
+   "name": "Sigma 100-300mm f/4"
   },
   {
+   "make": "canon",
+   "spec": "100-300|4.5-5.6",
+   "name": "Canon EF 100-300mm f/4.5-5.6 USM"
+  },
+  {
+   "make": "canon",
+   "spec": "100-300|5.6",
+   "name": "Canon EF 100-300mm f/5.6L"
+  },
+  {
+   "make": "canon",
+   "spec": "100-400|4.5-5.6",
+   "name": "Canon EF 100-400mm f/4.5-5.6L IS II USM + 1.4x"
+  },
+  {
+   "make": "canon",
    "spec": "100-400|4.5-6.3",
-   "name": "Tamron 100-400mm f/4.5-6.3 Di VC USD"
+   "name": "Tamron 100-400mm f/4.5-6.3 Di VC USD A035E + 1.4x"
   },
   {
+   "make": "canon",
+   "spec": "100-400|5-6.3",
+   "name": "Sigma 100-400mm f/5-6.3 DG OS HSM"
+  },
+  {
+   "make": "canon",
+   "spec": "100-400|5.6-8",
+   "name": "Canon RF 100-400mm F5.6-8 IS USM + RF1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "100-500|4.5-7.1",
+   "name": "Canon RF 100-500mm F4.5-7.1L IS USM + RF1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "100|1.4",
+   "name": "Zeiss Otus 100mm f/1.4"
+  },
+  {
+   "make": "canon",
    "spec": "100|2",
-   "name": "Zeiss Milvus 100mm f/2 Macro"
+   "name": "Canon EF 100mm f/2 USM"
   },
   {
+   "make": "canon",
    "spec": "100|2.8",
-   "name": "Tokina AT-X M100 AF PRO D (AF 100mm f/2.8 Macro)"
+   "name": "Canon EF 100mm f/2.8L Macro IS USM"
   },
   {
+   "make": "canon",
+   "spec": "100|3.5",
+   "name": "Cosina 100mm f/3.5 Macro AF"
+  },
+  {
+   "make": "canon",
    "spec": "105|1.4",
-   "name": "AF-S Nikkor 105mm f/1.4E ED"
+   "name": "Sigma 105mm f/1.4 DG HSM"
   },
   {
-   "spec": "105|2",
-   "name": "AF DC-Nikkor 105mm f/2D"
+   "make": "canon",
+   "spec": "105|1.5",
+   "name": "Sigma 105mm f/1.5 FF High-speed Prime"
   },
   {
-   "spec": "105|2.5",
-   "name": "Nikkor 105mm f/2.5 AiS"
-  },
-  {
+   "make": "canon",
    "spec": "105|2.8",
-   "name": "AF Micro-Nikkor 105mm f/2.8"
+   "name": "Sigma 105mm f/2.8 EX DG OS HSM Macro"
   },
   {
+   "make": "canon",
+   "spec": "10|2.8",
+   "name": "Sigma 10mm f/2.8 EX DC Fisheye"
+  },
+  {
+   "make": "canon",
    "spec": "11-16|2.8",
-   "name": "Tokina AT-X 116 PRO DX (AF 11-16mm f/2.8)"
+   "name": "Tokina AT-X 116 AF Pro DX 11-16mm f/2.8"
   },
   {
-   "spec": "11-18|4.5-5.6",
-   "name": "Tamron SP AF 11-18mm f/4.5-5.6 Di II LD Aspherical (IF) (A13)"
-  },
-  {
+   "make": "canon",
    "spec": "11-20|2.8",
-   "name": "Tokina AT-X 11-20 F2.8 PRO DX (AF 11-20mm f/2.8)"
+   "name": "Tokina AT-X 11-20 F2.8 PRO DX Aspherical 11-20mm f/2.8"
   },
   {
+   "make": "canon",
+   "spec": "11-22|4-5.6",
+   "name": "Canon EF-M 11-22mm f/4-5.6 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "11-24|4",
+   "name": "Canon EF 11-24mm f/4L USM"
+  },
+  {
+   "make": "canon",
    "spec": "11|4",
-   "name": "Irix 11mm f/4 Firefly"
+   "name": "Irix 11mm f/4 or 15mm f/2.4"
   },
   {
+   "make": "canon",
    "spec": "12-24|4",
-   "name": "Tokina AT-X 124 AF PRO DX (AF 12-24mm f/4)"
+   "name": "Tokina AT-X 124 AF Pro DX 12-24mm f/4"
   },
   {
+   "make": "canon",
+   "spec": "12-24|4.5-5.6",
+   "name": "Sigma 12-24mm f/4.5-5.6 EX DG ASPHERICAL HSM"
+  },
+  {
+   "make": "canon",
    "spec": "12-28|4",
-   "name": "Tokina AT-X 12-28 PRO DX (AF 12-28mm f/4)"
+   "name": "Tokina AT-X 12-28 PRO DX 12-28mm f/4"
   },
   {
+   "make": "canon",
    "spec": "120-300|2.8",
-   "name": "AF-S Nikkor 120-300mm f/2.8E FL ED SR VR"
+   "name": "Sigma APO 120-300mm f/2.8 EX DG OS HSM"
   },
   {
-   "spec": "1200-1700|5.6-8",
-   "name": "Zoom-Nikkor 1200-1700mm f/5.6-8 P ED IF"
+   "make": "canon",
+   "spec": "120-400|4.5-5.6",
+   "name": "Sigma 120-400mm f/4.5-5.6 APO DG OS HSM"
   },
   {
-   "spec": "12|2.8",
-   "name": "Samyang 12mm f/2.8 ED AS NCS Fish-Eye"
+   "make": "canon",
+   "spec": "1200|5.6",
+   "name": "Canon EF 1200mm f/5.6L USM"
   },
   {
+   "make": "canon",
+   "spec": "1200|8",
+   "name": "Canon RF 1200mm F8L IS USM + RF1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "125|2.5",
+   "name": "Voigtlander APO Lanthar 125mm F2.5 SL Macro"
+  },
+  {
+   "make": "canon",
+   "spec": "12|1.4",
+   "name": "Sigma 12mm F1.4 DC | C"
+  },
+  {
+   "make": "canon",
+   "spec": "135|1.8",
+   "name": "Canon RF 135mm F1.8 L IS USM"
+  },
+  {
+   "make": "canon",
    "spec": "135|2",
-   "name": "AF DC-Nikkor 135mm f/2"
+   "name": "Canon EF 135mm f/2L USM"
   },
   {
+   "make": "canon",
+   "spec": "135|2.8",
+   "name": "Canon EF 135mm f/2.8 Soft"
+  },
+  {
+   "make": "canon",
+   "spec": "135|4",
+   "name": "Canon TS-E 135mm f/4L Macro"
+  },
+  {
+   "make": "canon",
    "spec": "14-24|2.8",
-   "name": "AF-S Zoom-Nikkor 14-24mm f/2.8G ED"
+   "name": "Sigma 14-24mm f/2.8 DG HSM | A"
   },
   {
+   "make": "canon",
+   "spec": "14-30|4-6.3",
+   "name": "Canon RF-S 14-30mm F4-6.3 IS STM PZ"
+  },
+  {
+   "make": "canon",
+   "spec": "14-35|4",
+   "name": "Canon RF 14-35mm F4L IS USM"
+  },
+  {
+   "make": "canon",
+   "spec": "14|1.4",
+   "name": "Canon RF 14mm F1.4 L VCM"
+  },
+  {
+   "make": "canon",
+   "spec": "14|1.8",
+   "name": "Sigma 14mm f/1.8 DG HSM | A"
+  },
+  {
+   "make": "canon",
    "spec": "14|2.4",
-   "name": "Samyang 14mm f/2.4 Premium"
+   "name": "Rokinon SP 14mm f/2.4"
   },
   {
+   "make": "canon",
    "spec": "14|2.8",
-   "name": "AF Nikkor ED 14mm f/2.8D"
+   "name": "Canon EF 14mm f/2.8L II USM"
   },
   {
+   "make": "canon",
    "spec": "15-30|2.8",
    "name": "Tamron SP 15-30mm f/2.8 Di VC USD (A012)"
   },
   {
+   "make": "canon",
+   "spec": "15-30|3.5-4.5",
+   "name": "Sigma 15-30mm f/3.5-4.5 EX DG Aspherical"
+  },
+  {
+   "make": "canon",
+   "spec": "15-30|4.5-6.3",
+   "name": "Canon RF 15-30mm F4.5-6.3 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "15-35|2.8",
+   "name": "Canon RF 15-35mm F2.8L IS USM"
+  },
+  {
+   "make": "canon",
+   "spec": "15-45|3.5-6.3",
+   "name": "Canon EF-M 15-45mm f/3.5-6.3 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "15-85|3.5-5.6",
+   "name": "Canon EF-S 15-85mm f/3.5-5.6 IS USM"
+  },
+  {
+   "make": "canon",
+   "spec": "150-500|5-6.3",
+   "name": "Sigma 150-500mm f/5-6.3 APO DG OS HSM"
+  },
+  {
+   "make": "canon",
    "spec": "150-600|5-6.3",
-   "name": "Tamron SP AF 150-600mm f/5-6.3 VC USD (A011)"
+   "name": "Sigma 150-600mm f/5-6.3 DG OS HSM | S + 1.4x"
   },
   {
+   "make": "canon",
+   "spec": "150|2.8",
+   "name": "Sigma 150mm f/2.8 EX DG OS HSM APO Macro"
+  },
+  {
+   "make": "canon",
    "spec": "15|2.4",
-   "name": "Irix 15mm f/2.4 Firefly"
+   "name": "Irix 15mm f/2.4"
   },
   {
+   "make": "canon",
+   "spec": "15|2.8",
+   "name": "Canon EF 15mm f/2.8 Fisheye"
+  },
+  {
+   "make": "canon",
    "spec": "16-28|2.8",
-   "name": "Tokina AT-X 16-28 AF PRO FX (AF 16-28mm f/2.8)"
+   "name": "Canon RF 16-28mm F2.8 IS STM"
   },
   {
+   "make": "canon",
    "spec": "16-300|3.5-6.3",
-   "name": "Tamron 16-300mm f/3.5-6.3 Di II VC PZD (B016)"
+   "name": "Tamron 16-300mm f/3.5-6.3 Di II VC PZD Macro (B016)"
   },
   {
+   "make": "canon",
+   "spec": "16-300|3.5-6.7",
+   "name": "Sigma 16-300mm F3.5-6.7 DC OS | C (025)"
+  },
+  {
+   "make": "canon",
+   "spec": "16-35|2.8",
+   "name": "Canon EF 16-35mm f/2.8L III USM"
+  },
+  {
+   "make": "canon",
    "spec": "16-35|4",
-   "name": "AF-S Nikkor 16-35mm f/4G ED VR"
+   "name": "Canon EF 16-35mm f/4L IS USM"
   },
   {
-   "spec": "16-50|2.8",
-   "name": "Tokina AT-X 165 PRO DX (AF 16-50mm f/2.8)"
-  },
-  {
-   "spec": "16-80|2.8-4",
-   "name": "AF-S DX Nikkor 16-80mm f/2.8-4E ED VR"
-  },
-  {
-   "spec": "16-85|3.5-5.6",
-   "name": "AF-S DX VR Zoom-Nikkor 16-85mm f/3.5-5.6G ED"
-  },
-  {
-   "spec": "16|2",
-   "name": "Samyang 16mm f/2.0 ED AS UMC CS"
-  },
-  {
+   "make": "canon",
    "spec": "16|2.8",
-   "name": "AF Fisheye Nikkor 16mm f/2.8D"
+   "name": "Canon RF 16mm F2.8 STM"
   },
   {
+   "make": "canon",
    "spec": "17-35|2.8",
-   "name": "AF-S Nikkor 17-35mm f/2.8D IF-ED"
+   "name": "Canon EF 17-35mm f/2.8L USM"
   },
   {
+   "make": "canon",
    "spec": "17-35|2.8-4",
-   "name": "Tamron SP AF 17-35mm f/2.8-4 Di LD Aspherical (IF) (A05)"
+   "name": "Tamron SP AF 17-35mm f/2.8-4 Di LD Aspherical IF (A05)"
   },
   {
-   "spec": "17-35|4",
-   "name": "Tokina AT-X 17-35 F4 PRO FX (AF 17-35mm f/4)"
+   "make": "canon",
+   "spec": "17-40|4",
+   "name": "Canon EF 17-40mm f/4L USM"
   },
   {
+   "make": "canon",
    "spec": "17-50|2.8",
-   "name": "Tamron SP AF 17-50mm f/2.8 XR Di II LD Aspherical (IF) (A16)"
+   "name": "Tamron SP AF 17-50mm f/2.8 XR Di II VC LD Aspherical [IF]"
   },
   {
+   "make": "canon",
    "spec": "17-55|2.8",
-   "name": "AF-S DX Zoom-Nikkor 17-55mm f/2.8G IF-ED"
+   "name": "Canon EF-S 17-55mm f/2.8 IS USM"
   },
   {
-   "spec": "17|3.5",
-   "name": "Tokina AT-X 17 AF PRO (AF 17mm f/3.5)"
+   "make": "canon",
+   "spec": "17-70|2.8-4",
+   "name": "Sigma 17-70mm f/2.8-4 DC Macro OS HSM | C"
   },
   {
-   "spec": "18-105|3.5-5.6",
-   "name": "AF-S DX VR Zoom-Nikkor 18-105mm f/3.5-5.6G ED"
+   "make": "canon",
+   "spec": "17-70|2.8-4.5",
+   "name": "Sigma 17-70mm f/2.8-4.5 DC Macro"
   },
   {
+   "make": "canon",
+   "spec": "17-85|4-5.6",
+   "name": "Canon EF-S 17-85mm f/4-5.6 IS USM"
+  },
+  {
+   "make": "canon",
+   "spec": "17|4",
+   "name": "Canon TS-E 17mm f/4L"
+  },
+  {
+   "make": "canon",
+   "spec": "18-125|3.5-5.6",
+   "name": "Sigma 18-125mm f/3.5-5.6 DC IF ASP"
+  },
+  {
+   "make": "canon",
+   "spec": "18-125|3.8-5.6",
+   "name": "Sigma 18-125mm f/3.8-5.6 DC OS HSM"
+  },
+  {
+   "make": "canon",
    "spec": "18-135|3.5-5.6",
-   "name": "AF-S DX Zoom-Nikkor 18-135mm f/3.5-5.6G IF-ED"
+   "name": "Canon EF-S 18-135mm f/3.5-5.6 IS STM"
   },
   {
-   "spec": "18-140|3.5-5.6",
-   "name": "AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"
+   "make": "canon",
+   "spec": "18-150|3.5-6.3",
+   "name": "Canon EF-M 18-150mm f/3.5-6.3 IS STM"
   },
   {
+   "make": "canon",
    "spec": "18-200|3.5-5.6",
-   "name": "AF-S DX VR Zoom-Nikkor 18-200mm f/3.5-5.6G IF-ED"
+   "name": "Canon EF-S 18-200mm f/3.5-5.6 IS"
   },
   {
+   "make": "canon",
    "spec": "18-200|3.5-6.3",
-   "name": "Tamron AF 18-200mm f/3.5-6.3 XR Di II LD Aspherical (IF) (A14)"
+   "name": "Tamron AF 18-200mm f/3.5-6.3 XR Di II LD Aspherical [IF] Macro (A14)"
   },
   {
+   "make": "canon",
    "spec": "18-250|3.5-6.3",
-   "name": "Tamron AF 18-250mm f/3.5-6.3 Di II LD Aspherical (IF) Macro (A18)"
+   "name": "Tamron 18-250mm f/3.5-6.3 Di II LD Aspherical [IF] Macro"
   },
   {
+   "make": "canon",
    "spec": "18-270|3.5-6.3",
-   "name": "Tamron AF 18-270mm f/3.5-6.3 Di II VC LD Aspherical (IF) Macro (B003)"
+   "name": "Tamron AF 18-270mm f/3.5-6.3 Di II VC LD Aspherical [IF] Macro"
   },
   {
-   "spec": "18-300|3.5-5.6",
-   "name": "AF-S DX Nikkor 18-300mm f/3.5-5.6G ED VR"
-  },
-  {
+   "make": "canon",
    "spec": "18-300|3.5-6.3",
-   "name": "AF-S DX Nikkor 18-300mm f/3.5-6.3G ED VR"
+   "name": "Sigma 18-300mm f/3.5-6.3 DC Macro OS HSM | C"
   },
   {
-   "spec": "18-35|3.5-4.5",
-   "name": "AF Zoom-Nikkor 18-35mm f/3.5-4.5D IF-ED"
+   "make": "canon",
+   "spec": "18-35|1.8",
+   "name": "Sigma 18-35mm f/1.8 DC HSM | A"
   },
   {
+   "make": "canon",
    "spec": "18-400|3.5-6.3",
    "name": "Tamron 18-400mm f/3.5-6.3 Di II VC HLD (B028)"
   },
   {
+   "make": "canon",
+   "spec": "18-45|4.5-6.3",
+   "name": "Canon RF-S 18-45mm F4.5-6.3 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "18-50|2.8",
+   "name": "Sigma 18-50mm f/2.8 Macro"
+  },
+  {
+   "make": "canon",
+   "spec": "18-50|2.8-4.5",
+   "name": "Sigma 18-50mm f/2.8-4.5 DC OS HSM"
+  },
+  {
+   "make": "canon",
+   "spec": "18-50|3.5-5.6",
+   "name": "Sigma 18-50mm f/3.5-5.6 DC"
+  },
+  {
+   "make": "canon",
    "spec": "18-55|3.5-5.6",
-   "name": "AF-S DX Zoom-Nikkor 18-55mm f/3.5-5.6G ED"
+   "name": "Canon EF-M 18-55mm f/3.5-5.6 IS STM"
   },
   {
-   "spec": "18-70|3.5-4.5",
-   "name": "AF-S DX Zoom-Nikkor 18-70mm f/3.5-4.5G IF-ED"
+   "make": "canon",
+   "spec": "18-55|4-5.6",
+   "name": "Canon EF-S 18-55mm f/4-5.6 IS STM"
   },
   {
-   "spec": "180-400|4",
-   "name": "AF-S Nikkor 180-400mm f/4E TC1.4 FL ED VR"
-  },
-  {
+   "make": "canon",
    "spec": "180|2.8",
-   "name": "AF Nikkor 180mm f/2.8 IF-ED"
+   "name": "Sigma 180mm f/2.8 EX DG OS HSM APO Macro"
   },
   {
+   "make": "canon",
    "spec": "180|3.5",
-   "name": "Tamron SP AF 180mm f/3.5 Di Model (B01)"
+   "name": "Sigma 180mm f/3.5 APO Macro EX DG IF HSM"
   },
   {
+   "make": "canon",
    "spec": "18|2.8",
-   "name": "AF Nikkor 18mm f/2.8D"
+   "name": "Zeiss Milvus 18mm f/2.8 ZE"
   },
   {
+   "make": "canon",
+   "spec": "18|3.5",
+   "name": "Carl Zeiss Distagon T* 18mm f/3.5 ZE"
+  },
+  {
+   "make": "canon",
    "spec": "19-35|3.5-4.5",
-   "name": "Tamron AF 19-35mm f/3.5-4.5 (A10)"
+   "name": "Tokina AF 193-2 19-35mm f/3.5-4.5"
   },
   {
-   "spec": "19|4",
-   "name": "PC Nikkor 19mm f/4E ED"
+   "make": "canon",
+   "spec": "20-35|2.8",
+   "name": "Canon EF 20-35mm f/2.8L"
   },
   {
-   "spec": "20-40|2.7-3.5",
-   "name": "Tamron SP AF 20-40mm f/2.7-3.5 (166D)"
+   "make": "canon",
+   "spec": "20-35|3.5-4.5",
+   "name": "Canon EF 20-35mm f/3.5-4.5 USM"
   },
   {
+   "make": "canon",
+   "spec": "20-50|4",
+   "name": "Canon RF 20-50mm F4 L IS USM PZ"
+  },
+  {
+   "make": "canon",
    "spec": "200-400|4",
-   "name": "AF-S VR Zoom-Nikkor 200-400mm f/4G IF-ED"
+   "name": "Canon EF 200-400mm f/4L IS USM + 1.4x"
   },
   {
-   "spec": "200-400|5.6",
-   "name": "Tamron AF 200-400mm f/5.6 LD IF (75D)"
+   "make": "canon",
+   "spec": "200-500|2.8",
+   "name": "Sigma 200-500mm f/2.8 APO EX DG"
   },
   {
-   "spec": "200-500|5-6.3",
-   "name": "Tamron SP AF 200-500mm f/5-6.3 Di LD (IF) (A08)"
+   "make": "canon",
+   "spec": "200-800|6.3-9",
+   "name": "Canon RF 200-800mm F6.3-9 IS USM + RF1.4x"
   },
   {
-   "spec": "200-500|5.6",
-   "name": "AF-S Nikkor 200-500mm f/5.6E ED VR"
+   "make": "canon",
+   "spec": "200|1.8",
+   "name": "Canon EF 200mm f/1.8L USM"
   },
   {
+   "make": "canon",
    "spec": "200|2",
-   "name": "AF-S VR Nikkor 200mm f/2G IF-ED"
+   "name": "Canon EF 200mm f/2L IS USM"
   },
   {
-   "spec": "200|4",
-   "name": "AF Micro-Nikkor 200mm f/4D IF-ED"
+   "make": "canon",
+   "spec": "200|2.8",
+   "name": "Canon EF 200mm f/2.8L II USM"
   },
   {
-   "spec": "20|1.8",
-   "name": "AF-S Nikkor 20mm f/1.8G ED"
+   "make": "canon",
+   "spec": "20|1.4",
+   "name": "Canon RF 20mm F1.4 L VCM"
   },
   {
+   "make": "canon",
+   "spec": "20|1.5",
+   "name": "Sigma 20mm f/1.5 FF High-Speed Prime | 017"
+  },
+  {
+   "make": "canon",
    "spec": "20|2.8",
-   "name": "AF Nikkor 20mm f/2.8"
+   "name": "Canon EF 20mm f/2.8 USM"
   },
   {
-   "spec": "24-120|3.5-5.6",
-   "name": "AF Zoom-Nikkor 24-120mm f/3.5-5.6D IF"
+   "make": "canon",
+   "spec": "20|3.5",
+   "name": "Voigtlander Color Skopar 20mm f/3.5 SLII Aspherical"
   },
   {
-   "spec": "24-120|4",
-   "name": "AF-S Nikkor 24-120mm f/4G ED VR"
+   "make": "canon",
+   "spec": "21|2.8",
+   "name": "Carl Zeiss Distagon T* 21mm f/2.8 ZE"
   },
   {
-   "spec": "24-135|3.5-5.6",
-   "name": "Tamron SP AF 24-135mm f/3.5-5.6 AD Aspherical (IF) Macro (190D)"
+   "make": "canon",
+   "spec": "22-55|4-5.6",
+   "name": "Canon EF 22-55mm f/4-5.6 USM"
   },
   {
+   "make": "canon",
+   "spec": "22|2",
+   "name": "Canon EF-M 22mm f/2 STM"
+  },
+  {
+   "make": "canon",
+   "spec": "24-105|2.8",
+   "name": "Canon RF 24-105mm F2.8 L IS USM Z"
+  },
+  {
+   "make": "canon",
+   "spec": "24-105|3.5-5.6",
+   "name": "Canon EF 24-105mm f/3.5-5.6 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "24-105|4",
+   "name": "Canon EF 24-105mm f/4L IS II USM"
+  },
+  {
+   "make": "canon",
+   "spec": "24-105|4-7.1",
+   "name": "Canon RF 24-105mm F4-7.1 IS STM"
+  },
+  {
+   "make": "canon",
    "spec": "24-200|3.5-5.6",
-   "name": "Tokina AT-X 242 AF (AF 24-200mm f/3.5-5.6)"
+   "name": "Tokina AT-X 242 AF 24-200mm f/3.5-5.6"
   },
   {
-   "spec": "24-50|3.3-4.5",
-   "name": "AF Zoom-Nikkor 24-50mm f/3.3-4.5"
+   "make": "canon",
+   "spec": "24-240|4-6.3",
+   "name": "Canon RF 24-240mm F4-6.3 IS USM"
   },
   {
+   "make": "canon",
+   "spec": "24-35|2",
+   "name": "Sigma 24-35mm f/2 DG HSM | A"
+  },
+  {
+   "make": "canon",
+   "spec": "24-35|2.2",
+   "name": "Sigma 24-35mm f/2.2 FF Zoom | 017"
+  },
+  {
+   "make": "canon",
+   "spec": "24-50|4.5-6.3",
+   "name": "Canon RF 24-50mm F4.5-6.3 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "24-60|2.8",
+   "name": "Sigma 24-60mm f/2.8 EX DG"
+  },
+  {
+   "make": "canon",
    "spec": "24-70|2.8",
-   "name": "AF-S Zoom-Nikkor 24-70mm f/2.8G ED"
+   "name": "Canon EF 24-70mm f/2.8L II USM"
   },
   {
-   "spec": "24-70|3.5-5.6",
-   "name": "IX-Nikkor 24-70mm f/3.5-5.6"
+   "make": "canon",
+   "spec": "24-70|4",
+   "name": "Canon EF 24-70mm f/4L IS USM"
   },
   {
-   "spec": "24-85|2.8-4",
-   "name": "AF Zoom-Nikkor 24-85mm f/2.8-4D IF"
-  },
-  {
+   "make": "canon",
    "spec": "24-85|3.5-4.5",
-   "name": "AF-S Zoom-Nikkor 24-85mm f/3.5-4.5G IF-ED"
+   "name": "Canon EF 24-85mm f/3.5-4.5 USM"
   },
   {
+   "make": "canon",
    "spec": "24|1.4",
-   "name": "AF-S Nikkor 24mm f/1.4G ED"
+   "name": "Canon EF 24mm f/1.4L II USM"
   },
   {
+   "make": "canon",
+   "spec": "24|1.5",
+   "name": "Sigma 24mm f/1.5 FF High-Speed Prime | 017"
+  },
+  {
+   "make": "canon",
    "spec": "24|1.8",
-   "name": "AF-S Nikkor 24mm f/1.8G ED"
+   "name": "Canon RF 24mm F1.8 MACRO IS STM"
   },
   {
+   "make": "canon",
    "spec": "24|2.8",
-   "name": "AF Nikkor 24mm f/2.8"
+   "name": "Canon EF 24mm f/2.8 IS USM"
   },
   {
+   "make": "canon",
    "spec": "24|3.5",
-   "name": "PC-E Nikkor 24mm f/3.5D ED"
+   "name": "Canon TS-E 24mm f/3.5L II"
   },
   {
-   "spec": "28-100|3.5-5.6",
-   "name": "AF Zoom-Nikkor 28-100mm f/3.5-5.6G"
+   "make": "canon",
+   "spec": "25|1.4",
+   "name": "Zeiss Milvus 25mm f/1.4"
   },
   {
+   "make": "canon",
+   "spec": "25|2",
+   "name": "Carl Zeiss Distagon T* 25mm f/2 ZE"
+  },
+  {
+   "make": "canon",
    "spec": "28-105|2.8",
    "name": "Tamron SP AF 28-105mm f/2.8 LD Aspherical IF (176D)"
   },
   {
+   "make": "canon",
    "spec": "28-105|3.5-4.5",
-   "name": "AF Zoom-Nikkor 28-105mm f/3.5-4.5D IF"
+   "name": "Canon EF 28-105mm f/3.5-4.5 USM"
   },
   {
+   "make": "canon",
+   "spec": "28-105|4-5.6",
+   "name": "Canon EF 28-105mm f/4-5.6 USM"
+  },
+  {
+   "make": "canon",
+   "spec": "28-135|3.5-5.6",
+   "name": "Canon EF 28-135mm f/3.5-5.6 IS"
+  },
+  {
+   "make": "canon",
    "spec": "28-200|3.5-5.6",
-   "name": "AF Zoom-Nikkor 28-200mm f/3.5-5.6D IF"
+   "name": "Canon EF 28-200mm f/3.5-5.6 USM"
   },
   {
+   "make": "canon",
    "spec": "28-200|3.8-5.6",
-   "name": "Tamron AF 28-200mm f/3.8-5.6 XR Aspherical (IF) Macro (A03N)"
+   "name": "Tamron AF Aspherical 28-200mm f/3.8-5.6"
   },
   {
+   "make": "canon",
    "spec": "28-300|3.5-5.6",
-   "name": "AF-S Nikkor 28-300mm f/3.5-5.6G ED VR"
+   "name": "Canon EF 28-300mm f/3.5-5.6L IS USM"
   },
   {
+   "make": "canon",
    "spec": "28-300|3.5-6.3",
-   "name": "Tamron 28-300mm f/3.5-6.3 Di VC PZD A010"
+   "name": "Tamron AF 28-300mm f/3.5-6.3 XR Di VC LD Aspherical [IF] Macro (A20)"
   },
   {
+   "make": "canon",
+   "spec": "28-70|2",
+   "name": "Canon RF 28-70mm F2L USM"
+  },
+  {
+   "make": "canon",
    "spec": "28-70|2.8",
-   "name": "AF-S Zoom-Nikkor 28-70mm f/2.8D IF-ED"
+   "name": "Canon RF 28-70mm F2.8 IS STM"
   },
   {
-   "spec": "28-70|2.8-4.5",
-   "name": "Tokina AF 287 SD (AF 28-70mm f/2.8-4.5)"
+   "make": "canon",
+   "spec": "28-70|2.8-4",
+   "name": "Sigma 28-70mm f/2.8-4 DG"
   },
   {
+   "make": "canon",
    "spec": "28-70|3.5-4.5",
-   "name": "AF Zoom-Nikkor 28-70mm f/3.5-4.5"
+   "name": "Canon EF 28-70mm f/3.5-4.5"
   },
   {
+   "make": "canon",
    "spec": "28-75|2.8",
-   "name": "Tamron SP AF 28-75mm f/2.8 XR Di LD Aspherical (IF) Macro (A09)"
+   "name": "Tamron SP AF 28-75mm f/2.8 XR Di LD Aspherical [IF] Macro"
   },
   {
+   "make": "canon",
    "spec": "28-80|2.8",
-   "name": "Tokina AT-X 280 AF PRO (AF 28-80mm f/2.8)"
+   "name": "Tokina AT-X 280 AF Pro 28-80mm f/2.8 Aspherical"
   },
   {
-   "spec": "28-80|3.3-5.6",
-   "name": "AF Zoom-Nikkor 28-80mm f/3.3-5.6G"
+   "make": "canon",
+   "spec": "28-80|2.8-4",
+   "name": "Canon EF 28-80mm f/2.8-4L USM"
   },
   {
+   "make": "canon",
    "spec": "28-80|3.5-5.6",
-   "name": "AF Zoom-Nikkor 28-80mm f/3.5-5.6D"
+   "name": "Canon EF 28-80mm f/3.5-5.6 USM IV"
   },
   {
-   "spec": "28-85|3.5-4.5",
-   "name": "AF Zoom-Nikkor 28-85mm f/3.5-4.5"
+   "make": "canon",
+   "spec": "28-90|4-5.6",
+   "name": "Canon EF 28-90mm f/4-5.6 USM"
   },
   {
+   "make": "canon",
    "spec": "28|1.4",
-   "name": "AF Nikkor 28mm f/1.4D"
+   "name": "Sigma 28mm f/1.4 DG HSM | A"
   },
   {
+   "make": "canon",
+   "spec": "28|1.5",
+   "name": "Sigma 28mm f/1.5 FF High-speed Prime"
+  },
+  {
+   "make": "canon",
    "spec": "28|1.8",
-   "name": "AF-S Nikkor 28mm f/1.8G"
+   "name": "Canon EF 28mm f/1.8 USM"
   },
   {
+   "make": "canon",
+   "spec": "28|2",
+   "name": "Carl Zeiss Distagon T* 28mm f/2 ZF"
+  },
+  {
+   "make": "canon",
    "spec": "28|2.8",
-   "name": "AF Nikkor 28mm f/2.8"
+   "name": "Canon EF 28mm f/2.8 IS USM"
   },
   {
-   "spec": "30-60|4-5.6",
-   "name": "IX-Nikkor 30-60mm f/4-5.6"
+   "make": "canon",
+   "spec": "28|3.5",
+   "name": "Canon EF-M 28mm f/3.5 Macro IS STM"
   },
   {
+   "make": "canon",
+   "spec": "3.9|3.5",
+   "name": "Canon RF-S 3.9mm F3.5 STM DUAL FISHEYE"
+  },
+  {
+   "make": "canon",
+   "spec": "300-800|5.6",
+   "name": "Sigma 300-800mm f/5.6 APO EX DG HSM"
+  },
+  {
+   "make": "canon",
    "spec": "300|2.8",
-   "name": "AF Nikkor 300mm f/2.8 IF-ED"
+   "name": "Canon EF 300mm f/2.8L IS II USM"
   },
   {
+   "make": "canon",
    "spec": "300|4",
-   "name": "AF Nikkor 300mm f/4 IF-ED"
+   "name": "Canon EF 300mm f/4L IS USM"
   },
   {
+   "make": "canon",
+   "spec": "30|1.4",
+   "name": "Sigma 30mm f/1.4 EX DC HSM"
+  },
+  {
+   "make": "canon",
+   "spec": "32|1.4",
+   "name": "Canon EF-M 32mm f/1.4 STM"
+  },
+  {
+   "make": "canon",
    "spec": "35-105|3.5-4.5",
-   "name": "AF Zoom-Nikkor 35-105mm f/3.5-4.5"
+   "name": "Canon EF 35-105mm f/3.5-4.5"
   },
   {
+   "make": "canon",
+   "spec": "35-105|4.5-5.6",
+   "name": "Canon EF 35-105mm f/4.5-5.6 USM"
+  },
+  {
+   "make": "canon",
    "spec": "35-135|3.5-4.5",
-   "name": "AF Zoom-Nikkor 35-135mm f/3.5-4.5"
+   "name": "Canon EF 35-135mm f/3.5-4.5"
   },
   {
+   "make": "canon",
+   "spec": "35-135|4-5.6",
+   "name": "Canon EF 35-135mm f/4-5.6 USM"
+  },
+  {
+   "make": "canon",
    "spec": "35-150|2.8-4",
-   "name": "Tamron 35-150mm f/2.8-4 Di VC OSD (A043)"
+   "name": "Tamron 35-150mm f/2.8-4.0 Di VC OSD (A043)"
   },
   {
-   "spec": "35-300|4.5-6.7",
-   "name": "Tokina AF 353 (AF 35-300mm f/4.5-6.7)"
+   "make": "canon",
+   "spec": "35-350|3.5-5.6",
+   "name": "Canon EF 35-350mm f/3.5-5.6L USM"
   },
   {
-   "spec": "35-70|2.8",
-   "name": "AF Zoom-Nikkor 35-70mm f/2.8"
+   "make": "canon",
+   "spec": "35-70|3.5-4.5",
+   "name": "Canon EF 35-70mm f/3.5-4.5A"
   },
   {
-   "spec": "35-70|3.3-4.5",
-   "name": "AF Zoom-Nikkor 35-70mm f/3.3-4.5"
-  },
-  {
+   "make": "canon",
    "spec": "35-80|4-5.6",
-   "name": "AF Zoom-Nikkor 35-80mm f/4-5.6D"
+   "name": "Canon EF 35-80mm f/4-5.6 Power Zoom"
   },
   {
+   "make": "canon",
+   "spec": "35|1.2",
+   "name": "Rokinon SP / Samyang XP 35mm f/1.2"
+  },
+  {
+   "make": "canon",
    "spec": "35|1.4",
-   "name": "AF-S Nikkor 35mm f/1.4G"
+   "name": "Canon EF 35mm f/1.4L II USM"
   },
   {
+   "make": "canon",
+   "spec": "35|1.5",
+   "name": "Sigma 35mm f/1.5 FF High-Speed Prime | 017"
+  },
+  {
+   "make": "canon",
    "spec": "35|1.8",
-   "name": "AF-S DX Nikkor 35mm f/1.8G"
+   "name": "Canon RF 35mm F1.8 MACRO IS STM"
   },
   {
+   "make": "canon",
    "spec": "35|2",
-   "name": "AF Nikkor 35mm f/2"
+   "name": "Canon EF 35mm f/2 IS USM"
   },
   {
+   "make": "canon",
    "spec": "35|2.8",
-   "name": "Tokina AT-X M35 PRO DX (AF 35mm f/2.8 Macro)"
+   "name": "Canon EF-S 35mm f/2.8 Macro IS STM"
   },
   {
+   "make": "canon",
+   "spec": "38-76|4.5-5.6",
+   "name": "Canon EF 38-76mm f/4.5-5.6"
+  },
+  {
+   "make": "canon",
+   "spec": "4.5|2.8",
+   "name": "Sigma 4.5mm f/2.8 EX DC HSM Circular Fisheye"
+  },
+  {
+   "make": "canon",
    "spec": "400|2.8",
-   "name": "AF-I Nikkor 400mm f/2.8D IF-ED"
+   "name": "Canon RF 400mm F2.8L IS USM + RF1.4x"
   },
   {
+   "make": "canon",
+   "spec": "400|4",
+   "name": "Canon EF 400mm f/4 DO IS II USM"
+  },
+  {
+   "make": "canon",
    "spec": "400|5.6",
-   "name": "Tokina AT-X 400 AF SD (AF 400mm f/5.6)"
+   "name": "Canon EF 400mm f/5.6L USM"
   },
   {
+   "make": "canon",
+   "spec": "40|1.4",
+   "name": "Sigma 40mm f/1.4 DG HSM | A"
+  },
+  {
+   "make": "canon",
+   "spec": "40|1.5",
+   "name": "Sigma 40mm f/1.5 FF High-speed Prime"
+  },
+  {
+   "make": "canon",
+   "spec": "40|2",
+   "name": "Voigtlander Ultron 40mm f/2 SLII Aspherical"
+  },
+  {
+   "make": "canon",
    "spec": "40|2.8",
-   "name": "AF-S DX Micro Nikkor 40mm f/2.8G"
+   "name": "Canon EF 40mm f/2.8 STM"
   },
   {
+   "make": "canon",
+   "spec": "45|1.2",
+   "name": "Canon RF 45mm F1.2 STM"
+  },
+  {
+   "make": "canon",
    "spec": "45|1.8",
    "name": "Tamron SP 45mm f/1.8 Di VC USD (F013)"
   },
   {
+   "make": "canon",
    "spec": "45|2.8",
-   "name": "Nikkor 45mm f/2.8 P"
+   "name": "Canon TS-E 45mm f/2.8"
   },
   {
+   "make": "canon",
+   "spec": "5.2|2.8",
+   "name": "Canon RF 5.2mm F2.8L Dual Fisheye 3D VR"
+  },
+  {
+   "make": "canon",
+   "spec": "50-100|1.8",
+   "name": "Sigma 50-100mm f/1.8 DC HSM | A"
+  },
+  {
+   "make": "canon",
+   "spec": "50-150|2.8",
+   "name": "Sigma APO 50-150mm f/2.8 [II] EX DC HSM"
+  },
+  {
+   "make": "canon",
+   "spec": "50-200|3.5-4.5",
+   "name": "Canon EF 50-200mm f/3.5-4.5L"
+  },
+  {
+   "make": "canon",
+   "spec": "50-200|4-5.6",
+   "name": "Sigma 50-200mm f/4-5.6 DC OS HSM"
+  },
+  {
+   "make": "canon",
+   "spec": "50-500|4-6.3",
+   "name": "Sigma 50-500mm f/4-6.3 APO HSM EX"
+  },
+  {
+   "make": "canon",
+   "spec": "50-500|4.5-6.3",
+   "name": "Sigma 50-500mm f/4.5-6.3 APO DG OS HSM"
+  },
+  {
+   "make": "canon",
+   "spec": "500|4",
+   "name": "Canon EF 500mm f/4L IS II USM or EF 24-105mm f4L IS USM"
+  },
+  {
+   "make": "canon",
+   "spec": "500|4.5",
+   "name": "Canon EF 500mm f/4.5L USM"
+  },
+  {
+   "make": "canon",
+   "spec": "50|1",
+   "name": "Canon EF 50mm f/1.0L USM"
+  },
+  {
+   "make": "canon",
+   "spec": "50|1.2",
+   "name": "Canon EF 50mm f/1.2L USM"
+  },
+  {
+   "make": "canon",
+   "spec": "50|1.4",
+   "name": "Canon RF 50mm F1.4 L VCM"
+  },
+  {
+   "make": "canon",
+   "spec": "50|1.5",
+   "name": "Sigma 50mm f/1.5 FF High-Speed Prime | 017"
+  },
+  {
+   "make": "canon",
+   "spec": "50|1.8",
+   "name": "Canon EF 50mm f/1.8 STM"
+  },
+  {
+   "make": "canon",
+   "spec": "50|2",
+   "name": "Carl Zeiss Makro-Planar T* 50mm f/2 ZE"
+  },
+  {
+   "make": "canon",
+   "spec": "50|2.5",
+   "name": "Canon EF 50mm f/2.5 Macro"
+  },
+  {
+   "make": "canon",
+   "spec": "50|2.8",
+   "name": "Canon TS-E 50mm f/2.8L Macro"
+  },
+  {
+   "make": "canon",
+   "spec": "55-200|4-5.6",
+   "name": "Sigma 55-200mm f/4-5.6 DC"
+  },
+  {
+   "make": "canon",
+   "spec": "55-200|4.5-5.6",
+   "name": "Canon EF 55-200mm f/4.5-5.6 II USM"
+  },
+  {
+   "make": "canon",
+   "spec": "55-200|4.5-6.3",
+   "name": "Canon EF-M 55-200mm f/4.5-6.3 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "55-210|5-7.1",
+   "name": "Canon RF-S 55-210mm F5-7.1 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "55-250|4-5.6",
+   "name": "Canon EF-S 55-250mm f/4-5.6 IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "55|1.4",
+   "name": "Zeiss Otus 55mm f/1.4 ZE"
+  },
+  {
+   "make": "canon",
+   "spec": "56|1.4",
+   "name": "Sigma 56mm f/1.4 DC DN | C"
+  },
+  {
+   "make": "canon",
+   "spec": "60-600|4.5-6.3",
+   "name": "Sigma 60-600mm f/4.5-6.3 DG OS HSM | S"
+  },
+  {
+   "make": "canon",
+   "spec": "600|11",
+   "name": "Canon RF 600mm F11 IS STM + RF1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "600|4",
+   "name": "Canon RF 600mm F4L IS USM + RF1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "60|2",
+   "name": "Tamron SP 60mm f/2 Macro Di II (G005)"
+  },
+  {
+   "make": "canon",
+   "spec": "60|2.8",
+   "name": "Canon EF-S 60mm f/2.8 Macro USM"
+  },
+  {
+   "make": "canon",
+   "spec": "65|2.8",
+   "name": "Canon MP-E 65mm f/2.8 1-5x Macro Photo"
+  },
+  {
+   "make": "canon",
+   "spec": "7-14|2.8-3.5",
+   "name": "Canon RF 7-14mm F2.8-3.5 L FISHEYE STM"
+  },
+  {
+   "make": "canon",
+   "spec": "70-200|2.8",
+   "name": "Canon EF 70-200mm f/2.8L IS III USM + 1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "70-200|4",
+   "name": "Canon EF 70-200mm f/4L IS USM + 1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "70-210|3.5-4.5",
+   "name": "Canon EF 70-210mm f/3.5-4.5 USM"
+  },
+  {
+   "make": "canon",
+   "spec": "70-210|4",
+   "name": "Canon EF 70-210mm f/4"
+  },
+  {
+   "make": "canon",
+   "spec": "70-300|4-5.6",
+   "name": "Canon EF 70-300mm f/4-5.6 IS II USM"
+  },
+  {
+   "make": "canon",
+   "spec": "70-300|4.5-5.6",
+   "name": "Canon EF 70-300mm f/4.5-5.6 DO IS USM"
+  },
+  {
+   "make": "canon",
+   "spec": "70|2.8",
+   "name": "Sigma 70mm f/2.8 EX DG Macro EF"
+  },
+  {
+   "make": "canon",
+   "spec": "75-300|4-5.6",
+   "name": "Canon EF 75-300mm f/4-5.6 IS USM"
+  },
+  {
+   "make": "canon",
+   "spec": "8-15|4",
+   "name": "Canon EF 8-15mm f/4L Fisheye USM"
+  },
+  {
+   "make": "canon",
+   "spec": "8-16|4.5-5.6",
+   "name": "Sigma 8-16mm f/4.5-5.6 DC HSM"
+  },
+  {
+   "make": "canon",
+   "spec": "80-200|2.8",
+   "name": "Canon EF 80-200mm f/2.8L"
+  },
+  {
+   "make": "canon",
+   "spec": "80-200|4.5-5.6",
+   "name": "Canon EF 80-200mm f/4.5-5.6 USM"
+  },
+  {
+   "make": "canon",
+   "spec": "800|11",
+   "name": "Canon RF 800mm F11 IS STM + RF1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "800|5.6",
+   "name": "Canon RF 800mm F5.6L IS USM + RF1.4x"
+  },
+  {
+   "make": "canon",
+   "spec": "85|1.2",
+   "name": "Canon EF 85mm f/1.2L II USM"
+  },
+  {
+   "make": "canon",
+   "spec": "85|1.4",
+   "name": "Canon EF 85mm f/1.4L IS USM"
+  },
+  {
+   "make": "canon",
+   "spec": "85|1.5",
+   "name": "Sigma 85mm f/1.5 FF High-Speed Prime | 017"
+  },
+  {
+   "make": "canon",
+   "spec": "85|1.8",
+   "name": "Canon EF 85mm f/1.8 USM"
+  },
+  {
+   "make": "canon",
+   "spec": "85|2",
+   "name": "Canon RF 85mm F2 MACRO IS STM"
+  },
+  {
+   "make": "canon",
+   "spec": "8|3.5",
+   "name": "Sigma 8mm f/3.5 EX DG Circular Fisheye"
+  },
+  {
+   "make": "canon",
+   "spec": "90-300|4.5-5.6",
+   "name": "Canon EF 90-300mm f/4.5-5.6 USM"
+  },
+  {
+   "make": "canon",
+   "spec": "90|2.8",
+   "name": "Canon TS-E 90mm f/2.8L Macro"
+  },
+  {
+   "make": "canon",
+   "spec": "90|3.5",
+   "name": "Voigtlander APO-Lanthar 90mm f/3.5 SLII Close Focus"
+  },
+  {
+   "make": "minolta",
+   "spec": "10-20|3.5",
+   "name": "Sigma 10-20mm F3.5 EX DC HSM"
+  },
+  {
+   "make": "minolta",
+   "spec": "10-20|4-5.6",
+   "name": "Sigma AF 10-20mm F4-5.6 EX DC"
+  },
+  {
+   "make": "minolta",
+   "spec": "10-24|3.5-4.5",
+   "name": "Tamron SP AF 10-24mm F3.5-4.5 Di II LD Aspherical IF"
+  },
+  {
+   "make": "minolta",
+   "spec": "100-200|4.5",
+   "name": "Minolta AF 100-200mm F4.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "100-300|4",
+   "name": "Sigma 100-300mm F4 EX (APO (D) or D IF)"
+  },
+  {
+   "make": "minolta",
+   "spec": "100-300|4.5-5.6",
+   "name": "Minolta AF 100-300mm F4.5-5.6 APO [New]"
+  },
+  {
+   "make": "minolta",
+   "spec": "100-400|4.5-6.7",
+   "name": "Minolta AF 100-400mm F4.5-6.7 APO"
+  },
+  {
+   "make": "minolta",
+   "spec": "1000|8",
+   "name": "Sigma 1000mm F8 APO"
+  },
+  {
+   "make": "minolta",
+   "spec": "100|2",
+   "name": "Minolta AF 100mm F2"
+  },
+  {
+   "make": "minolta",
+   "spec": "100|2.8",
+   "name": "Minolta/Sony AF 100mm F2.8 Macro (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "100|3.5",
+   "name": "Tokina EMZ M100 AF 100mm F3.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "105|2",
+   "name": "Venus Optics Laowa 105mm F2 STF"
+  },
+  {
+   "make": "minolta",
+   "spec": "105|2.8",
+   "name": "Sigma 105mm F2.8 EX DG OS HSM Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "10|2.8",
+   "name": "Sigma 10mm F2.8 EX DC HSM Fisheye"
+  },
+  {
+   "make": "minolta",
+   "spec": "11-16|2.8",
+   "name": "Tokina AT-X Pro DX 11-16mm F2.8"
+  },
+  {
+   "make": "minolta",
+   "spec": "11-18|4.5-5.6",
+   "name": "Minolta/Sony AF DT 11-18mm F4.5-5.6 (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "12-24|4.5-5.6",
+   "name": "Sigma AF 12-24mm F4.5-5.6 EX DG"
+  },
+  {
+   "make": "minolta",
+   "spec": "125|2.5",
+   "name": "Voigtlander Macro APO-Lanthar 125mm F2.5 SL"
+  },
+  {
+   "make": "minolta",
+   "spec": "135|1.8",
+   "name": "Carl Zeiss Sonnar T* 135mm F1.8 ZA (SAL135F18Z)"
+  },
+  {
+   "make": "minolta",
+   "spec": "135|2.8",
+   "name": "Minolta/Sony 135mm F2.8 [T4.5] STF"
+  },
+  {
+   "make": "minolta",
+   "spec": "14|3.5",
+   "name": "Sigma 14mm F3.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "15-30|2.8",
+   "name": "Tamron SP 15-30mm F2.8 Di USD"
+  },
+  {
+   "make": "minolta",
+   "spec": "15-30|3.5-4.5",
+   "name": "Sigma 15-30mm F3.5-4.5 EX DG Aspherical"
+  },
+  {
+   "make": "minolta",
+   "spec": "150-500|5-6.3",
+   "name": "Sigma 150-500mm F5-6.3 APO DG OS HSM"
+  },
+  {
+   "make": "minolta",
+   "spec": "150-600|5-6.3",
+   "name": "Tamron SP 150-600mm F5-6.3 Di USD G2"
+  },
+  {
+   "make": "minolta",
+   "spec": "150|2.8",
+   "name": "Sigma 150mm F2.8 EX DG OS HSM APO Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "15|2.8",
+   "name": "Sigma 15mm F2.8 Fisheye"
+  },
+  {
+   "make": "minolta",
+   "spec": "16-105|3.5-5.6",
+   "name": "Sony DT 16-105mm F3.5-5.6 (SAL16105)"
+  },
+  {
+   "make": "minolta",
+   "spec": "16-300|3.5-6.3",
+   "name": "Tamron 16-300mm F3.5-6.3 Di II PZD Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "16-35|2.8",
+   "name": "Carl Zeiss Vario-Sonnar T* 16-35mm F2.8 ZA SSM (SAL1635Z) or ZA SSM II"
+  },
+  {
+   "make": "minolta",
+   "spec": "16-50|2.8",
+   "name": "Sony DT 16-50mm F2.8 SSM (SAL1650)"
+  },
+  {
+   "make": "minolta",
+   "spec": "16-80|3.5-4.5",
+   "name": "Carl Zeiss Vario-Sonnar T* DT 16-80mm F3.5-4.5 ZA (SAL1680Z)"
+  },
+  {
+   "make": "minolta",
+   "spec": "16|2.8",
+   "name": "Minolta/Sony AF 16mm F2.8 Fisheye"
+  },
+  {
+   "make": "minolta",
+   "spec": "17-35|2.8-4",
+   "name": "Minolta AF 17-35mm F2.8-4 (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "17-35|3.5",
+   "name": "Minolta AF 17-35mm F3.5 G"
+  },
+  {
+   "make": "minolta",
+   "spec": "17-50|2.8",
+   "name": "Tamron SP AF 17-50mm F2.8 XR Di II LD Aspherical [IF]"
+  },
+  {
+   "make": "minolta",
+   "spec": "17-70|2.8-4",
+   "name": "Sigma 17-70mm F2.8-4 DC Macro HSM"
+  },
+  {
+   "make": "minolta",
+   "spec": "17-70|2.8-4.5",
+   "name": "Sigma 17-70mm F2.8-4.5 DC Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "170-500|5-6.3",
+   "name": "Sigma AF 170-500mm F5-6.3 APO Aspherical"
+  },
+  {
+   "make": "minolta",
+   "spec": "17|3.5",
+   "name": "Tokina AT-X 17 AF 17mm F3.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-125|4-5",
+   "name": "Sigma DC 18-125mm F4-5,6 D"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-135|3.5-5.6",
+   "name": "Sony DT 18-135mm F3.5-5.6 SAM (SAL18135)"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-200|3.5-6.3",
+   "name": "Minolta/Sony AF DT 18-200mm F3.5-6.3 (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-250|3.5-6.3",
+   "name": "Tamron AF 18-250mm F3.5-6.3 Di II LD Aspherical [IF] Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-270|3.5-6.3",
+   "name": "Tamron 18-270mm F3.5-6.3 Di II PZD"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-300|3.5-6.3",
+   "name": "Sigma 18-300mm F3.5-6.3 DC Macro HSM | C"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-35|1.8",
+   "name": "Sigma 18-35mm F1.8 DC HSM"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-50|2.8",
+   "name": "Sigma 18-50mm F2.8"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-50|2.8-4.5",
+   "name": "Sigma 18-50mm F2.8-4.5 DC HSM"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-55|3.5-5.6",
+   "name": "Sony DT 18-55mm F3.5-5.6 SAM (SAL1855) or SAM II"
+  },
+  {
+   "make": "minolta",
+   "spec": "18-70|3.5-5.6",
+   "name": "Minolta/Sony AF DT 18-70mm F3.5-5.6 (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "180|2.8",
+   "name": "Sigma 180mm F2.8 EX DG OS HSM APO Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "180|3.5",
+   "name": "Tamron SP AF 180mm F3.5 Di LD [IF] Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "180|5.6",
+   "name": "Sigma 180mm F5.6 Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "19-35|3.5-4.5",
+   "name": "Tamron AF 19-35mm F3.5-4.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "20-35|3.5-4.5",
+   "name": "Minolta AF 20-35mm F3.5-4.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "20-40|2.7-3.5",
+   "name": "Tamron 20-40mm F2.7-3.5 SP Aspherical IF"
+  },
+  {
+   "make": "minolta",
+   "spec": "20-40|2.8",
+   "name": "Sigma 20-40mm F2.8 EX DG Aspherical IF"
+  },
+  {
+   "make": "minolta",
+   "spec": "200-400|5.6",
+   "name": "Tamron 200-400mm F5.6 LD"
+  },
+  {
+   "make": "minolta",
+   "spec": "200-500|5-6.3",
+   "name": "Tamron SP AF 200-500mm F5.0-6.3 Di LD IF"
+  },
+  {
+   "make": "minolta",
+   "spec": "200|2.8",
+   "name": "Minolta AF 200mm F2.8 G APO + Minolta AF 1.4x APO"
+  },
+  {
+   "make": "minolta",
+   "spec": "200|4",
+   "name": "Minolta AF 200mm F4 Macro APO G"
+  },
+  {
+   "make": "minolta",
+   "spec": "20|1.8",
+   "name": "Sigma 20mm F1.8 EX DG Aspherical RF"
+  },
+  {
+   "make": "minolta",
+   "spec": "20|2.8",
+   "name": "Minolta/Sony AF 20mm F2.8 New"
+  },
+  {
+   "make": "minolta",
+   "spec": "24-105|3.5-4.5",
+   "name": "Minolta/Sony AF 24-105mm F3.5-4.5 (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "24-105|4",
+   "name": "Sigma 24-105mm F4 DG HSM | A"
+  },
+  {
+   "make": "minolta",
+   "spec": "24-135|3.5-5.6",
+   "name": "Tamron 24-135mm F3.5-5.6"
+  },
+  {
+   "make": "minolta",
+   "spec": "24-200|3.5-5.6",
+   "name": "Tokina AT-X 242 AF 24-200mm F3.5-5.6"
+  },
+  {
+   "make": "minolta",
+   "spec": "24-50|4",
+   "name": "Minolta AF 24-50mm F4 New"
+  },
+  {
+   "make": "minolta",
+   "spec": "24-70|2.8",
+   "name": "Carl Zeiss Vario-Sonnar T* 24-70mm F2.8 ZA SSM II (SAL2470Z2)"
+  },
+  {
+   "make": "minolta",
+   "spec": "24-85|3.5-4.5",
+   "name": "Minolta AF 24-85mm F3.5-4.5 [New]"
+  },
+  {
+   "make": "minolta",
+   "spec": "24|1.8",
+   "name": "Sigma 24mm F1.8 EX DG ASP Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "24|2",
+   "name": "Carl Zeiss Distagon T* 24mm F2 ZA SSM (SAL24F20Z)"
+  },
+  {
+   "make": "minolta",
+   "spec": "24|2.8",
+   "name": "Minolta AF 24mm F2.8 New"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-100|3.5-5.6",
+   "name": "Minolta AF 28-100mm F3.5-5.6 (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-105|2.8-4",
+   "name": "Sigma 28-105mm F2.8-4 Aspherical"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-105|3.5-4.5",
+   "name": "Minolta AF 28-105mm F3.5-4.5 [New]"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-105|4-5.6",
+   "name": "Tamron AF 28-105mm F4-5.6 [IF]"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-135|4-4.5",
+   "name": "Minolta AF 28-135mm F4-4.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-200|3.8-5.6",
+   "name": "Tamron AF 28-200mm F3.8-5.6 XR Di Aspherical [IF] Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-210|3.5-5.6",
+   "name": "Vivitar 28-210mm F3.5-5.6"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-300|3.5-6.3",
+   "name": "Tamron AF 28-300mm F3.5-6.3 XR Di LD Aspherical [IF] Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-300|4-6.3",
+   "name": "Tokina AF 28-300mm F4-6.3"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-70|2.6",
+   "name": "Angenieux AF 28-70mm F2.6"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-70|2.6-2.8",
+   "name": "Tokina AT-X PRO [II] AF 28-70mm F2.6-2.8 270"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-70|2.8",
+   "name": "Minolta AF 28-70mm F2.8 G"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-70|2.8-4.5",
+   "name": "Tokina 28-70mm F2.8-4.5 AF"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-70|3.5-4.5",
+   "name": "Sigma UC AF 28-70mm F3.5-4.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-75|2.8",
+   "name": "Minolta AF 28-75mm F2.8 (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-80|2.8",
+   "name": "Tokina AF PRO 28-80mm F2.8 AT-X 280"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-80|3.5-5.6",
+   "name": "Minolta AF 28-80mm F3.5-5.6 (D)"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-80|4-5.6",
+   "name": "Minolta AF 28-80mm F4-5.6 xi"
+  },
+  {
+   "make": "minolta",
+   "spec": "28-85|3.5-4.5",
+   "name": "Minolta AF 28-85mm F3.5-4.5 New"
+  },
+  {
+   "make": "minolta",
+   "spec": "28|2",
+   "name": "Minolta AF 28mm F2 New"
+  },
+  {
+   "make": "minolta",
+   "spec": "28|2.8",
+   "name": "Minolta/Sony AF 28mm F2.8"
+  },
+  {
+   "make": "minolta",
+   "spec": "29|2.8",
+   "name": "Pentacon Auto 29mm F2.8"
+  },
+  {
+   "make": "minolta",
+   "spec": "300|2.8",
+   "name": "Minolta/Sony AF 300mm F2.8 G or 1.5x Teleconverter"
+  },
+  {
+   "make": "minolta",
+   "spec": "300|4",
+   "name": "Minolta AF 300mm F4 HS-APO G"
+  },
+  {
+   "make": "minolta",
+   "spec": "30|1.4",
+   "name": "Sigma 30mm F1.4 EX DC"
+  },
+  {
+   "make": "minolta",
+   "spec": "30|2.8",
+   "name": "Sony DT 30mm F2.8 Macro SAM (SAL30M28)"
+  },
+  {
+   "make": "minolta",
+   "spec": "35-105|2.8",
+   "name": "Tamron SP AF 35-105mm F2.8 LD Aspherical IF"
+  },
+  {
+   "make": "minolta",
+   "spec": "35-105|3.5-4.5",
+   "name": "Minolta AF 35-105mm F3.5-4.5 New"
+  },
+  {
+   "make": "minolta",
+   "spec": "35-135|3.5-4.5",
+   "name": "Sigma ZOOM-alpha 35-135mm F3.5-4.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "35-200|4-5.6",
+   "name": "Tokina AF 35-200mm F4-5.6 Zoom SD"
+  },
+  {
+   "make": "minolta",
+   "spec": "35-200|4.5-5.6",
+   "name": "Minolta AF 35-200mm F4.5-5.6 xi"
+  },
+  {
+   "make": "minolta",
+   "spec": "35-70|3.5-4.5",
+   "name": "Minolta AF 35-70mm F3.5-4.5 [II]"
+  },
+  {
+   "make": "minolta",
+   "spec": "35-70|4",
+   "name": "Minolta AF 35-70mm F4"
+  },
+  {
+   "make": "minolta",
+   "spec": "35-80|4-5.6",
+   "name": "Minolta AF 35-80mm F4-5.6 Power Zoom"
+  },
+  {
+   "make": "minolta",
+   "spec": "35|1.4",
+   "name": "Minolta AF 35mm F1.4 G"
+  },
+  {
+   "make": "minolta",
+   "spec": "35|1.8",
+   "name": "Sony DT 35mm F1.8 SAM (SAL35F18)"
+  },
+  {
+   "make": "minolta",
+   "spec": "35|2",
+   "name": "Minolta AF 35mm F2 [New]"
+  },
+  {
+   "make": "minolta",
+   "spec": "35|2.8",
+   "name": "Arax MC 35mm F2.8 Tilt+Shift"
+  },
+  {
+   "make": "minolta",
+   "spec": "400|4.5",
+   "name": "Minolta AF 400mm F4.5 HS-APO G"
+  },
+  {
+   "make": "minolta",
+   "spec": "400|5.6",
+   "name": "Sigma AF 400mm F5.6 APO Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "45|1.8",
+   "name": "Tamron SP 45mm F1.8 Di USD"
+  },
+  {
+   "make": "minolta",
+   "spec": "50-150|2.8",
+   "name": "Sigma AF 50-150mm F2.8 EX DC APO HSM II"
+  },
+  {
+   "make": "minolta",
+   "spec": "50-500|4-6.3",
+   "name": "Sigma AF 50-500mm F4-6.3 EX DG APO"
+  },
+  {
+   "make": "minolta",
+   "spec": "50-500|4.5-6.3",
+   "name": "Sigma 50-500mm F4.5-6.3 APO DG OS HSM"
+  },
+  {
+   "make": "minolta",
+   "spec": "500|4",
+   "name": "Sony 500mm F4 G SSM (SAL500F40G)"
+  },
+  {
+   "make": "minolta",
+   "spec": "500|4.5",
+   "name": "Sigma AF 500mm F4.5 EX DG APO"
+  },
+  {
+   "make": "minolta",
+   "spec": "500|8",
+   "name": "Minolta/Sony AF 500mm F8 Reflex"
+  },
+  {
+   "make": "minolta",
+   "spec": "50|1.4",
+   "name": "Minolta AF 50mm F1.4 [New]"
+  },
+  {
+   "make": "minolta",
+   "spec": "50|1.7",
+   "name": "Minolta AF 50mm F1.7 New"
+  },
+  {
+   "make": "minolta",
+   "spec": "50|1.8",
+   "name": "Sony DT 50mm F1.8 SAM (SAL50F18)"
+  },
+  {
+   "make": "minolta",
+   "spec": "50|2.8",
+   "name": "Minolta/Sony AF 50mm F2.8 Macro (D) or F3.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "50|3.5",
+   "name": "Minolta/Sony AF 50mm F3.5 Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "55-200|4-5.5",
+   "name": "Sony AF DT 55-200mm F4-5.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "55-200|4-5.6",
+   "name": "Sony DT 55-200mm F4-5.6 SAM (SAL55200-2)"
+  },
+  {
+   "make": "minolta",
+   "spec": "55-300|4.5-5.6",
+   "name": "Sony DT 55-300mm F4.5-5.6 SAM (SAL55300)"
+  },
+  {
+   "make": "minolta",
+   "spec": "58|2",
+   "name": "Helios 44-2 58mm F2.0"
+  },
+  {
+   "make": "minolta",
+   "spec": "600|4",
+   "name": "Minolta AF 600mm F4 HS-APO G + Minolta AF 1.4x APO"
+  },
+  {
+   "make": "minolta",
+   "spec": "60|2",
+   "name": "Tamron SP AF 60mm F2 Di II LD [IF] Macro 1:1"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-200|2.8",
+   "name": "Minolta AF 70-200mm F2.8 APO G (D) SSM"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-210|2.8",
+   "name": "Tamron AF 70-210mm F2.8 SP LD"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-210|2.8-4",
+   "name": "Cosina 70-210mm F2.8-4 AF"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-210|3.5-4.5",
+   "name": "Minolta AF 70-210mm F3.5-4.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-210|4",
+   "name": "Minolta AF 70-210mm F4 Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-210|4-5.6",
+   "name": "Sigma 70-210mm F4-5.6 APO"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-210|4.5-5.6",
+   "name": "Minolta AF 70-210mm F4.5-5.6 [II]"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-300|4-5.6",
+   "name": "Tamron AF 70-300mm F4-5.6 Di LD Macro 1:2"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-300|4.5-5.6",
+   "name": "Sony 70-300mm F4.5-5.6 G SSM II (SAL70300G2)"
+  },
+  {
+   "make": "minolta",
+   "spec": "70-400|4-5.6",
+   "name": "Sony 70-400mm F4-5.6 G SSM II (SAL70400G2)"
+  },
+  {
+   "make": "minolta",
+   "spec": "70|2.8",
+   "name": "Sigma 70mm F2.8 EX DG Macro"
+  },
+  {
+   "make": "minolta",
+   "spec": "75-200|2.8-3.5",
+   "name": "Sigma 75-200mm F2.8-3.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "75-300|4.5-5.6",
+   "name": "Minolta AF 75-300mm F4.5-5.6 (New or II)"
+  },
+  {
+   "make": "minolta",
+   "spec": "80-200|2.8",
+   "name": "Minolta AF 80-200mm F2.8 HS-APO G"
+  },
+  {
+   "make": "minolta",
+   "spec": "80-200|4.5-5.6",
+   "name": "Minolta AF 80-200mm F4.5-5.6 xi"
+  },
+  {
+   "make": "minolta",
+   "spec": "80-400|4.5-5.6",
+   "name": "Tokina 80-400mm F4.5-5.6 AT-X AF II 840"
+  },
+  {
+   "make": "minolta",
+   "spec": "800|5.6",
+   "name": "Sigma 800mm F5.6 APO"
+  },
+  {
+   "make": "minolta",
+   "spec": "80|2.8",
+   "name": "Arax MC 80mm F2.8 Tilt+Shift"
+  },
+  {
+   "make": "minolta",
+   "spec": "85|1.4",
+   "name": "Minolta AF 85mm F1.4 G (D) Limited"
+  },
+  {
+   "make": "minolta",
+   "spec": "85|2.8",
+   "name": "Sony 85mm F2.8 SAM (SAL85F28)"
+  },
+  {
+   "make": "minolta",
+   "spec": "8|4",
+   "name": "Sigma 8mm F4 EX [DG] Fisheye"
+  },
+  {
+   "make": "minolta",
+   "spec": "90-300|4.5-5.6",
+   "name": "Tamron AF 90-300mm F4.5-5.6 Telemacro"
+  },
+  {
+   "make": "minolta",
+   "spec": "90|2.5",
+   "name": "Tamron SP AF 90mm F2.5"
+  },
+  {
+   "make": "minolta",
+   "spec": "90|2.8",
+   "name": "Tamron SP 90mm F2.8 Di Macro 1:1 USD (F017)"
+  },
+  {
+   "make": "nikon",
+   "spec": "10-17|3.5-4.5",
+   "name": "Tokina AT-X 107 AF DX Fisheye (AF 10-17mm f/3.5-4.5)"
+  },
+  {
+   "make": "nikon",
+   "spec": "10-20|3.5",
+   "name": "Sigma 10-20mm F3.5 EX DC HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "10-20|4-5.6",
+   "name": "Sigma 10-20mm F4-5.6 EX DC HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "10-20|4.5-5.6",
+   "name": "AF-P DX Nikkor 10-20mm f/4.5-5.6G VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "10-24|3.5-4.5",
+   "name": "AF-S DX Nikkor 10-24mm f/3.5-4.5G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "10.5|2.8",
+   "name": "AF DX Fisheye-Nikkor 10.5mm f/2.8G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "100-300|4",
+   "name": "Tokina AT-X 340 AF (AF 100-300mm f/4)"
+  },
+  {
+   "make": "nikon",
+   "spec": "100-300|4.5-6.7",
+   "name": "Sigma 100-300mm F4.5-6.7 DL"
+  },
+  {
+   "make": "nikon",
+   "spec": "100-300|5.6-6.7",
+   "name": "Cosina AF Zoom 100-300mm F5.6-6.7 MC Macro"
+  },
+  {
+   "make": "nikon",
+   "spec": "100-400|1",
+   "name": "Soligor AF Zoom 100-400mm 1:4.5-6.7 MC"
+  },
+  {
+   "make": "nikon",
+   "spec": "100-400|4.5-5.6",
+   "name": "Nikkor Z 100-400mm f/4.5-5.6 VR S"
+  },
+  {
+   "make": "nikon",
+   "spec": "100-400|4.5-6.3",
+   "name": "Tamron 100-400mm f/4.5-6.3 Di VC USD"
+  },
+  {
+   "make": "nikon",
+   "spec": "100-400|4.5-6.7",
+   "name": "Promaster Spectrum 7 100-400mm F4.5-6.7"
+  },
+  {
+   "make": "nikon",
+   "spec": "100-400|5-6.3",
+   "name": "Sigma 100-400mm F5-6.3 DG OS HSM | C"
+  },
+  {
+   "make": "nikon",
+   "spec": "100|2",
+   "name": "Zeiss Milvus 100mm f/2 Macro"
+  },
+  {
+   "make": "nikon",
+   "spec": "100|2.8",
+   "name": "Tokina AT-X M100 AF PRO D (AF 100mm f/2.8 Macro)"
+  },
+  {
+   "make": "nikon",
+   "spec": "100|3.5",
+   "name": "Cosina AF 100mm F3.5 Macro"
+  },
+  {
+   "make": "nikon",
+   "spec": "105|1.4",
+   "name": "AF-S Nikkor 105mm f/1.4E ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "105|2",
+   "name": "AF DC-Nikkor 105mm f/2D"
+  },
+  {
+   "make": "nikon",
+   "spec": "105|2.5",
+   "name": "Nikkor 105mm f/2.5 AiS"
+  },
+  {
+   "make": "nikon",
+   "spec": "105|2.8",
+   "name": "AF-S VR Micro-Nikkor 105mm f/2.8G IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "10|2.8",
+   "name": "Sigma 10mm F2.8 EX DC HSM Fisheye"
+  },
+  {
+   "make": "nikon",
+   "spec": "11-16|2.8",
+   "name": "Tokina AT-X 116 PRO DX II (AF 11-16mm f/2.8)"
+  },
+  {
+   "make": "nikon",
+   "spec": "11-18|4.5-5.6",
+   "name": "Tamron SP AF 11-18mm f/4.5-5.6 Di II LD Aspherical (IF) (A13)"
+  },
+  {
+   "make": "nikon",
+   "spec": "11-20|2.8",
+   "name": "Tokina AT-X 11-20 F2.8 PRO DX (AF 11-20mm f/2.8)"
+  },
+  {
+   "make": "nikon",
+   "spec": "11|4",
+   "name": "Irix 11mm f/4 Firefly"
+  },
+  {
+   "make": "nikon",
+   "spec": "12-24|4",
+   "name": "AF-S DX Zoom-Nikkor 12-24mm f/4G IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "12-24|4.5-5.6",
+   "name": "Sigma 12-24mm F4.5-5.6 EX DG Aspherical HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "12-28|3.5-5.6",
+   "name": "Nikkor Z DX 12-28mm f/3.5-5.6 PZ VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "12-28|4",
+   "name": "Tokina AT-X 12-28 PRO DX (AF 12-28mm f/4)"
+  },
+  {
+   "make": "nikon",
+   "spec": "120-300|2.8",
+   "name": "AF-S Nikkor 120-300mm f/2.8E FL ED SR VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "120-400|4.5-5.6",
+   "name": "Sigma APO 120-400mm F4.5-5.6 DG OS HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "1200-1700|5.6-8",
+   "name": "Zoom-Nikkor 1200-1700mm f/5.6-8 P ED IF"
+  },
+  {
+   "make": "nikon",
+   "spec": "12|2.8",
+   "name": "Samyang 12mm f/2.8 ED AS NCS Fish-Eye"
+  },
+  {
+   "make": "nikon",
+   "spec": "135-400|4.5-5.6",
+   "name": "Sigma 135-400mm F4.5-5.6 APO Aspherical"
+  },
+  {
+   "make": "nikon",
+   "spec": "135|1.8",
+   "name": "Nikkor Z 135mm f/1.8 S Plena"
+  },
+  {
+   "make": "nikon",
+   "spec": "135|2",
+   "name": "AF DC-Nikkor 135mm f/2D"
+  },
+  {
+   "make": "nikon",
+   "spec": "14-24|2.8",
+   "name": "AF-S Zoom-Nikkor 14-24mm f/2.8G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "14-30|4",
+   "name": "Nikkor Z 14-30mm f/4 S"
+  },
+  {
+   "make": "nikon",
+   "spec": "14|1.8",
+   "name": "Sigma 14mm F1.8 DG HSM | A"
+  },
+  {
+   "make": "nikon",
+   "spec": "14|2.4",
+   "name": "Samyang 14mm f/2.4 Premium"
+  },
+  {
+   "make": "nikon",
+   "spec": "14|2.8",
+   "name": "AF Nikkor ED 14mm f/2.8D"
+  },
+  {
+   "make": "nikon",
+   "spec": "14|3.5",
+   "name": "Sigma 14mm F3.5"
+  },
+  {
+   "make": "nikon",
+   "spec": "15-30|2.8",
+   "name": "Tamron SP 15-30mm f/2.8 Di VC USD G2 (A041)"
+  },
+  {
+   "make": "nikon",
+   "spec": "15-30|3.5-4.5",
+   "name": "Sigma 15-30mm F3.5-4.5 EX DG Aspherical DF"
+  },
+  {
+   "make": "nikon",
+   "spec": "150-500|5-6.3",
+   "name": "Sigma 150-500mm F5-6.3 DG OS APO HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "150-600|5-6.3",
+   "name": "Tamron SP 150-600mm f/5-6.3 Di VC USD G2 (A022)"
+  },
+  {
+   "make": "nikon",
+   "spec": "150|2.8",
+   "name": "Sigma APO Macro 150mm F2.8 EX DG OS HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "15|2.4",
+   "name": "Irix 15mm f/2.4 Firefly"
+  },
+  {
+   "make": "nikon",
+   "spec": "15|2.8",
+   "name": "Sigma 15mm F2.8 EX Diagonal Fisheye"
+  },
+  {
+   "make": "nikon",
+   "spec": "16-28|2.8",
+   "name": "Tokina AT-X 16-28 AF PRO FX (AF 16-28mm f/2.8)"
+  },
+  {
+   "make": "nikon",
+   "spec": "16-300|3.5-6.3",
+   "name": "Tamron 16-300mm f/3.5-6.3 Di II VC PZD (B016)"
+  },
+  {
+   "make": "nikon",
+   "spec": "16-35|4",
+   "name": "AF-S Nikkor 16-35mm f/4G ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "16-50|2.8",
+   "name": "Tokina AT-X 165 PRO DX (AF 16-50mm f/2.8)"
+  },
+  {
+   "make": "nikon",
+   "spec": "16-50|3.5-6.3",
+   "name": "Nikkor Z DX 16-50mm f/3.5-6.3 VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "16-80|2.8-4",
+   "name": "AF-S DX Nikkor 16-80mm f/2.8-4E ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "16-85|3.5-5.6",
+   "name": "AF-S DX VR Zoom-Nikkor 16-85mm f/3.5-5.6G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "16.5-135|3.5-5.6",
+   "name": "Tokina AT-X 16.5-135 DX (AF 16.5-135mm F3.5-5.6)"
+  },
+  {
+   "make": "nikon",
+   "spec": "16|2",
+   "name": "Samyang 16mm f/2.0 ED AS UMC CS"
+  },
+  {
+   "make": "nikon",
+   "spec": "16|2.8",
+   "name": "AF Fisheye Nikkor 16mm f/2.8D"
+  },
+  {
+   "make": "nikon",
+   "spec": "17-28|2.8",
+   "name": "Nikkor Z 17-28mm f/2.8"
+  },
+  {
+   "make": "nikon",
+   "spec": "17-35|2.8",
+   "name": "AF-S Nikkor 17-35mm f/2.8D IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "17-35|2.8-4",
+   "name": "Tamron SP AF 17-35mm f/2.8-4 Di LD Aspherical (IF) (A05)"
+  },
+  {
+   "make": "nikon",
+   "spec": "17-35|4",
+   "name": "Tokina AT-X 17-35 F4 PRO FX (AF 17-35mm f/4)"
+  },
+  {
+   "make": "nikon",
+   "spec": "17-50|2.8",
+   "name": "Tamron SP AF 17-50mm f/2.8 XR Di II VC LD Aspherical (IF) (B005)"
+  },
+  {
+   "make": "nikon",
+   "spec": "17-55|2.8",
+   "name": "AF-S DX Zoom-Nikkor 17-55mm f/2.8G IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "17-70|2.8-4",
+   "name": "Sigma 17-70mm F2.8-4 DC Macro OS HSM | C"
+  },
+  {
+   "make": "nikon",
+   "spec": "17-70|2.8-4.5",
+   "name": "Sigma 17-70mm F2.8-4.5 DC Macro Asp. IF HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "170-500|5-6.3",
+   "name": "Sigma APO 170-500mm F5-6.3 Aspherical RF"
+  },
+  {
+   "make": "nikon",
+   "spec": "17|3.5",
+   "name": "Tokina AT-X 17 AF PRO (AF 17mm f/3.5)"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-105|3.5-5.6",
+   "name": "AF-S DX VR Zoom-Nikkor 18-105mm f/3.5-5.6G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-125|3.5-5.6",
+   "name": "Sigma 18-125mm F3.5-5.6 DC"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-125|3.8-5.6",
+   "name": "Sigma 18-125mm F3.8-5.6 DC OS HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-135|3.5-5.6",
+   "name": "AF-S DX Zoom-Nikkor 18-135mm f/3.5-5.6G IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-140|3.5-5.6",
+   "name": "AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-140|3.5-6.3",
+   "name": "Nikkor Z DX 18-140mm f/3.5-6.3 VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-200|3.5-5.6",
+   "name": "AF-S DX VR Zoom-Nikkor 18-200mm f/3.5-5.6G IF-ED [II]"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-200|3.5-6.3",
+   "name": "Tamron AF 18-200mm f/3.5-6.3 XR Di II LD Aspherical (IF) Macro (A14NII)"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-250|3.5-6.3",
+   "name": "Tamron AF 18-250mm f/3.5-6.3 Di II LD Aspherical (IF) Macro (A18NII)"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-270|3.5-6.3",
+   "name": "Tamron AF 18-270mm f/3.5-6.3 Di II VC LD Aspherical (IF) Macro (B003)"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-300|3.5-5.6",
+   "name": "AF-S DX Nikkor 18-300mm f/3.5-5.6G ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-300|3.5-6.3",
+   "name": "AF-S DX Nikkor 18-300mm f/3.5-6.3G ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-35|1.8",
+   "name": "Sigma 18-35mm F1.8 DC HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-35|3.5-4.5",
+   "name": "AF Zoom-Nikkor 18-35mm f/3.5-4.5D IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-400|3.5-6.3",
+   "name": "Tamron 18-400mm f/3.5-6.3 Di II VC HLD (B028)"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-50|2.8",
+   "name": "Sigma 18-50mm F2.8 EX DC Macro"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-50|2.8-4.5",
+   "name": "Sigma 18-50mm F2.8-4.5 DC OS HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-50|3.5-5.6",
+   "name": "Sigma 18-50mm F3.5-5.6 DC HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-55|3.5-5.6",
+   "name": "AF-S DX Zoom-Nikkor 18-55mm f/3.5-5.6G ED II"
+  },
+  {
+   "make": "nikon",
+   "spec": "18-70|3.5-4.5",
+   "name": "AF-S DX Zoom-Nikkor 18-70mm f/3.5-4.5G IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "180-400|4",
+   "name": "AF-S Nikkor 180-400mm f/4E TC1.4 FL ED VR + 1.4x TC"
+  },
+  {
+   "make": "nikon",
+   "spec": "180-600|5.6-6.3",
+   "name": "Nikkor Z 180-600mm f/5.6-6.3 VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "180|2.8",
+   "name": "AF Nikkor 180mm f/2.8D IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "180|3.5",
+   "name": "Tamron SP AF 180mm f/3.5 Di Model (B01)"
+  },
+  {
+   "make": "nikon",
+   "spec": "18|2.8",
+   "name": "AF Nikkor 18mm f/2.8D"
+  },
+  {
+   "make": "nikon",
+   "spec": "19-35|1",
+   "name": "Soligor AF Zoom 19-35mm 1:3.5-4.5 MC"
+  },
+  {
+   "make": "nikon",
+   "spec": "19-35|3.5-4.5",
+   "name": "Voigtlander Ultragon 19-35mm F3.5-4.5 VMV"
+  },
+  {
+   "make": "nikon",
+   "spec": "19|4",
+   "name": "PC Nikkor 19mm f/4E ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "20-35|2.8",
+   "name": "AF Zoom-Nikkor 20-35mm f/2.8D IF"
+  },
+  {
+   "make": "nikon",
+   "spec": "20-35|3.5-4.5",
+   "name": "Tokina AF 235 II (AF 20-35mm f/3.5-4.5)"
+  },
+  {
+   "make": "nikon",
+   "spec": "20-40|2.7-3.5",
+   "name": "Tamron SP AF 20-40mm f/2.7-3.5 (166D)"
+  },
+  {
+   "make": "nikon",
+   "spec": "20-40|2.8",
+   "name": "Sigma 20-40mm F2.8"
+  },
+  {
+   "make": "nikon",
+   "spec": "200-400|4",
+   "name": "AF-S Zoom-Nikkor 200-400mm f/4G IF-ED VR II"
+  },
+  {
+   "make": "nikon",
+   "spec": "200-400|5.6",
+   "name": "Tamron AF 200-400mm f/5.6 LD IF (75D)"
+  },
+  {
+   "make": "nikon",
+   "spec": "200-500|2.8",
+   "name": "Sigma APO 200-500mm F2.8 EX DG"
+  },
+  {
+   "make": "nikon",
+   "spec": "200-500|5-6.3",
+   "name": "Tamron SP AF 200-500mm f/5-6.3 Di LD (IF) (A08)"
+  },
+  {
+   "make": "nikon",
+   "spec": "200-500|5.6",
+   "name": "AF-S Nikkor 200-500mm f/5.6E ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "200|2",
+   "name": "AF-S VR Nikkor 200mm f/2G IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "200|4",
+   "name": "AF Micro-Nikkor 200mm f/4D IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "20|1.4",
+   "name": "Sigma 20mm F1.4 DG HSM | A"
+  },
+  {
+   "make": "nikon",
+   "spec": "20|1.8",
+   "name": "AF-S Nikkor 20mm f/1.8G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "20|2.8",
+   "name": "AF Nikkor 20mm f/2.8D"
+  },
+  {
+   "make": "nikon",
+   "spec": "20|3.5",
+   "name": "Voigtlander Color Skopar 20mm F3.5 SLII Aspherical"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-105|4",
+   "name": "Sigma 24-105mm F4 DG OS HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-105|4-7.1",
+   "name": "Nikkor Z 24-105mm f/4-7.1"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-120|3.5-5.6",
+   "name": "AF-S VR Zoom-Nikkor 24-120mm f/3.5-5.6G IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-120|4",
+   "name": "AF-S Nikkor 24-120mm f/4G ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-135|2.8-4.5",
+   "name": "Sigma 24-135mm F2.8-4.5"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-135|3.5-5.6",
+   "name": "Tamron SP AF 24-135mm f/3.5-5.6 AD Aspherical (IF) Macro (190D)"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-200|3.5-5.6",
+   "name": "Tokina AT-X 242 AF (AF 24-200mm f/3.5-5.6)"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-200|4-6.3",
+   "name": "Nikkor Z 24-200mm f/4-6.3 VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-35|2",
+   "name": "Sigma 24-35mm F2.0 DG HSM | A"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-50|3.3-4.5",
+   "name": "AF Zoom-Nikkor 24-50mm f/3.3-4.5D"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-50|4-5.6",
+   "name": "Sigma 24-50mm F4-5.6 UC"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-50|4-6.3",
+   "name": "Nikkor Z 24-50mm f/4-6.3"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-60|2.8",
+   "name": "Sigma 24-60mm F2.8 EX DG"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-70|2.8",
+   "name": "AF-S Zoom-Nikkor 24-70mm f/2.8G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-70|3.5-5.6",
+   "name": "IX-Nikkor 24-70mm f/3.5-5.6"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-70|4",
+   "name": "Nikkor Z 24-70mm f/4 S"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-85|2.8-4",
+   "name": "AF Zoom-Nikkor 24-85mm f/2.8-4D IF"
+  },
+  {
+   "make": "nikon",
+   "spec": "24-85|3.5-4.5",
+   "name": "AF-S Zoom-Nikkor 24-85mm f/3.5-4.5G IF-ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "24|1.4",
+   "name": "AF-S Nikkor 24mm f/1.4G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "24|1.7",
+   "name": "Nikkor Z DX 24mm f/1.7"
+  },
+  {
+   "make": "nikon",
+   "spec": "24|1.8",
+   "name": "AF-S Nikkor 24mm f/1.8G ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "24|2.8",
+   "name": "AF Nikkor 24mm f/2.8D"
+  },
+  {
+   "make": "nikon",
+   "spec": "24|3.5",
+   "name": "PC-E Nikkor 24mm f/3.5D ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "26|2.8",
+   "name": "Nikkor Z 26mm f/2.8"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-100|3.5-5.6",
+   "name": "AF Zoom-Nikkor 28-100mm f/3.5-5.6G"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-105|2.8",
+   "name": "Tamron SP AF 28-105mm f/2.8 LD Aspherical IF (176D)"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-105|2.8-3.8",
+   "name": "Cosina AF Zoom 28-105mm F2.8-3.8 MC"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-105|2.8-4",
+   "name": "Sigma 28-105mm F2.8-4 Aspherical"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-105|3.5-4.5",
+   "name": "AF Zoom-Nikkor 28-105mm f/3.5-4.5D IF"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-105|3.8-5.6",
+   "name": "Sigma 28-105mm F3.8-5.6 UC-III Aspherical IF"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-135|4",
+   "name": "Nikkor Z 28-135mm f/4 PZ"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-200|3.5-5.6",
+   "name": "AF Zoom-Nikkor 28-200mm f/3.5-5.6G IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-200|3.8-5.6",
+   "name": "Tamron AF 28-200mm f/3.8-5.6 XR Aspherical (IF) Macro (A03N)"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-300|3.5-5.6",
+   "name": "AF-S Nikkor 28-300mm f/3.5-5.6G ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-300|3.5-6.3",
+   "name": "Tamron AF 28-300mm f/3.5-6.3 XR Di VC LD Aspherical (IF) Macro (A20)"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-300|3.8-5.6",
+   "name": "Sigma 28-300mm F3.8-5.6 Aspherical"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-400|4-8",
+   "name": "Nikkor Z 28-400mm f/4-8 VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-70|2.6-2.8",
+   "name": "Tokina AT-X 270 AF PRO II (AF 28-70mm f/2.6-2.8)"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-70|2.8",
+   "name": "AF-S Zoom-Nikkor 28-70mm f/2.8D IF-ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-70|2.8-4",
+   "name": "Sigma 28-70mm F2.8-4 DG"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-70|2.8-4.5",
+   "name": "Tokina AF 287 SD (AF 28-70mm f/2.8-4.5)"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-70|3.5-4.5",
+   "name": "AF Zoom-Nikkor 28-70mm f/3.5-4.5D"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-75|2.8",
+   "name": "Nikkor Z 28-75mm f/2.8"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-80|2.8",
+   "name": "Tokina AT-X 280 AF PRO (AF 28-80mm f/2.8)"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-80|3.3-5.6",
+   "name": "AF Zoom-Nikkor 28-80mm f/3.3-5.6G"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-80|3.5-5.6",
+   "name": "AF Zoom-Nikkor 28-80mm f/3.5-5.6D"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-85|3.5-4.5",
+   "name": "AF Zoom-Nikkor 28-85mm f/3.5-4.5"
+  },
+  {
+   "make": "nikon",
+   "spec": "28-90|3.5-5.6",
+   "name": "Sigma 28-90mm F3.5-5.6 Macro"
+  },
+  {
+   "make": "nikon",
+   "spec": "28|1.4",
+   "name": "AF-S Nikkor 28mm f/1.4E ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "28|1.8",
+   "name": "AF-S Nikkor 28mm f/1.8G"
+  },
+  {
+   "make": "nikon",
+   "spec": "28|2",
+   "name": "Voigtlander APO-Lanthar 28mm F2 Aspherical"
+  },
+  {
+   "make": "nikon",
+   "spec": "28|2.8",
+   "name": "AF Nikkor 28mm f/2.8D"
+  },
+  {
+   "make": "nikon",
+   "spec": "30-60|4-5.6",
+   "name": "IX-Nikkor 30-60mm f/4-5.6"
+  },
+  {
+   "make": "nikon",
+   "spec": "300-800|5.6",
+   "name": "Sigma APO 300-800mm F5.6 EX DG HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "300|2.8",
+   "name": "AF-I Nikkor 300mm f/2.8D IF-ED + TC-14E"
+  },
+  {
+   "make": "nikon",
+   "spec": "300|4",
+   "name": "AF-S Nikkor 300mm f/4E PF ED VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "30|1.4",
+   "name": "Sigma 30mm F1.4 EX DC HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "35-105|3.5-4.5",
+   "name": "AF Zoom-Nikkor 35-105mm f/3.5-4.5D"
+  },
+  {
+   "make": "nikon",
+   "spec": "35-135|3.5-4.5",
+   "name": "AF Zoom-Nikkor 35-135mm f/3.5-4.5 N"
+  },
+  {
+   "make": "nikon",
+   "spec": "35-150|2.8-4",
+   "name": "Tamron 35-150mm f/2.8-4 Di VC OSD (A043)"
+  },
+  {
+   "make": "nikon",
+   "spec": "35-300|4.5-6.7",
+   "name": "Tokina AF 353 (AF 35-300mm f/4.5-6.7)"
+  },
+  {
+   "make": "nikon",
+   "spec": "35-70|1",
+   "name": "Exakta AF 35-70mm 1:3.5-4.5 MC"
+  },
+  {
+   "make": "nikon",
+   "spec": "35-70|2.8",
+   "name": "AF Zoom-Nikkor 35-70mm f/2.8D N"
+  },
+  {
+   "make": "nikon",
+   "spec": "35-70|3.3-4.5",
+   "name": "AF Zoom-Nikkor 35-70mm f/3.3-4.5 N"
+  },
+  {
+   "make": "nikon",
+   "spec": "35-80|4-5.6",
+   "name": "AF Zoom-Nikkor 35-80mm f/4-5.6D N"
+  },
+  {
+   "make": "nikon",
+   "spec": "35|1.2",
+   "name": "Nikkor Z 35mm f/1.2 S"
+  },
+  {
+   "make": "nikon",
+   "spec": "35|1.4",
+   "name": "AF-S Nikkor 35mm f/1.4G"
+  },
+  {
+   "make": "nikon",
+   "spec": "35|1.8",
+   "name": "AF-S DX Nikkor 35mm f/1.8G"
+  },
+  {
+   "make": "nikon",
+   "spec": "35|2",
+   "name": "AF Nikkor 35mm f/2D"
+  },
+  {
+   "make": "nikon",
+   "spec": "35|2.8",
+   "name": "Tokina AT-X M35 PRO DX (AF 35mm f/2.8 Macro)"
+  },
+  {
+   "make": "nikon",
+   "spec": "4.5|2.8",
+   "name": "Sigma 4.5mm F2.8 EX DC HSM Circular Fisheye"
+  },
+  {
+   "make": "nikon",
+   "spec": "400|2.8",
+   "name": "AF-I Nikkor 400mm f/2.8D IF-ED + TC-14E"
+  },
+  {
+   "make": "nikon",
+   "spec": "400|4.5",
+   "name": "Nikkor Z 400mm f/4.5 VR S"
+  },
+  {
+   "make": "nikon",
+   "spec": "400|5.6",
+   "name": "Tokina AT-X 400 AF SD (AF 400mm f/5.6)"
+  },
+  {
+   "make": "nikon",
+   "spec": "40|1.2",
+   "name": "Voigtlander Nokton 40mm F1.2 Aspherical"
+  },
+  {
+   "make": "nikon",
+   "spec": "40|1.4",
+   "name": "Sigma 40mm F1.4 DG HSM | A"
+  },
+  {
+   "make": "nikon",
+   "spec": "40|11",
+   "name": "Loreo 40mm F11-22 3D Lens in a Cap 9005"
+  },
+  {
+   "make": "nikon",
+   "spec": "40|2",
+   "name": "Nikkor Z 40mm f/2"
+  },
+  {
+   "make": "nikon",
+   "spec": "40|2.8",
+   "name": "AF-S DX Micro Nikkor 40mm f/2.8G"
+  },
+  {
+   "make": "nikon",
+   "spec": "45|1.8",
+   "name": "Tamron SP 45mm f/1.8 Di VC USD (F013)"
+  },
+  {
+   "make": "nikon",
+   "spec": "45|2.8",
+   "name": "PC-E Micro Nikkor 45mm f/2.8D ED"
+  },
+  {
+   "make": "nikon",
+   "spec": "50-100|1.8",
+   "name": "Sigma 50-100mm F1.8 DC HSM | A"
+  },
+  {
+   "make": "nikon",
    "spec": "50-135|2.8",
    "name": "Tokina AT-X 535 PRO DX (AF 50-135mm f/2.8)"
   },
   {
-   "spec": "500|4",
-   "name": "Nikkor 500mm f/4 P ED IF"
+   "make": "nikon",
+   "spec": "50-150|2.8",
+   "name": "Sigma 50-150mm F2.8 EX APO DC HSM II"
   },
   {
+   "make": "nikon",
+   "spec": "50-250|4.5-6.3",
+   "name": "Nikkor Z DX 50-250mm f/4.5-6.3 VR"
+  },
+  {
+   "make": "nikon",
+   "spec": "50-500|4-6.3",
+   "name": "Sigma 50-500mm F4-6.3 EX APO RF HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "50-500|4.5-6.3",
+   "name": "Sigma 50-500mm F4.5-6.3 DG OS HSM"
+  },
+  {
+   "make": "nikon",
+   "spec": "500|4",
+   "name": "AF-I Nikkor 500mm f/4D IF-ED + TC-14E"
+  },
+  {
+   "make": "nikon",
+   "spec": "500|4.5",
+   "name": "Sigma APO 500mm F4.5 EX DG HSM"
+  },
+  {
+   "make": "nikon",
    "spec": "500|5.6",
    "name": "AF-S Nikkor 500mm f/5.6E PF ED VR"
   },
   {
+   "make": "nikon",
+   "spec": "500|7.2",
+   "name": "Sigma APO 500mm F7.2"
+  },
+  {
+   "make": "nikon",
+   "spec": "50|1.2",
+   "name": "Nikkor Z 50mm f/1.2 S"
+  },
+  {
+   "make": "nikon",
    "spec": "50|1.4",
-   "name": "AF Nikkor 50mm f/1.4"
+   "name": "AF-S Nikkor 50mm f/1.4G"
   },
   {
+   "make": "nikon",
    "spec": "50|1.8",
-   "name": "AF Nikkor 50mm f/1.8"
+   "name": "AF-S Nikkor 50mm f/1.8G"
   },
   {
+   "make": "nikon",
    "spec": "50|2",
-   "name": "Zeiss Milvus 50mm f/2 Macro"
+   "name": "Nikkor H 50mm f/2"
   },
   {
+   "make": "nikon",
+   "spec": "50|2.8",
+   "name": "Nikkor Z MC 50mm f/2.8"
+  },
+  {
+   "make": "nikon",
    "spec": "55-200|4-5.6",
-   "name": "AF-S DX Zoom-Nikkor 55-200mm f/4-5.6G ED"
+   "name": "AF-S DX VR Zoom-Nikkor 55-200mm f/4-5.6G IF-ED"
   },
   {
+   "make": "nikon",
    "spec": "55-300|4.5-5.6",
    "name": "AF-S DX Nikkor 55-300mm f/4.5-5.6G ED VR"
   },
   {
+   "make": "nikon",
    "spec": "55|2.8",
    "name": "AF Micro-Nikkor 55mm f/2.8"
   },
   {
+   "make": "nikon",
+   "spec": "58|0.95",
+   "name": "Nikkor Z 58mm f/0.95 S Noct"
+  },
+  {
+   "make": "nikon",
    "spec": "58|1.4",
    "name": "AF-S Nikkor 58mm f/1.4G"
   },
   {
+   "make": "nikon",
    "spec": "60-180|4-5.6",
    "name": "IX-Nikkor 60-180mm f/4-5.6"
   },
   {
+   "make": "nikon",
    "spec": "60-180|4.5-5.6",
    "name": "IX-Nikkor 60-180mm f/4.5-5.6"
   },
   {
+   "make": "nikon",
    "spec": "600|4",
-   "name": "AF-I Nikkor 600mm f/4D IF-ED"
+   "name": "AF-I Nikkor 600mm f/4D IF-ED + TC-14E"
   },
   {
+   "make": "nikon",
+   "spec": "600|6.3",
+   "name": "Nikkor Z 600mm f/6.3 VR S"
+  },
+  {
+   "make": "nikon",
+   "spec": "60|1",
+   "name": "Coastal Optical Systems 60mm 1:4 UV-VIS-IR Macro Apo"
+  },
+  {
+   "make": "nikon",
    "spec": "60|2",
    "name": "Tamron SP AF 60mm f/2.0 Di II Macro 1:1 (G005)"
   },
   {
+   "make": "nikon",
    "spec": "60|2.8",
-   "name": "AF Micro-Nikkor 60mm f/2.8"
+   "name": "AF-S Micro Nikkor 60mm f/2.8G ED"
   },
   {
+   "make": "nikon",
+   "spec": "65|2",
+   "name": "Voigtlander Macro APO-Lanthar 65mm F2"
+  },
+  {
+   "make": "nikon",
+   "spec": "70-180|2.8",
+   "name": "Nikkor Z 70-180mm f/2.8"
+  },
+  {
+   "make": "nikon",
    "spec": "70-180|4.5-5.6",
    "name": "AF Zoom-Micro Nikkor 70-180mm f/4.5-5.6D ED"
   },
   {
+   "make": "nikon",
    "spec": "70-200|2.8",
    "name": "AF-S VR Zoom-Nikkor 70-200mm f/2.8G IF-ED"
   },
   {
+   "make": "nikon",
    "spec": "70-200|4",
    "name": "AF-S Nikkor 70-200mm f/4G ED VR"
   },
   {
+   "make": "nikon",
+   "spec": "70-210|1",
+   "name": "Soligor AF C/D Auto Zoom+Macro 70-210mm 1:4-5.6 UMCS"
+  },
+  {
+   "make": "nikon",
+   "spec": "70-210|2.8",
+   "name": "Sigma 70-210mm F2.8 APO"
+  },
+  {
+   "make": "nikon",
+   "spec": "70-210|3.5-4.5",
+   "name": "Sigma APO 70-210mm F3.5-4.5"
+  },
+  {
+   "make": "nikon",
    "spec": "70-210|4",
    "name": "AF Zoom-Nikkor 70-210mm f/4"
   },
   {
+   "make": "nikon",
    "spec": "70-210|4-5.6",
-   "name": "AF Nikkor 70-210mm f/4-5.6"
+   "name": "AF Nikkor 70-210mm f/4-5.6D"
   },
   {
+   "make": "nikon",
+   "spec": "70-210|4.5-5.6",
+   "name": "Cosina AF Zoom 70-210mm F4.5-5.6 MC Macro"
+  },
+  {
+   "make": "nikon",
    "spec": "70-300|4-5.6",
    "name": "AF Zoom-Nikkor 70-300mm f/4-5.6D ED"
   },
   {
+   "make": "nikon",
    "spec": "70-300|4.5-5.6",
    "name": "AF-S VR Zoom-Nikkor 70-300mm f/4.5-5.6G IF-ED"
   },
   {
+   "make": "nikon",
    "spec": "70-300|4.5-6.3",
-   "name": "AF-P DX Nikkor 70-300mm f/4.5-6.3G VR"
+   "name": "AF-P DX Nikkor 70-300mm f/4.5-6.3G ED VR"
   },
   {
+   "make": "nikon",
+   "spec": "70|2.8",
+   "name": "Sigma Macro 70mm F2.8 EX DG"
+  },
+  {
+   "make": "nikon",
    "spec": "75-240|4.5-5.6",
    "name": "AF Zoom-Nikkor 75-240mm f/4.5-5.6D"
   },
   {
+   "make": "nikon",
+   "spec": "75-300|4-5.6",
+   "name": "Sigma 75-300mm F4.0-5.6"
+  },
+  {
+   "make": "nikon",
    "spec": "75-300|4.5-5.6",
    "name": "AF Zoom-Nikkor 75-300mm f/4.5-5.6"
   },
   {
+   "make": "nikon",
    "spec": "8-15|3.5-4.5",
    "name": "AF-S Fisheye Nikkor 8-15mm f/3.5-4.5E ED"
   },
   {
-   "spec": "80-200|2.8",
-   "name": "AF Zoom-Nikkor 80-200mm f/2.8 ED"
+   "make": "nikon",
+   "spec": "8-16|4.5-5.6",
+   "name": "Sigma 8-16mm F4.5-5.6 DC HSM"
   },
   {
+   "make": "nikon",
+   "spec": "80-200|2.8",
+   "name": "AF-S Zoom-Nikkor 80-200mm f/2.8D IF-ED"
+  },
+  {
+   "make": "nikon",
    "spec": "80-200|4.5-5.6",
    "name": "AF Zoom-Nikkor 80-200mm f/4.5-5.6D"
   },
   {
+   "make": "nikon",
    "spec": "80-400|4.5-5.6",
    "name": "AF VR Zoom-Nikkor 80-400mm f/4.5-5.6D ED"
   },
   {
+   "make": "nikon",
+   "spec": "800|13",
+   "name": "FSA-L2, EDG 65, 800mm F13 G"
+  },
+  {
+   "make": "nikon",
    "spec": "800|5.6",
    "name": "AF-S VR Nikkor 800mm f/5.6E FL ED"
   },
   {
+   "make": "nikon",
+   "spec": "800|6.3",
+   "name": "Nikkor Z 800mm f/6.3 VR S"
+  },
+  {
+   "make": "nikon",
+   "spec": "85|1.2",
+   "name": "Nikkor Z 85mm f/1.2 S"
+  },
+  {
+   "make": "nikon",
    "spec": "85|1.4",
    "name": "AF Nikkor 85mm f/1.4D IF"
   },
   {
+   "make": "nikon",
    "spec": "85|1.8",
-   "name": "AF Nikkor 85mm f/1.8"
+   "name": "AF-S Nikkor 85mm f/1.8G"
   },
   {
+   "make": "nikon",
    "spec": "85|2.8",
-   "name": "PC Micro-Nikkor 85mm f/2.8D"
+   "name": "PC-E Micro Nikkor 85mm f/2.8D"
   },
   {
+   "make": "nikon",
    "spec": "85|3.5",
    "name": "AF-S DX Micro Nikkor 85mm f/3.5G ED VR"
   },
   {
+   "make": "nikon",
    "spec": "8|2.8",
    "name": "Fisheye Nikkor 8mm f/2.8 AiS"
   },
   {
+   "make": "nikon",
    "spec": "8|3.5",
-   "name": "Samyang 8mm f/3.5 Fish-Eye CS"
+   "name": "Sigma 8mm F3.5 EX DG Circular Fisheye"
   },
   {
+   "make": "nikon",
+   "spec": "8|4",
+   "name": "Sigma 8mm F4 EX Circular Fisheye"
+  },
+  {
+   "make": "nikon",
    "spec": "90|2.5",
-   "name": "Tamron SP AF 90mm f/2.5 (52E)"
+   "name": "Tamron SP AF 90mm f/2.5 Macro (152E)"
   },
   {
+   "make": "nikon",
    "spec": "90|2.8",
-   "name": "Tamron SP AF 90mm f/2.8 Macro 1:1 (72E)"
+   "name": "Tamron SP AF 90mm f/2.8 [Di] Macro 1:1 (172E/272E)"
+  },
+  {
+   "make": "nikon",
+   "spec": "90|3.5",
+   "name": "Voigtlander APO-Lanthar 90mm F3.5 SLII Close Focus"
+  },
+  {
+   "make": "olympus",
+   "spec": "10-20|4-5.6",
+   "name": "Sigma 10-20mm F4.0-5.6 EX DC HSM"
+  },
+  {
+   "make": "olympus",
+   "spec": "10-25|1.7",
+   "name": "Leica DG Vario-Summilux 10-25mm F1.7 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "100-300|4-5.6",
+   "name": "Lumix G Vario 100-300mm F4.0-5.6 Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "100-400|4-6.3",
+   "name": "Leica DG Vario-Elmar 100-400mm F4.0-6.3 Asph. Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "100-400|5-6.3",
+   "name": "Olympus M.Zuiko 100-400mm F5.0-6.3"
+  },
+  {
+   "make": "olympus",
+   "spec": "105|2.8",
+   "name": "Sigma Macro 105mm F2.8 EX DG"
+  },
+  {
+   "make": "olympus",
+   "spec": "11-22|2.8-3.5",
+   "name": "Olympus Zuiko Digital 11-22mm F2.8-3.5"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-100|4",
+   "name": "Olympus M.Zuiko Digital ED 12-100mm F4.0 IS Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-200|3.5-6.3",
+   "name": "Olympus M.Zuiko Digital ED 12-200mm F3.5-6.3"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-32|3.5-5.6",
+   "name": "Lumix G Vario 12-32mm F3.5-5.6 Asph. Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-35|2.8",
+   "name": "Lumix G X Vario 12-35mm F2.8 II Asph. Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-40|2.8",
+   "name": "Olympus M.Zuiko Digital ED 12-40mm F2.8 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-45|4",
+   "name": "Olympus M.Zuiko Digital ED 12-45mm F4.0 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-50|3.5-6.3",
+   "name": "Olympus M.Zuiko Digital ED 12-50mm F3.5-6.3 EZ"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-60|2.8-4",
+   "name": "Olympus Zuiko Digital ED 12-60mm F2.8-4.0 SWD"
+  },
+  {
+   "make": "olympus",
+   "spec": "12-60|3.5-5.6",
+   "name": "Lumix G Vario 12-60mm F3.5-5.6 Asph. Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "12.5|12",
+   "name": "Lumix G 12.5mm F12 3D"
+  },
+  {
+   "make": "olympus",
+   "spec": "12|1.4",
+   "name": "Leica DG Summilux 12mm F1.4 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "12|2",
+   "name": "Olympus M.Zuiko Digital ED 12mm F2.0"
+  },
+  {
+   "make": "olympus",
+   "spec": "135-400|4.5-5.6",
+   "name": "Sigma APO 135-400mm F4.5-5.6 DG"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-140|3.5-5.6",
+   "name": "Lumix G Vario 14-140mm F3.5-5.6 Asph. Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-140|4-5.8",
+   "name": "Lumix G Vario HD 14-140mm F4.0-5.8 Asph. Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-150|3.5-5.6",
+   "name": "Leica D Vario Elmar 14-150mm F3.5-5.6"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-150|3.5-5.8",
+   "name": "Tamron 14-150mm F3.5-5.8 Di III"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-150|4-5.6",
+   "name": "Olympus M.Zuiko Digital ED 14-150mm F4.0-5.6 [II]"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-35|2",
+   "name": "Olympus Zuiko Digital ED 14-35mm F2.0 SWD"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-42|3.5-5.6",
+   "name": "Olympus M.Zuiko Digital ED 14-42mm F3.5-5.6 EZ"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-45|3.5-5.6",
+   "name": "Olympus Zuiko Digital 14-45mm F3.5-5.6"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-50|2.8-3.5",
+   "name": "Leica D Vario Elmarit 14-50mm F2.8-3.5 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "14-50|3.8-5.6",
+   "name": "Leica D Vario Elmar 14-50mm F3.8-5.6 Asph. Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "14-54|2.8-3.5",
+   "name": "Olympus Zuiko Digital 14-54mm F2.8-3.5 II"
+  },
+  {
+   "make": "olympus",
+   "spec": "14|2.5",
+   "name": "Lumix G 14mm F2.5 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "150-400|4.5",
+   "name": "Olympus M.Zuiko Digital 150-400mm F4.5 TC1.25x IS Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "150-600|5-6.3",
+   "name": "Olympus M.Zuiko Digital ED 150-600mm F5.0-6.3"
+  },
+  {
+   "make": "olympus",
+   "spec": "150|2",
+   "name": "Olympus Zuiko Digital ED 150mm F2.0"
+  },
+  {
+   "make": "olympus",
+   "spec": "150|2.8",
+   "name": "Sigma APO Macro 150mm F2.8 EX DG HSM"
+  },
+  {
+   "make": "olympus",
+   "spec": "15|1.7",
+   "name": "Leica DG Summilux 15mm F1.7 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "16|1.4",
+   "name": "Sigma 16mm F1.4 DC DN | C (017)"
+  },
+  {
+   "make": "olympus",
+   "spec": "17.5-45|3.5-5.6",
+   "name": "Olympus Zuiko Digital 17.5-45mm F3.5-5.6"
+  },
+  {
+   "make": "olympus",
+   "spec": "17|1.2",
+   "name": "Olympus M.Zuiko Digital ED 17mm F1.2 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "17|1.8",
+   "name": "Olympus M.Zuiko Digital 17mm F1.8"
+  },
+  {
+   "make": "olympus",
+   "spec": "17|2.8",
+   "name": "Olympus M.Zuiko Digital 17mm F2.8 Pancake"
+  },
+  {
+   "make": "olympus",
+   "spec": "18-125|3.5-5.6",
+   "name": "Sigma 18-125mm F3.5-5.6 DC"
+  },
+  {
+   "make": "olympus",
+   "spec": "18-180|3.5-6.3",
+   "name": "Olympus Zuiko Digital 18-180mm F3.5-6.3"
+  },
+  {
+   "make": "olympus",
+   "spec": "18-50|2.8",
+   "name": "Sigma 18-50mm F2.8 EX DC Macro"
+  },
+  {
+   "make": "olympus",
+   "spec": "18-50|3.5-5.6",
+   "name": "Sigma 18-50mm F3.5-5.6 DC"
+  },
+  {
+   "make": "olympus",
+   "spec": "19|2.8",
+   "name": "Sigma 19mm F2.8 DN | A"
+  },
+  {
+   "make": "olympus",
+   "spec": "200|2.8",
+   "name": "Leica DG Elmarit 200mm F2.8 Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "20|1.4",
+   "name": "Olympus M.Zuiko Digital ED 20mm F1.4 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "20|1.7",
+   "name": "Lumix G 20mm F1.7 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "24|1.8",
+   "name": "Sigma 24mm F1.8 EX DG Aspherical Macro"
+  },
+  {
+   "make": "olympus",
+   "spec": "25-50|1.7",
+   "name": "Leica DG Vario-Summilux 25-50mm F1.7 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "25|1.2",
+   "name": "Olympus M.Zuiko Digital ED 25mm F1.2 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "25|1.4",
+   "name": "Leica DG Summilux 25mm F1.4 II Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "25|1.7",
+   "name": "Lumix G 25mm F1.7 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "25|1.8",
+   "name": "Olympus M.Zuiko Digital 25mm F1.8"
+  },
+  {
+   "make": "olympus",
+   "spec": "25|2.8",
+   "name": "Olympus Zuiko Digital 25mm F2.8"
+  },
+  {
+   "make": "olympus",
+   "spec": "300-800|5.6",
+   "name": "Sigma APO 300-800mm F5.6 EX DG HSM"
+  },
+  {
+   "make": "olympus",
+   "spec": "300|2.8",
+   "name": "Olympus Zuiko Digital ED 300mm F2.8"
+  },
+  {
+   "make": "olympus",
+   "spec": "300|4",
+   "name": "Olympus M.Zuiko Digital ED 300mm F4.0 IS Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "300|6.3",
+   "name": "Kenko Tokina Reflex 300mm F6.3 MF Macro"
+  },
+  {
+   "make": "olympus",
+   "spec": "30|1.4",
+   "name": "Sigma 30mm F1.4 EX DC HSM"
+  },
+  {
+   "make": "olympus",
+   "spec": "30|2.8",
+   "name": "Lumix G Macro 30mm F2.8 Asph. Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "30|3.5",
+   "name": "Olympus M.Zuiko Digital ED 30mm F3.5 Macro"
+  },
+  {
+   "make": "olympus",
+   "spec": "35-100|2",
+   "name": "Olympus Zuiko Digital Pro ED 35-100mm F2.0"
+  },
+  {
+   "make": "olympus",
+   "spec": "35-100|2.8",
+   "name": "Lumix G X Vario 35-100mm F2.8 Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "35-100|4-5.6",
+   "name": "Lumix G Vario 35-100mm F4.0-5.6 Asph. Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "35|3.5",
+   "name": "Olympus Zuiko Digital 35mm F3.5 Macro"
+  },
+  {
+   "make": "olympus",
+   "spec": "40-150|2.8",
+   "name": "Olympus M.Zuiko Digital ED 40-150mm F2.8 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "40-150|3.5-4.5",
+   "name": "Olympus Zuiko Digital 40-150mm F3.5-4.5"
+  },
+  {
+   "make": "olympus",
+   "spec": "40-150|4",
+   "name": "Olympus M.Zuiko Digital ED 40-150mm F4.0 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "40-150|4-5.6",
+   "name": "Olympus M.Zuiko Digital ED 40-150mm F4.0-5.6 R"
+  },
+  {
+   "make": "olympus",
+   "spec": "42.5|1.2",
+   "name": "Leica DG Nocticron 42.5mm F1.2 Asph. Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "42.5|1.7",
+   "name": "Lumix G 42.5mm F1.7 Asph. Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "42.5|1.8",
+   "name": "Xiaoyi 42.5mm F1.8"
+  },
+  {
+   "make": "olympus",
+   "spec": "45-150|4-5.6",
+   "name": "Lumix G Vario 45-150mm F4.0-5.6 Asph. Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "45-175|4-5.6",
+   "name": "Lumix G X Vario PZ 45-175mm F4.0-5.6 Asph. Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "45-200|4-5.6",
+   "name": "Lumix G Vario 45-200mm F4.0-5.6 Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "45|1.2",
+   "name": "Olympus M.Zuiko Digital ED 45mm F1.2 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "45|1.8",
+   "name": "Olympus M.Zuiko Digital 45mm F1.8"
+  },
+  {
+   "make": "olympus",
+   "spec": "45|2.8",
+   "name": "Leica DG Macro-Elmarit 45mm F2.8 Asph. Mega OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "50-200|2.8",
+   "name": "OM System M.Zuiko Digital ED 50-200mm F2.8 IS Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "50-200|2.8-3.5",
+   "name": "Olympus Zuiko Digital ED 50-200mm F2.8-3.5 SWD"
+  },
+  {
+   "make": "olympus",
+   "spec": "50-200|2.8-4",
+   "name": "Leica DG Vario-Elmarit 50-200mm F2.8-4 Asph. Power OIS"
+  },
+  {
+   "make": "olympus",
+   "spec": "50-500|4-6.3",
+   "name": "Sigma APO 50-500mm F4.0-6.3 EX DG HSM"
+  },
+  {
+   "make": "olympus",
+   "spec": "50|1.4",
+   "name": "Sigma 50mm F1.4 EX DG HSM"
+  },
+  {
+   "make": "olympus",
+   "spec": "50|2",
+   "name": "Olympus Zuiko Digital ED 50mm F2.0 Macro"
+  },
+  {
+   "make": "olympus",
+   "spec": "50|2.8",
+   "name": "Venus Optics Laowa 50mm F2.8 2x Macro"
+  },
+  {
+   "make": "olympus",
+   "spec": "55-200|4-5.6",
+   "name": "Sigma 55-200mm F4.0-5.6 DC"
+  },
+  {
+   "make": "olympus",
+   "spec": "60|2.8",
+   "name": "Olympus M.Zuiko Digital ED 60mm F2.8 Macro"
+  },
+  {
+   "make": "olympus",
+   "spec": "6|2",
+   "name": "LAOWA C&D-Dreamer MFT 6.0mm F2.0"
+  },
+  {
+   "make": "olympus",
+   "spec": "7-14|2.8",
+   "name": "Olympus M.Zuiko Digital ED 7-14mm F2.8 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "7-14|4",
+   "name": "Olympus Zuiko Digital ED 7-14mm F4.0"
+  },
+  {
+   "make": "olympus",
+   "spec": "7.5|2",
+   "name": "LAOWA C&D-Dreamer MFT 7.5mm F2.0"
+  },
+  {
+   "make": "olympus",
+   "spec": "70-200|2.8",
+   "name": "Sigma APO 70-200mm F2.8 II EX DG Macro HSM"
+  },
+  {
+   "make": "olympus",
+   "spec": "70-300|4-5.6",
+   "name": "Olympus Zuiko Digital 70-300mm F4.0-5.6"
+  },
+  {
+   "make": "olympus",
+   "spec": "75-300|4.8-6.7",
+   "name": "Olympus M.Zuiko Digital ED 75-300mm F4.8-6.7 II"
+  },
+  {
+   "make": "olympus",
+   "spec": "75|1.8",
+   "name": "Olympus M.Zuiko Digital ED 75mm F1.8"
+  },
+  {
+   "make": "olympus",
+   "spec": "8-18|2.8-4",
+   "name": "Leica DG Vario-Elmarit 8-18mm F2.8-4 Asph."
+  },
+  {
+   "make": "olympus",
+   "spec": "8-25|4",
+   "name": "Olympus M.Zuiko Digital ED 8-25mm F4 Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "8|1.8",
+   "name": "Olympus M.Zuiko Digital ED 8mm F1.8 Fisheye Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "8|3.5",
+   "name": "Olympus Zuiko Digital ED 8mm F3.5 Fisheye"
+  },
+  {
+   "make": "olympus",
+   "spec": "9-18|4-5.6",
+   "name": "Olympus M.Zuiko Digital ED 9-18mm F4.0-5.6"
+  },
+  {
+   "make": "olympus",
+   "spec": "90-250|2.8",
+   "name": "Olympus Zuiko Digital Pro ED 90-250mm F2.8"
+  },
+  {
+   "make": "olympus",
+   "spec": "90|3.5",
+   "name": "Olympus M.Zuiko Digital ED 90mm F3.5 Macro IS Pro"
+  },
+  {
+   "make": "olympus",
+   "spec": "9|1.7",
+   "name": "Leica DG Summilux 9mm F1.7 Asph."
+  },
+  {
+   "make": "panasonic",
+   "spec": "135|2.8",
+   "name": "Elmarit-M 135mm f/2.8 (I/II)"
+  },
+  {
+   "make": "panasonic",
+   "spec": "135|3.4",
+   "name": "Apo-Telyt-M 135mm f/3.4"
+  },
+  {
+   "make": "panasonic",
+   "spec": "135|4",
+   "name": "Tele-Elmar-M 135mm f/4 (II)"
+  },
+  {
+   "make": "panasonic",
+   "spec": "14|3.8",
+   "name": "Super-Elmar-M 14mm f/3.8 Asph"
+  },
+  {
+   "make": "panasonic",
+   "spec": "18-21|4",
+   "name": "Tri-Elmar-M 16-18-21mm f/4 ASPH. (at 16mm)"
+  },
+  {
+   "make": "panasonic",
+   "spec": "18|3.8",
+   "name": "Apo-Telyt-M 18mm f/3.8 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "21|1.4",
+   "name": "Summilux-M 21mm f/1.4 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "21|2.8",
+   "name": "Elmarit-M 21mm f/2.8 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "21|3.4",
+   "name": "Super-Elmar-M 21mm f/3.4 Asph"
+  },
+  {
+   "make": "panasonic",
+   "spec": "24|1.4",
+   "name": "Summilux-M 24mm f/1.4 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "24|2.8",
+   "name": "Elmarit-M 24mm f/2.8 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "24|3.8",
+   "name": "Elmar-M 24mm f/3.8 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "28|2",
+   "name": "Summicron-M 28mm f/2 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "28|2.8",
+   "name": "Elmarit-M 28mm f/2.8 (III)"
+  },
+  {
+   "make": "panasonic",
+   "spec": "28|5.6",
+   "name": "Summaron-M 28mm f/5.6"
+  },
+  {
+   "make": "panasonic",
+   "spec": "35-50|4",
+   "name": "Tri-Elmar-M 28-35-50mm f/4 ASPH. (at 28mm)"
+  },
+  {
+   "make": "panasonic",
+   "spec": "35|1.4",
+   "name": "Summilux-M 35mm f/1.4 ASPHERICAL"
+  },
+  {
+   "make": "panasonic",
+   "spec": "35|2",
+   "name": "Summicron-M 35mm f/2 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "35|2.5",
+   "name": "Summarit-M 35mm f/2.5"
+  },
+  {
+   "make": "panasonic",
+   "spec": "50|0.95",
+   "name": "Noctilux-M 50mm f/0.95 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "50|1",
+   "name": "Noctilux-M 50mm f/1"
+  },
+  {
+   "make": "panasonic",
+   "spec": "50|1.2",
+   "name": "Noctilux-M 50mm f/1.2"
+  },
+  {
+   "make": "panasonic",
+   "spec": "50|1.4",
+   "name": "Summilux-M 50mm f/1.4 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "50|2",
+   "name": "Apo-Summicron-M 50mm f/2 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "50|2.5",
+   "name": "Summarit-M 50mm f/2.5"
+  },
+  {
+   "make": "panasonic",
+   "spec": "50|2.8",
+   "name": "Elmar-M 50mm f/2.8"
+  },
+  {
+   "make": "panasonic",
+   "spec": "75|1.25",
+   "name": "Noctilux-M 75mm f/1.25 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "75|1.4",
+   "name": "Summilux-M 75mm f/1.4"
+  },
+  {
+   "make": "panasonic",
+   "spec": "75|2",
+   "name": "Apo-Summicron-M 75mm f/2 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "75|2.5",
+   "name": "Summarit-M 75mm f/2.5"
+  },
+  {
+   "make": "panasonic",
+   "spec": "90|2",
+   "name": "Apo-Summicron-M 90mm f/2 ASPH."
+  },
+  {
+   "make": "panasonic",
+   "spec": "90|2.2",
+   "name": "Thambar-M 90mm f/2.2"
+  },
+  {
+   "make": "panasonic",
+   "spec": "90|2.5",
+   "name": "Summarit-M 90mm f/2.5"
+  },
+  {
+   "make": "panasonic",
+   "spec": "90|2.8",
+   "name": "Tele-Elmarit-M 90mm f/2.8 (II)"
+  },
+  {
+   "make": "panasonic",
+   "spec": "90|4",
+   "name": "Macro-Elmar-M 90mm f/4"
+  },
+  {
+   "make": "pentax",
+   "spec": "10-17|3.5-4.5",
+   "name": "smc PENTAX-DA FISH-EYE 10-17mm F3.5-4.5 ED[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "10-20|3.5",
+   "name": "Sigma 10-20mm F3.5 EX DC HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "10-20|4-5.6",
+   "name": "Sigma AF 10-20mm F4-5.6 EX DC"
+  },
+  {
+   "make": "pentax",
+   "spec": "10-24|3.5-4.5",
+   "name": "Tamron SP AF 10-24mm F3.5-4.5 Di II LD Aspherical [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "100-300|4",
+   "name": "Sigma EX APO 100-300mm F4 IF"
+  },
+  {
+   "make": "pentax",
+   "spec": "100-300|4.5-5.6",
+   "name": "smc PENTAX-FA 100-300mm F4.5-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "100-300|4.7-5.8",
+   "name": "smc PENTAX-FA 100-300mm F4.7-5.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "100-300|5.6-6.7",
+   "name": "Cosina AF 100-300mm F5.6-6.7"
+  },
+  {
+   "make": "pentax",
+   "spec": "100|2.8",
+   "name": "smc PENTAX-D FA Macro 100mm F2.8 WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "100|3.5",
+   "name": "smc PENTAX-FA Macro 100mm F3.5"
+  },
+  {
+   "make": "pentax",
+   "spec": "11-18|2.8",
+   "name": "HD PENTAX-DA* 11-18mm F2.8 ED DC AW"
+  },
+  {
+   "make": "pentax",
+   "spec": "11.5|9",
+   "name": "07 Mount Shield 11.5mm F9"
+  },
+  {
+   "make": "pentax",
+   "spec": "11|4",
+   "name": "Irix 11mm F4 Firefly"
+  },
+  {
+   "make": "pentax",
+   "spec": "12-24|4",
+   "name": "smc PENTAX-DA 12-24mm F4 ED AL [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "12-24|4.5-5.6",
+   "name": "Sigma 12-24mm F4.5-5.6 EX DG"
+  },
+  {
+   "make": "pentax",
+   "spec": "120-400|4.5-5.6",
+   "name": "Sigma 120-400mm F4.5-5.6 APO DG OS HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "120|4",
+   "name": "smc PENTAX-FA 645 Macro 120mm F4"
+  },
+  {
+   "make": "pentax",
+   "spec": "135|2.8",
+   "name": "smc PENTAX-FA 135mm F2.8 [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "14|2.8",
+   "name": "smc PENTAX-DA 14mm F2.8 ED[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "15-30|2.8",
+   "name": "HD PENTAX-D FA 15-30mm F2.8 ED SDM WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "15-45|2.8",
+   "name": "06 Telephoto Zoom 15-45mm F2.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "150-300|5.6",
+   "name": "smc PENTAX-FA 645 150-300mm F5.6 ED [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "150-450|4.5-5.6",
+   "name": "HD PENTAX-D FA 150-450mm F4.5-5.6 ED DC AW"
+  },
+  {
+   "make": "pentax",
+   "spec": "150-500|5-6.3",
+   "name": "Sigma 150-500mm F5-6.3 DG APO [OS] HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "150|2.8",
+   "name": "smc PENTAX-FA 645 150mm F2.8 [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "15|2.4",
+   "name": "Irix 15mm F2.4"
+  },
+  {
+   "make": "pentax",
+   "spec": "15|4",
+   "name": "smc PENTAX-DA 15mm F4 ED AL Limited"
+  },
+  {
+   "make": "pentax",
+   "spec": "16-45|4",
+   "name": "smc PENTAX-DA 16-45mm F4 ED AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "16-50|2.8",
+   "name": "smc PENTAX-DA* 16-50mm F2.8 ED AL [IF] SDM (SDM unused)"
+  },
+  {
+   "make": "pentax",
+   "spec": "16-85|3.5-5.6",
+   "name": "HD PENTAX-DA 16-85mm F3.5-5.6 ED DC WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "17-28|3.5-4.5",
+   "name": "smc PENTAX-F FISH-EYE 17-28mm F3.5-4.5"
+  },
+  {
+   "make": "pentax",
+   "spec": "17-35|2.8-4",
+   "name": "Sigma 17-35mm F2.8-4 EX DG"
+  },
+  {
+   "make": "pentax",
+   "spec": "17-50|2.8",
+   "name": "Tamron AF 17-50mm F2.8 XR Di-II LD (Model A16)"
+  },
+  {
+   "make": "pentax",
+   "spec": "17-70|2.8-4",
+   "name": "Sigma 17-70mm F2.8-4.0 DC Macro OS HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "17-70|2.8-4.5",
+   "name": "Sigma 17-70mm F2.8-4.5 DC Macro"
+  },
+  {
+   "make": "pentax",
+   "spec": "17-70|4",
+   "name": "smc PENTAX-DA 17-70mm F4 AL [IF] SDM"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-125|3.5-5.6",
+   "name": "Sigma AF 18-125mm F3.5-5.6 DC"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-125|3.8-5.6",
+   "name": "Sigma 18-125mm F3.8-5.6 DC HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-135|3.5-5.6",
+   "name": "smc PENTAX-DA 18-135mm F3.5-5.6 ED AL [IF] DC WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-200|3.5-6.3",
+   "name": "Tamron XR DiII 18-200mm F3.5-6.3 (A14)"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-250|3.5-6.3",
+   "name": "smc PENTAX-DA 18-250mm F3.5-6.3 ED AL [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-270|3.5-6.3",
+   "name": "smc PENTAX-DA 18-270mm F3.5-6.3 ED SDM"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-300|3.5-6.3",
+   "name": "Sigma 18-300mm F3.5-6.3 DC Macro HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-35|1.8",
+   "name": "Sigma 18-35mm F1.8 DC HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-35|3.5-4.5",
+   "name": "Sigma AF 18-35mm F3.5-4.5 Aspherical"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-35|4-5.6",
+   "name": "smc PENTAX-FA J 18-35mm F4-5.6 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-50|2.8",
+   "name": "Sigma 18-50mm F2.8 EX DC"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-50|2.8-4.5",
+   "name": "Sigma 18-50mm F2.8-4.5 DC HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-50|3.5-5.6",
+   "name": "Sigma 18-50mm F3.5-5.6 DC"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-50|4-5.6",
+   "name": "smc PENTAX-DA L 18-50mm F4-5.6 DC WR RE"
+  },
+  {
+   "make": "pentax",
+   "spec": "18-55|3.5-5.6",
+   "name": "smc PENTAX-DA L 18-55mm F3.5-5.6 AL WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "18.3|2.8",
+   "name": "18.3mm F2.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "18|8",
+   "name": "05 Toy Lens Telephoto 18mm F8"
+  },
+  {
+   "make": "pentax",
+   "spec": "19-35|3.5-4.5",
+   "name": "Tokina 19-35mm F3.5-4.5 AF"
+  },
+  {
+   "make": "pentax",
+   "spec": "20-35|4",
+   "name": "smc PENTAX-FA 20-35mm F4 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "20-40|2.8-4",
+   "name": "HD PENTAX-DA 20-40mm F2.8-4 ED Limited DC WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "200|2.8",
+   "name": "smc PENTAX-DA* 200mm F2.8 ED [IF] SDM (SDM unused)"
+  },
+  {
+   "make": "pentax",
+   "spec": "200|4",
+   "name": "smc PENTAX-FA* Macro 200mm F4 ED[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "20|1.8",
+   "name": "Sigma 20mm F1.8 EX DG Aspherical RF"
+  },
+  {
+   "make": "pentax",
+   "spec": "20|2.8",
+   "name": "smc PENTAX-FA 20mm F2.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "21|2.4",
+   "name": "HD PENTAX-D FA 21mm F2.4 ED Limited DC WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "21|3.2",
+   "name": "HD PENTAX-DA 21mm F3.2 ED AL Limited"
+  },
+  {
+   "make": "pentax",
+   "spec": "24-135|3.5-5.6",
+   "name": "Tamron SP AF 24-135mm F3.5-5.6 AD AL (190D)"
+  },
+  {
+   "make": "pentax",
+   "spec": "24-50|4",
+   "name": "smc PENTAX-F 24-50mm F4"
+  },
+  {
+   "make": "pentax",
+   "spec": "24-60|2.8",
+   "name": "Sigma 24-60mm F2.8 EX DG"
+  },
+  {
+   "make": "pentax",
+   "spec": "24-70|2.8",
+   "name": "HD PENTAX-D FA 24-70mm F2.8 ED SDM WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "24-90|3.5-4.5",
+   "name": "smc PENTAX-FA 24-90mm F3.5-4.5 AL[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "24|2",
+   "name": "smc PENTAX-FA* 24mm F2 AL[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "250-600|5.6",
+   "name": "smc PENTAX-FA* 250-600mm F5.6 ED[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "25|4",
+   "name": "smc PENTAX-D FA 645 25mm F4 AL [IF] SDM AW"
+  },
+  {
+   "make": "pentax",
+   "spec": "26.1|2.8",
+   "name": "26.1mm F2.8 GT-2 TC"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-105|3.2-4.5",
+   "name": "smc PENTAX-FA 28-105mm F3.2-4.5 AL[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-105|3.5-5.6",
+   "name": "HD PENTAX-D FA 28-105mm F3.5-5.6 ED DC WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-105|4-5.6",
+   "name": "smc PENTAX-FA 28-105mm F4-5.6 [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-200|3.8-5.6",
+   "name": "smc PENTAX-FA 28-200mm F3.8-5.6 AL[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-300|3.5-5.6",
+   "name": "Sigma AF 28-300mm F3.5-5.6 DL IF"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-300|3.5-6.3",
+   "name": "Tamron AF 28-300mm F3.5-6.3 LD Aspherical[IF] Macro (185D/285D)"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-45|4.5",
+   "name": "HD PENTAX-DA 645 28-45mm F4.5 ED AW SR"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-70|2.6-2.8",
+   "name": "Tokina AT-X Pro AF 28-70mm F2.6-2.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-70|2.8",
+   "name": "smc PENTAX-FA* 28-70mm F2.8 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-70|4",
+   "name": "smc PENTAX-FA 28-70mm F4 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-75|2.8",
+   "name": "Tamron SP AF 28-75mm F2.8 XR Di LD Aspherical [IF] Macro"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-80|3.5-4.5",
+   "name": "smc PENTAX-F 28-80mm F3.5-4.5"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-80|3.5-4.7",
+   "name": "smc PENTAX-FA 28-80mm F3.5-4.7"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-80|3.5-5.6",
+   "name": "smc PENTAX-FA J 28-80mm F3.5-5.6 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "28-90|3.5-5.6",
+   "name": "smc PENTAX-FA 28-90mm F3.5-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "28|1.8",
+   "name": "Sigma 28mm F1.8 EX DG Aspherical Macro"
+  },
+  {
+   "make": "pentax",
+   "spec": "28|2.8",
+   "name": "smc PENTAX-FA SOFT 28mm F2.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "3.2|5.6",
+   "name": "03 Fish-eye 3.2mm F5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "3.8-5.9|3.7-4",
+   "name": "08 Wide Zoom 3.8-5.9mm F3.7-4"
+  },
+  {
+   "make": "pentax",
+   "spec": "300|2.8",
+   "name": "smc PENTAX-FA* 300mm F2.8 ED[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "300|4",
+   "name": "smc PENTAX-DA* 300mm F4 ED [IF] SDM (SDM unused)"
+  },
+  {
+   "make": "pentax",
+   "spec": "300|4.5",
+   "name": "smc PENTAX-FA* 300mm F4.5 ED[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "300|5.6",
+   "name": "smc PENTAX-FA 645 300mm F5.6 ED [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "30|1.4",
+   "name": "Sigma 30mm F1.4 DC HSM | A"
+  },
+  {
+   "make": "pentax",
+   "spec": "31|1.8",
+   "name": "smc PENTAX-FA 31mm F1.8 AL Limited"
+  },
+  {
+   "make": "pentax",
+   "spec": "33-55|4.5",
+   "name": "smc PENTAX-FA 645 33-55mm F4.5 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "35-105|4-5.6",
+   "name": "smc PENTAX-F 35-105mm F4-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "35-135|3.5-4.5",
+   "name": "smc PENTAX-F 35-135mm F3.5-4.5"
+  },
+  {
+   "make": "pentax",
+   "spec": "35-70|3.5-4.5",
+   "name": "smc PENTAX-F 35-70mm F3.5-4.5"
+  },
+  {
+   "make": "pentax",
+   "spec": "35-80|4-5.6",
+   "name": "smc PENTAX-FA 35-80mm F4-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "35-90|4-5.6",
+   "name": "Tamron 35-90mm F4-5.6 AF"
+  },
+  {
+   "make": "pentax",
+   "spec": "35|1.4",
+   "name": "Sigma 35mm F1.4 DG HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "35|2",
+   "name": "smc PENTAX-FA 35mm F2 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "35|2.4",
+   "name": "smc PENTAX-DA 35mm F2.4 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "35|2.8",
+   "name": "smc PENTAX-DA 35mm F2.8 Macro Limited"
+  },
+  {
+   "make": "pentax",
+   "spec": "35|3.5",
+   "name": "HD PENTAX-D FA 645 35mm F3.5 AL [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "4.5|2.8",
+   "name": "Sigma 4.5mm F2.8 EX DC HSM Circular Fisheye"
+  },
+  {
+   "make": "pentax",
+   "spec": "400|5.6",
+   "name": "smc PENTAX-FA 645 400mm F5.6 ED [IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "40|2.8",
+   "name": "smc PENTAX-DA 40mm F2.8 Limited"
+  },
+  {
+   "make": "pentax",
+   "spec": "43|1.9",
+   "name": "smc PENTAX-FA 43mm F1.9 Limited"
+  },
+  {
+   "make": "pentax",
+   "spec": "45-85|4.5",
+   "name": "smc PENTAX-FA 645 45-85mm F4.5"
+  },
+  {
+   "make": "pentax",
+   "spec": "45|1.4",
+   "name": "Irix 45mm F1.4"
+  },
+  {
+   "make": "pentax",
+   "spec": "45|2.8",
+   "name": "smc PENTAX-FA 645 45mm F2.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "5-15|2.8-4.5",
+   "name": "02 Standard Zoom 5-15mm F2.8-4.5"
+  },
+  {
+   "make": "pentax",
+   "spec": "50-135|2.8",
+   "name": "smc PENTAX-DA* 50-135mm F2.8 ED [IF] SDM (SDM unused)"
+  },
+  {
+   "make": "pentax",
+   "spec": "50-150|2.8",
+   "name": "Sigma 50-150mm F2.8 II APO EX DC HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "50-200|4-5.6",
+   "name": "smc Pentax-DA L 50-200mm F4-5.6 ED WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "50-500|4.5-6.3",
+   "name": "Sigma 50-500mm F4.5-6.3 DG OS HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "50|1.4",
+   "name": "HD PENTAX-D FA* 50mm F1.4 SDM AW"
+  },
+  {
+   "make": "pentax",
+   "spec": "50|1.7",
+   "name": "smc PENTAX-FA 50mm F1.7"
+  },
+  {
+   "make": "pentax",
+   "spec": "50|1.8",
+   "name": "smc PENTAX-DA 50mm F1.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "50|2.8",
+   "name": "smc PENTAX-D FA 50mm F2.8 Macro"
+  },
+  {
+   "make": "pentax",
+   "spec": "55-110|5.6",
+   "name": "smc PENTAX-FA 645 55-110mm F5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "55-200|4-5.6",
+   "name": "Sigma 55-200mm F4-5.6 DC"
+  },
+  {
+   "make": "pentax",
+   "spec": "55-300|4-5.8",
+   "name": "HD PENTAX-DA 55-300mm F4-5.8 ED WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "55-300|4.5-6.3",
+   "name": "HD PENTAX-DA 55-300mm F4.5-6.3 ED PLM WR RE"
+  },
+  {
+   "make": "pentax",
+   "spec": "55|1.4",
+   "name": "smc PENTAX-DA* 55mm F1.4 SDM (SDM unused)"
+  },
+  {
+   "make": "pentax",
+   "spec": "55|2.8",
+   "name": "smc PENTAX-D FA 645 55mm F2.8 AL [IF] SDM AW"
+  },
+  {
+   "make": "pentax",
+   "spec": "560|5.6",
+   "name": "HD PENTAX-DA 560mm F5.6 ED AW"
+  },
+  {
+   "make": "pentax",
+   "spec": "6.3|7.1",
+   "name": "04 Toy Lens Wide 6.3mm F7.1"
+  },
+  {
+   "make": "pentax",
+   "spec": "60-250|4",
+   "name": "smc PENTAX-DA* 60-250mm F4 [IF] SDM (SDM unused)"
+  },
+  {
+   "make": "pentax",
+   "spec": "600|4",
+   "name": "smc PENTAX-FA* 600mm F4 ED[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "70-200|2.8",
+   "name": "HD PENTAX-D FA* 70-200mm F2.8 ED DC AW"
+  },
+  {
+   "make": "pentax",
+   "spec": "70-200|4-5.6",
+   "name": "smc PENTAX-FA 70-200mm F4-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "70-210|4",
+   "name": "HD PENTAX-D FA 70-210mm F4 ED SDM WR"
+  },
+  {
+   "make": "pentax",
+   "spec": "70-210|4-5.6",
+   "name": "smc PENTAX-F 70-210mm F4-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "70-300|4-5.6",
+   "name": "Tamron AF 70-300mm F4-5.6 LD Macro 1:2"
+  },
+  {
+   "make": "pentax",
+   "spec": "70|2.4",
+   "name": "smc PENTAX-DA 70mm F2.4 Limited"
+  },
+  {
+   "make": "pentax",
+   "spec": "75-300|4-5.6",
+   "name": "Sigma DL Zoom 75-300mm F4-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "75-300|4.5-5.6",
+   "name": "Tokina AF 730 75-300mm F4.5-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "75-300|4.5-5.8",
+   "name": "smc PENTAX-FA J 75-300mm F4.5-5.8 AL"
+  },
+  {
+   "make": "pentax",
+   "spec": "75|2.8",
+   "name": "smc PENTAX-FA 645 75mm F2.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "77|1.8",
+   "name": "smc PENTAX-FA 77mm F1.8 Limited"
+  },
+  {
+   "make": "pentax",
+   "spec": "8-16|4.5-5.6",
+   "name": "Sigma 8-16mm F4.5-5.6 DC HSM"
+  },
+  {
+   "make": "pentax",
+   "spec": "8.5|1.9",
+   "name": "01 Standard Prime 8.5mm F1.9"
+  },
+  {
+   "make": "pentax",
+   "spec": "80-160|4.5",
+   "name": "smc PENTAX-FA 645 80-160mm F4.5"
+  },
+  {
+   "make": "pentax",
+   "spec": "80-200|2.8",
+   "name": "smc PENTAX-FA* 80-200mm F2.8 ED[IF]"
+  },
+  {
+   "make": "pentax",
+   "spec": "80-200|4.7-5.6",
+   "name": "smc PENTAX-F 80-200mm F4.7-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "80-210|4-5.6",
+   "name": "Tamron AF 80-210mm F4-5.6 (178D)"
+  },
+  {
+   "make": "pentax",
+   "spec": "80-320|4.5-5.6",
+   "name": "smc PENTAX-FA 80-320mm F4.5-5.6"
+  },
+  {
+   "make": "pentax",
+   "spec": "85|1.4",
+   "name": "HD PENTAX-D FA 85mm F1.4 ED SDM AW"
+  },
+  {
+   "make": "pentax",
+   "spec": "85|2.8",
+   "name": "smc PENTAX-FA SOFT 85mm F2.8"
+  },
+  {
+   "make": "pentax",
+   "spec": "90|2.8",
+   "name": "HD PENTAX-D FA 645 90mm F2.8 ED AW SR"
+  },
+  {
+   "make": "samsung",
+   "spec": "10|3.5",
+   "name": "Samsung NX 10mm F3.5 Fisheye"
+  },
+  {
+   "make": "samsung",
+   "spec": "12-24|4-5.6",
+   "name": "Samsung NX 12-24mm F4-5.6 ED"
+  },
+  {
+   "make": "samsung",
+   "spec": "16-50|2-2.8",
+   "name": "Samsung NX 16-50mm F2-2.8 S ED OIS"
+  },
+  {
+   "make": "samsung",
+   "spec": "16-50|3.5-5.6",
+   "name": "Samsung NX 16-50mm F3.5-5.6 Power Zoom ED OIS"
+  },
+  {
+   "make": "samsung",
+   "spec": "16|2.4",
+   "name": "Samsung NX 16mm F2.4 Pancake"
+  },
+  {
+   "make": "samsung",
+   "spec": "18-200|3.5-6.3",
+   "name": "Samsung NX 18-200mm F3.5-6.3 ED OIS"
+  },
+  {
+   "make": "samsung",
+   "spec": "18-55|3.5-5.6",
+   "name": "Samsung NX 18-55mm F3.5-5.6 OIS"
+  },
+  {
+   "make": "samsung",
+   "spec": "20-50|3.5-5.6",
+   "name": "Samsung NX 20-50mm F3.5-5.6 ED"
+  },
+  {
+   "make": "samsung",
+   "spec": "20|2.8",
+   "name": "Samsung NX 20mm F2.8 Pancake"
+  },
+  {
+   "make": "samsung",
+   "spec": "300|2.8",
+   "name": "Samsung NX 300mm F2.8 ED OIS"
+  },
+  {
+   "make": "samsung",
+   "spec": "30|2",
+   "name": "Samsung NX 30mm F2 Pancake"
+  },
+  {
+   "make": "samsung",
+   "spec": "45|1.8",
+   "name": "Samsung NX 45mm F1.8 2D/3D"
+  },
+  {
+   "make": "samsung",
+   "spec": "50-150|2.8",
+   "name": "Samsung NX 50-150mm F2.8 S ED OIS"
+  },
+  {
+   "make": "samsung",
+   "spec": "50-200|4-5.6",
+   "name": "Samsung NX 50-200mm F4-5.6 ED OIS"
+  },
+  {
+   "make": "samsung",
+   "spec": "60|2.8",
+   "name": "Samsung NX 60mm F2.8 Macro ED OIS SSA"
+  },
+  {
+   "make": "samsung",
+   "spec": "85|1.4",
+   "name": "Samsung NX 85mm F1.4 ED SSA"
+  },
+  {
+   "make": "sigma",
+   "spec": "10-20|3.5",
+   "name": "Sigma 10-20mm F3.5 EX DC HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "10-20|4-5.6",
+   "name": "Sigma 10-20mm F4-5.6 EX DC HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "100-300|4",
+   "name": "Sigma 100-300mm F4 EX DG HSM APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "100-300|4.5-6.7",
+   "name": "Sigma 100-300mm F4.5-6.7 DL"
+  },
+  {
+   "make": "sigma",
+   "spec": "100-400|5-6.3",
+   "name": "Sigma 100-400mm F5-6.3 DG DN OS | C + TC-1411"
+  },
+  {
+   "make": "sigma",
+   "spec": "105|1.4",
+   "name": "Sigma 105mm F1.4 DG HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "105|2.8",
+   "name": "Sigma 105mm F2.8 EX DG OS HSM Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "10|2.8",
+   "name": "Sigma 10mm F2.8 EX DC HSM Fisheye"
+  },
+  {
+   "make": "sigma",
+   "spec": "12-24|4",
+   "name": "Sigma 12-24mm F4 DG HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "12-24|4.5-5.6",
+   "name": "Sigma 12-24mm F4.5-5.6 EX DG ASP HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "120-300|2.8",
+   "name": "Sigma 120-300mm F2.8 EX DG OS HSM APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "120-400|4.5-5.6",
+   "name": "Sigma 120-400mm F4.5-5.6 DG APO OS HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "135-400|4.5-5.6",
+   "name": "Sigma 135-400mm F4.5-5.6 DG ASP APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "135|1.8",
+   "name": "Sigma 135mm F1.8 DG HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "14-24|2.8",
+   "name": "Sigma 14-24mm F2.8 DG DN | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "14|1.8",
+   "name": "Sigma 14mm F1.8 DH HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "14|2.8",
+   "name": "Sigma 14mm F2.8 EX Aspherical"
+  },
+  {
+   "make": "sigma",
+   "spec": "14|4",
+   "name": "Sigma 14mm F4"
+  },
+  {
+   "make": "sigma",
+   "spec": "15-30|3.5-4.5",
+   "name": "Sigma 15-30mm F3.5-4.5 EX DG Aspherical"
+  },
+  {
+   "make": "sigma",
+   "spec": "150-500|5-6.3",
+   "name": "Sigma 150-500mm F5-6.3 APO DG OS HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "150-600|5-6.3",
+   "name": "Sigma 150-600mm F5-6.3 DG OS HSM | S"
+  },
+  {
+   "make": "sigma",
+   "spec": "150|2.8",
+   "name": "Sigma 150mm F2.8 EX DG OS HSM APO Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "15|2.8",
+   "name": "Sigma 15mm F2.8 EX DG Diagonal Fisheye"
+  },
+  {
+   "make": "sigma",
+   "spec": "16-35|4",
+   "name": "Lumix S 16-35mm F4 (S-R1635)"
+  },
+  {
+   "make": "sigma",
+   "spec": "17-50|2.8",
+   "name": "Sigma 17-50mm F2.8 EX DC OS HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "17-70|2.8-4",
+   "name": "Sigma 17-70mm F2.8-4 DC OS HSM Macro | C"
+  },
+  {
+   "make": "sigma",
+   "spec": "17-70|2.8-4.5",
+   "name": "Sigma 17-70mm F2.8-4.5 DC HSM Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "170-500|5-6.3",
+   "name": "Sigma 170-500mm F5-6.3 DG ASP APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-125|3.5-5.6",
+   "name": "Sigma 18-125mm F3.5-5.6 DC"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-125|3.8-5.6",
+   "name": "Sigma 18-125mm F3.8-5.6 DC OS HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-200|3.5-6.3",
+   "name": "Sigma 18-200mm F3.5-6.3 DC OS HSM Macro | C"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-250|3.5-6.3",
+   "name": "Sigma 18-250mm F3.5-6.3 DC Macro OS HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-300|3.5-6.3",
+   "name": "Sigma 18-300mm F3.5-6.3 DC OS HSM Macro | C"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-35|1.8",
+   "name": "Sigma 18-35mm F1.8 DC HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-50|2.8",
+   "name": "Sigma 18-50mm F2.8 EX DC HSM Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-50|2.8-4.5",
+   "name": "Sigma 18-50mm F2.8-4.5 DC OS HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "18-50|3.5-5.6",
+   "name": "Sigma 18-50mm F3.5-5.6 DC Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "180|2.8",
+   "name": "Sigma 180mm F2.8 EX DG OS HSM APO Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "180|3.5",
+   "name": "Sigma 180mm F3.5 EX IF HSM APO Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "18|1.8",
+   "name": "LUMIX S 18mm F1.8 (S-S18)"
+  },
+  {
+   "make": "sigma",
+   "spec": "19|2.8",
+   "name": "Sigma 19mm F2.8 DN | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "20-40|2.8",
+   "name": "Sigma 20-40mm F2.8 EX DG"
+  },
+  {
+   "make": "sigma",
+   "spec": "20-60|3.5-5.6",
+   "name": "Lumix S 20-60mm F3.5-5.6 (S-R2060)"
+  },
+  {
+   "make": "sigma",
+   "spec": "200-500|2.8",
+   "name": "Sigma 200-500mm F2.8 APO EX DG"
+  },
+  {
+   "make": "sigma",
+   "spec": "20|1.4",
+   "name": "Sigma 20mm F1.4 DG HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "20|1.8",
+   "name": "Sigma 20mm F1.8 EX DG ASP RF"
+  },
+  {
+   "make": "sigma",
+   "spec": "20|2",
+   "name": "Sigma 20mm F2 DG DN | C"
+  },
+  {
+   "make": "sigma",
+   "spec": "24-105|4",
+   "name": "Sigma 24-105mm F4 DG OS HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "24-135|2.8-4.5",
+   "name": "Sigma 24-135mm F2.8-4.5 IF ASP"
+  },
+  {
+   "make": "sigma",
+   "spec": "24-35|2",
+   "name": "Sigma 24-35mm F2 DG HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "24-60|2.8",
+   "name": "Sigma 24-60mm F2.8 EX DG"
+  },
+  {
+   "make": "sigma",
+   "spec": "24-70|2.8",
+   "name": "Sigma 24-70mm F2.8 DG OS HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "24-70|3.5-5.6",
+   "name": "Sigma 24-70mm F3.5-5.6 ASP HF"
+  },
+  {
+   "make": "sigma",
+   "spec": "24|1.4",
+   "name": "Sigma 24mm F1.4 DG HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "24|1.8",
+   "name": "Sigma 24mm F1.8 EX DG ASP Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "28-105|2.8-4",
+   "name": "Sigma 28-105mm F2.8-4 IF DG ASP"
+  },
+  {
+   "make": "sigma",
+   "spec": "28-105|3.8-5.6",
+   "name": "Sigma 28-105mm F3.8-5.6 IF UC-III ASP"
+  },
+  {
+   "make": "sigma",
+   "spec": "28-135|3.8-5.6",
+   "name": "Sigma 28-135mm F3.8-5.6 IF ASP Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "28-200|3.5-5.6",
+   "name": "Sigma 28-200mm F3.5-5.6 DG Compact ASP HZ Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "28-300|3.5-6.3",
+   "name": "Sigma 28-300mm F3.5-6.3 DL ASP IF HZM"
+  },
+  {
+   "make": "sigma",
+   "spec": "28-70|2.8",
+   "name": "Sigma 28-70mm F2.8 EX ASP DF"
+  },
+  {
+   "make": "sigma",
+   "spec": "28-70|2.8-4",
+   "name": "Sigma 28-70mm F2.8-4 HS"
+  },
+  {
+   "make": "sigma",
+   "spec": "28-80|3.5-5.6",
+   "name": "Sigma 28-80mm F3.5-5.6 Mini Zoom Macro II ASP"
+  },
+  {
+   "make": "sigma",
+   "spec": "28|1.8",
+   "name": "Sigma 28mm F1.8 EX DG ASP Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "300-800|5.6",
+   "name": "Sigma 300-800mm F5.6 EX HSM IF APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "300|2.8",
+   "name": "Sigma 300mm F2.8 EX DG HSM APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "30|1.4",
+   "name": "Sigma 30mm F1.4 DC HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "30|2.8",
+   "name": "Sigma 30mm F2.8 DN | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "35|1.4",
+   "name": "Sigma 35mm F1.4 DG HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "35|1.8",
+   "name": "Lumix S 35mm F1.8 (S-S35)"
+  },
+  {
+   "make": "sigma",
+   "spec": "35|2",
+   "name": "Sigma 35mm F2 DG DN | C"
+  },
+  {
+   "make": "sigma",
+   "spec": "4.5|2.8",
+   "name": "Sigma 4.5mm F2.8 EX DC HSM Circular Fisheye"
+  },
+  {
+   "make": "sigma",
+   "spec": "45|2.8",
+   "name": "Sigma 45mm F2.8 DG DN | C"
+  },
+  {
+   "make": "sigma",
+   "spec": "50-100|1.8",
+   "name": "Sigma 50-100mm F1.8 DC HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "50-150|2.8",
+   "name": "Sigma 50-150mm F2.8 EX DC APO HSM II"
+  },
+  {
+   "make": "sigma",
+   "spec": "50-200|4-5.6",
+   "name": "Sigma 50-200mm F4-5.6 DC OS HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "50-500|4-6.3",
+   "name": "Sigma 50-500mm F4-6.3 EX RF HSM APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "50-500|4.5-6.3",
+   "name": "Sigma 50-500mm F4.5-6.3 APO DG OS HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "500|4",
+   "name": "Sigma 500mm F4 DG OS HSM | S"
+  },
+  {
+   "make": "sigma",
+   "spec": "500|4.5",
+   "name": "Sigma 500mm F4.5 EX DG HSM APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "50|1.4",
+   "name": "Sigma 50mm F1.4 DG DN | A (2023)"
+  },
+  {
+   "make": "sigma",
+   "spec": "50|2.8",
+   "name": "Sigma 50mm F2.8 EX DG Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "55-200|4-5.6",
+   "name": "Sigma 55-200mm F4-5.6 DC"
+  },
+  {
+   "make": "sigma",
+   "spec": "60-600|4.5-6.3",
+   "name": "Sigma 60-600mm F4.5-6.3 DG OS HSM | S"
+  },
+  {
+   "make": "sigma",
+   "spec": "600|8",
+   "name": "Sigma 600mm F8 Mirror"
+  },
+  {
+   "make": "sigma",
+   "spec": "60|2.8",
+   "name": "Sigma 60mm F2.8 DN | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "65|2",
+   "name": "Sigma 65mm F2 DG DN | C"
+  },
+  {
+   "make": "sigma",
+   "spec": "70-200|2.8",
+   "name": "Sigma 70-200mm F2.8 EX DG HSM APO Macro"
+  },
+  {
+   "make": "sigma",
+   "spec": "70-200|4",
+   "name": "Lumix S 70-200mm F4 OIS (S-R70200)"
+  },
+  {
+   "make": "sigma",
+   "spec": "70-300|4-5.6",
+   "name": "Sigma 70-300mm F4-5.6 APO DG Macro (Motorized)"
+  },
+  {
+   "make": "sigma",
+   "spec": "70|2.8",
+   "name": "Sigma 70mm F2.8 DG Macro | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "8-16|4.5-5.6",
+   "name": "Sigma 8-16mm F4.5-5.6 DC HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "80-400|4.5-5.6",
+   "name": "Sigma 80-400mm F4.5-5.6 EX DG OS APO"
+  },
+  {
+   "make": "sigma",
+   "spec": "800|5.6",
+   "name": "Sigma APO 800mm F5.6 EX DG HSM"
+  },
+  {
+   "make": "sigma",
+   "spec": "85|1.4",
+   "name": "Sigma 85mm F1.4 DG HSM | A"
+  },
+  {
+   "make": "sigma",
+   "spec": "85|1.8",
+   "name": "Lumix S 85mm F1.8 (S-S85)"
+  },
+  {
+   "make": "sigma",
+   "spec": "8|3.5",
+   "name": "Sigma 8mm F3.5 EX DG Circular Fisheye"
+  },
+  {
+   "make": "sigma",
+   "spec": "8|4",
+   "name": "Sigma 8mm F4 EX DG Circular Fisheye"
+  },
+  {
+   "make": "sigma",
+   "spec": "90|2.8",
+   "name": "Sigma 90mm F2.8 DG DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "10-18|2.8",
+   "name": "Sigma 10-18mm F2.8 DC DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "10-18|4",
+   "name": "Sony E 10-18mm F4 OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "10-20|4",
+   "name": "Sony E PZ 10-20mm F4 G"
+  },
+  {
+   "make": "sony",
+   "spec": "100-400|4.5",
+   "name": "Sony FE 100-400mm F4.5 GM OSS + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "100-400|4.5-5.6",
+   "name": "Sony FE 100-400mm F4.5-5.6 GM OSS + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "100-400|5-6.3",
+   "name": "Sigma 100-400mm F5-6.3 DG OS HSM | C + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "100|2.8",
+   "name": "Sony FE 100mm F2.8 Macro GM OSS + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "105|1.4",
+   "name": "Sigma 105mm F1.4 DG HSM | A"
+  },
+  {
+   "make": "sony",
+   "spec": "105|2.8",
+   "name": "Sigma 105mm F2.8 DG DN MACRO | A"
+  },
+  {
+   "make": "sony",
+   "spec": "10|2.8",
+   "name": "LAOWA FFII 10mm F2.8 C&D Dreamer"
+  },
+  {
+   "make": "sony",
+   "spec": "10|5.6",
+   "name": "Voigtlander HELIAR-HYPER WIDE 10mm F5.6"
+  },
+  {
+   "make": "sony",
+   "spec": "11-18|2.8",
+   "name": "Tokina atx-m 11-18mm F2.8 E"
+  },
+  {
+   "make": "sony",
+   "spec": "11-20|2.8",
+   "name": "Tamron 11-20mm F2.8 Di III-A RXD"
+  },
+  {
+   "make": "sony",
+   "spec": "110|2.5",
+   "name": "Voigtlander MACRO APO-LANTHAR 110mm F2.5"
+  },
+  {
+   "make": "sony",
+   "spec": "11|1.8",
+   "name": "Sony E 11mm F1.8"
+  },
+  {
+   "make": "sony",
+   "spec": "12-24|2.8",
+   "name": "Sony FE 12-24mm F2.8 GM"
+  },
+  {
+   "make": "sony",
+   "spec": "12-24|4",
+   "name": "Sony FE 12-24mm F4 G"
+  },
+  {
+   "make": "sony",
+   "spec": "120-300|2.8",
+   "name": "Sigma 120-300mm F2.8 DG OS HSM | S + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "12|1.4",
+   "name": "Sigma 12mm F1.4 DC | C"
+  },
+  {
+   "make": "sony",
+   "spec": "12|2",
+   "name": "Samyang AF 12mm F2.0"
+  },
+  {
+   "make": "sony",
+   "spec": "12|2.8",
+   "name": "LAOWA FFII 12mm F2.8 C&D Dreamer"
+  },
+  {
+   "make": "sony",
+   "spec": "12|5.6",
+   "name": "Voigtlander ULTRA WIDE-HELIAR 12mm F5.6 III"
+  },
+  {
+   "make": "sony",
+   "spec": "135|1.4",
+   "name": "Sigma 135mm F1.4 DG | A"
+  },
+  {
+   "make": "sony",
+   "spec": "135|1.8",
+   "name": "Sony FE 135mm F1.8 GM"
+  },
+  {
+   "make": "sony",
+   "spec": "135|2.8",
+   "name": "Zeiss Batis 135mm F2.8"
+  },
+  {
+   "make": "sony",
+   "spec": "13|1.4",
+   "name": "Viltrox 13mm F1.4 E"
+  },
+  {
+   "make": "sony",
+   "spec": "14-24|2.8",
+   "name": "Sigma 14-24mm F2.8 DG DN | A"
+  },
+  {
+   "make": "sony",
+   "spec": "14|1.4",
+   "name": "Sigma 14mm F1.4 DG DN | A"
+  },
+  {
+   "make": "sony",
+   "spec": "14|1.8",
+   "name": "Sony FE 14mm F1.8 GM"
+  },
+  {
+   "make": "sony",
+   "spec": "14|2.8",
+   "name": "Samyang AF 14mm F2.8 or Samyang AF 35mm F2.8"
+  },
+  {
+   "make": "sony",
+   "spec": "14|4",
+   "name": "Viltrox 14mm F4.0 FE Air"
+  },
+  {
+   "make": "sony",
+   "spec": "150-500|5-6.7",
+   "name": "Tamron 150-500mm F5-6.7 Di III VC VXD"
+  },
+  {
+   "make": "sony",
+   "spec": "150-600|5-6.3",
+   "name": "Sigma 150-600mm F5-6.3 DG OS HSM | C + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "15|1.4",
+   "name": "Sony E 15mm F1.4 G"
+  },
+  {
+   "make": "sony",
+   "spec": "15|1.7",
+   "name": "Viltrox 15mm F1.7 E Air"
+  },
+  {
+   "make": "sony",
+   "spec": "15|4.5",
+   "name": "Voigtlander SUPER WIDE-HELIAR 15mm F4.5 III"
+  },
+  {
+   "make": "sony",
+   "spec": "16-25|2.8",
+   "name": "Sony FE 16-25mm F2.8 G"
+  },
+  {
+   "make": "sony",
+   "spec": "16-28|2.8",
+   "name": "Sigma 16-28mm F2.8 DG DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "16-300|3.5-6.7",
+   "name": "Sigma 16-300mm F3.5-6.7 DC OS | C"
+  },
+  {
+   "make": "sony",
+   "spec": "16-30|2.8",
+   "name": "Tamron 16-30mm F2.8 Di III VXD G2"
+  },
+  {
+   "make": "sony",
+   "spec": "16-35|2.8",
+   "name": "Sony FE 16-35mm F2.8 GM II"
+  },
+  {
+   "make": "sony",
+   "spec": "16-35|4",
+   "name": "Sony FE 16-35mm F4 ZA OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "16-50|3.5-5.6",
+   "name": "Sony E PZ 16-50mm F3.5-5.6 OSS II"
+  },
+  {
+   "make": "sony",
+   "spec": "16-55|2.8",
+   "name": "Sony E 16-55mm F2.8 G"
+  },
+  {
+   "make": "sony",
+   "spec": "16-70|4",
+   "name": "Sony E 16-70mm F4 ZA OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "16|1.4",
+   "name": "Sigma 16mm F1.4 DC DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "16|1.8",
+   "name": "Sony FE 16mm F1.8 G"
+  },
+  {
+   "make": "sony",
+   "spec": "16|2.8",
+   "name": "Sony E 16mm F2.8"
+  },
+  {
+   "make": "sony",
+   "spec": "16|3.5",
+   "name": "Sony FE 16mm F3.5 Fisheye (SEL28F20 + SEL057FEC)"
+  },
+  {
+   "make": "sony",
+   "spec": "17-28|2.8",
+   "name": "Tamron 17-28mm F2.8 Di III RXD"
+  },
+  {
+   "make": "sony",
+   "spec": "17-40|1.8",
+   "name": "Sigma 17-40mm F1.8 DC | A"
+  },
+  {
+   "make": "sony",
+   "spec": "17-50|4",
+   "name": "Tamron 17-50mm F4 Di III VXD"
+  },
+  {
+   "make": "sony",
+   "spec": "17-70|2.8",
+   "name": "Tamron 17-70mm F2.8 Di III-A VC RXD"
+  },
+  {
+   "make": "sony",
+   "spec": "17-70|2.8-4",
+   "name": "Sigma 17-70mm F2.8-4 DC MACRO OS HSM | C + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "17|4",
+   "name": "Sigma 17mm F4 DG DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "18-105|4",
+   "name": "Sony E PZ 18-105mm F4 G OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "18-110|4",
+   "name": "Sony E PZ 18-110mm F4 G OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "18-135|3.5-5.6",
+   "name": "Sony E 18-135mm F3.5-5.6 OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "18-200|3.5-6.3",
+   "name": "Sony E 18-200mm F3.5-6.3 OSS LE"
+  },
+  {
+   "make": "sony",
+   "spec": "18-300|3.5-6.3",
+   "name": "Sigma 18-300mm F3.5-6.3 DC MACRO OS HSM | C + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "18-35|1.8",
+   "name": "Sigma 18-35mm F1.8 DC HSM | A + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "18-50|2.8",
+   "name": "Sigma 18-50mm F2.8 DC DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "18-50|4-5.6",
+   "name": "Sony E 18-50mm F4-5.6"
+  },
+  {
+   "make": "sony",
+   "spec": "18-55|3.5-5.6",
+   "name": "Sony E 18-55mm F3.5-5.6 OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "18|2.8",
+   "name": "Samyang AF 18mm F2.8 or Samyang AF 35mm F1.8"
+  },
+  {
+   "make": "sony",
+   "spec": "19|2.8",
+   "name": "Sigma 19mm F2.8 [EX] DN"
+  },
+  {
+   "make": "sony",
+   "spec": "20-200|3.5-6.3",
+   "name": "Sigma 20-200mm F3.5-6.3 DG | C"
+  },
+  {
+   "make": "sony",
+   "spec": "20-40|2.8",
+   "name": "Tamron 20-40mm F2.8 Di III VXD"
+  },
+  {
+   "make": "sony",
+   "spec": "20-70|4",
+   "name": "Sony FE 20-70mm F4 G"
+  },
+  {
+   "make": "sony",
+   "spec": "200-600|5.6-6.3",
+   "name": "Sony FE 200-600mm F5.6-6.3 G OSS + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "200|2",
+   "name": "Sigma 200mm F2 DG OS | S"
+  },
+  {
+   "make": "sony",
+   "spec": "20|1.4",
+   "name": "Sigma 20mm F1.4 DG HSM | A + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "20|1.8",
+   "name": "Sony FE 20mm F1.8 G"
+  },
+  {
+   "make": "sony",
+   "spec": "20|2",
+   "name": "Tokina FiRIN 20mm F2 FE AF"
+  },
+  {
+   "make": "sony",
+   "spec": "20|2.8",
+   "name": "Sony E 20mm F2.8"
+  },
+  {
+   "make": "sony",
+   "spec": "21|1.4",
+   "name": "Voigtlander NOKTON 21mm F1.4 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "21|2.8",
+   "name": "Sony FE 21mm F2.8 (SEL28F20 + SEL075UWC)"
+  },
+  {
+   "make": "sony",
+   "spec": "21|3.5",
+   "name": "Voigtlander COLOR-SKOPAR 21mm F3.5 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "23|1.4",
+   "name": "Sigma 23mm F1.4 DC DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "24-105|4",
+   "name": "Sony FE 24-105mm F4 G OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "24-240|3.5-6.3",
+   "name": "Sony FE 24-240mm F3.5-6.3 OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "24-35|2",
+   "name": "Sigma 24-35mm F2 DG HSM | A + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "24-50|2.8",
+   "name": "Sony FE 24-50mm F2.8 G"
+  },
+  {
+   "make": "sony",
+   "spec": "24-60|2.8",
+   "name": "Samyang AF 24-60mm F2.8"
+  },
+  {
+   "make": "sony",
+   "spec": "24-70|2.8",
+   "name": "Sony FE 24-70mm F2.8 GM II"
+  },
+  {
+   "make": "sony",
+   "spec": "24-70|4",
+   "name": "Sony FE 24-70mm F4 ZA OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "24|1.4",
+   "name": "Sony FE 24mm F1.4 GM"
+  },
+  {
+   "make": "sony",
+   "spec": "24|1.8",
+   "name": "Sony E 24mm F1.8 ZA or Samyang AF 50mm F1.4"
+  },
+  {
+   "make": "sony",
+   "spec": "24|2",
+   "name": "Sigma 24mm F2 DG DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "24|2.8",
+   "name": "Sony FE 24mm F2.8 G"
+  },
+  {
+   "make": "sony",
+   "spec": "24|3.5",
+   "name": "Sigma 24mm F3.5 DG DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "25-200|2.8-5.6",
+   "name": "Tamron 25-200mm F2.8-5.6 Di III VXD G2"
+  },
+  {
+   "make": "sony",
+   "spec": "25|1.7",
+   "name": "Viltrox 25mm F1.7 E Air"
+  },
+  {
+   "make": "sony",
+   "spec": "25|2",
+   "name": "Zeiss Batis 25mm F2"
+  },
+  {
+   "make": "sony",
+   "spec": "25|2.4",
+   "name": "Zeiss Loxia 25mm F2.4"
+  },
+  {
+   "make": "sony",
+   "spec": "27|1.2",
+   "name": "Viltrox 27mm F1.2 E Pro"
+  },
+  {
+   "make": "sony",
+   "spec": "28-105|2.8",
+   "name": "Sigma 28-105mm F2.8 DG DN | A"
+  },
+  {
+   "make": "sony",
+   "spec": "28-135|4",
+   "name": "Sony FE PZ 28-135mm F4 G OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "28-200|2.8-5.6",
+   "name": "Tamron 28-200mm F2.8-5.6 Di III RXD"
+  },
+  {
+   "make": "sony",
+   "spec": "28-300|4-7.1",
+   "name": "Tamron 28-300mm F4-7.1 Di III VC VXD"
+  },
+  {
+   "make": "sony",
+   "spec": "28-45|1.8",
+   "name": "Sigma 28-45mm F1.8 DG DN | A"
+  },
+  {
+   "make": "sony",
+   "spec": "28-60|4-5.6",
+   "name": "Sony FE 28-60mm F4-5.6"
+  },
+  {
+   "make": "sony",
+   "spec": "28-70|2",
+   "name": "Sony FE 28-70mm F2 GM"
+  },
+  {
+   "make": "sony",
+   "spec": "28-70|2.8",
+   "name": "Sigma 28-70mm F2.8 DG DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "28-70|3.5-5.6",
+   "name": "Sony FE 28-70mm F3.5-5.6 OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "28-75|2.8",
+   "name": "Tamron 28-75mm F2.8 Di III VXD G2"
+  },
+  {
+   "make": "sony",
+   "spec": "28|1.5",
+   "name": "Voigtlander NOKTON 28mm F1.5 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "28|1.8",
+   "name": "Viltrox 28mm F1.8 FE"
+  },
+  {
+   "make": "sony",
+   "spec": "28|2",
+   "name": "Sony FE 28mm F2"
+  },
+  {
+   "make": "sony",
+   "spec": "28|3.5",
+   "name": "Samyang RS 28mm F3.5"
+  },
+  {
+   "make": "sony",
+   "spec": "28|4.5",
+   "name": "Viltrox 28mm F4.5 FE"
+  },
+  {
+   "make": "sony",
+   "spec": "300-600|4",
+   "name": "Sigma 300-600mm F4 DG OS | S"
+  },
+  {
+   "make": "sony",
+   "spec": "300|2.8",
+   "name": "Sony FE 300mm F2.8 GM OSS + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "30|1.4",
+   "name": "Sigma 30mm F1.4 DC HSM | A + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "30|2.8",
+   "name": "Sigma 30mm F2.8 [EX] DN"
+  },
+  {
+   "make": "sony",
+   "spec": "30|3.5",
+   "name": "Sony E 30mm F3.5 Macro"
+  },
+  {
+   "make": "sony",
+   "spec": "32|1.8",
+   "name": "Zeiss Touit 32mm F1.8"
+  },
+  {
+   "make": "sony",
+   "spec": "32|2.8",
+   "name": "Samyang RS 32mm F2.8"
+  },
+  {
+   "make": "sony",
+   "spec": "33|1.4",
+   "name": "Viltrox 33mm F1.4 E"
+  },
+  {
+   "make": "sony",
+   "spec": "35-100|2.8",
+   "name": "Tamron 35-100mm F2.8 Di III VXD"
+  },
+  {
+   "make": "sony",
+   "spec": "35-150|2",
+   "name": "Tamron 35-150mm F2-F2.8 Di III VXD"
+  },
+  {
+   "make": "sony",
+   "spec": "35-150|2-2.8",
+   "name": "Samyang AF 35-150mm F2-2.8"
+  },
+  {
+   "make": "sony",
+   "spec": "35|1.2",
+   "name": "Voigtlander NOKTON 35mm F1.2 Aspherical SE"
+  },
+  {
+   "make": "sony",
+   "spec": "35|1.4",
+   "name": "Sony FE 35mm F1.4 ZA"
+  },
+  {
+   "make": "sony",
+   "spec": "35|1.8",
+   "name": "Sony E 35mm F1.8 OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "35|2",
+   "name": "Voigtlander APO-LANTHAR 35mm F2 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "35|2.8",
+   "name": "Sony FE 35mm F2.8 ZA"
+  },
+  {
+   "make": "sony",
+   "spec": "400-800|6.3-8",
+   "name": "Sony FE 400-800mm F6.3-8 G OSS + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "400|2.8",
+   "name": "Sony FE 400mm F2.8 GM OSS + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "40|1.2",
+   "name": "Voigtlander NOKTON 40mm F1.2 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "40|2",
+   "name": "Zeiss Batis 40mm F2 CF"
+  },
+  {
+   "make": "sony",
+   "spec": "40|2.5",
+   "name": "Sony FE 40mm F2.5 G"
+  },
+  {
+   "make": "sony",
+   "spec": "45|1.8",
+   "name": "Samyang AF 45mm F1.8"
+  },
+  {
+   "make": "sony",
+   "spec": "45|2.8",
+   "name": "Sigma 45mm F2.8 DG DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "50-100|1.8",
+   "name": "Sigma 50-100mm F1.8 DC HSM | A + MC-11"
+  },
+  {
+   "make": "sony",
+   "spec": "50-150|2",
+   "name": "Sony FE 50-150mm F2 GM"
+  },
+  {
+   "make": "sony",
+   "spec": "50-300|4.5-6.3",
+   "name": "Tamron 50-300mm F4.5-6.3 Di III VC VXD"
+  },
+  {
+   "make": "sony",
+   "spec": "50-400|4.5-6.3",
+   "name": "Tamron 50-400mm F4.5-6.3 Di III VC VXD"
+  },
+  {
+   "make": "sony",
+   "spec": "500|5.6",
+   "name": "Sigma 500mm F5.6 DG DN OS | S"
+  },
+  {
+   "make": "sony",
+   "spec": "50|1",
+   "name": "Voigtlander NOKTON 50mm F1 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "50|1.2",
+   "name": "Sony FE 50mm F1.2 GM"
+  },
+  {
+   "make": "sony",
+   "spec": "50|1.4",
+   "name": "Sony FE 50mm F1.4 ZA"
+  },
+  {
+   "make": "sony",
+   "spec": "50|1.8",
+   "name": "Sony E 50mm F1.8 OSS or Samyang AF 14mm F2.8"
+  },
+  {
+   "make": "sony",
+   "spec": "50|2",
+   "name": "Voigtlander APO-LANTHAR 50mm F2 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "50|2.5",
+   "name": "Sony FE 50mm F2.5 G"
+  },
+  {
+   "make": "sony",
+   "spec": "50|2.8",
+   "name": "Sony FE 50mm F2.8 Macro"
+  },
+  {
+   "make": "sony",
+   "spec": "55-210|4.5-6.3",
+   "name": "Sony E 55-210mm F4.5-6.3 OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "55|1.8",
+   "name": "Sony FE 55mm F1.8 ZA"
+  },
+  {
+   "make": "sony",
+   "spec": "56|1.2",
+   "name": "Viltrox 56mm F1.2 E Pro"
+  },
+  {
+   "make": "sony",
+   "spec": "56|1.4",
+   "name": "Sigma 56mm F1.4 DC DN | C"
+  },
+  {
+   "make": "sony",
+   "spec": "60-600|4.5-6.3",
+   "name": "Sigma 60-600mm F4.5-6.3 DG DN OS | S"
+  },
+  {
+   "make": "sony",
+   "spec": "600|4",
+   "name": "Sony FE 600mm F4 GM OSS + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "60|2.8",
+   "name": "Sigma 60mm F2.8 DN"
+  },
+  {
+   "make": "sony",
+   "spec": "65|2",
+   "name": "Voigtlander MACRO APO-LANTHAR 65mm F2 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "70-180|2.8",
+   "name": "Tamron 70-180mm F2.8 Di III VXD G2"
+  },
+  {
+   "make": "sony",
+   "spec": "70-200|2.8",
+   "name": "Sony FE 70-200mm F2.8 GM OSS II + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "70-200|4",
+   "name": "Sony FE 70-200mm F4 Macro G OSS II + 1.4X Teleconverter"
+  },
+  {
+   "make": "sony",
+   "spec": "70-300|4.5-5.6",
+   "name": "Sony FE 70-300mm F4.5-5.6 G OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "70-300|4.5-6.3",
+   "name": "Tamron 70-300mm F4.5-6.3 Di III RXD"
+  },
+  {
+   "make": "sony",
+   "spec": "70-350|4.5-6.3",
+   "name": "Sony E 70-350mm F4.5-6.3 G OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "70|2.8",
+   "name": "Sigma 70mm F2.8 DG MACRO | A"
+  },
+  {
+   "make": "sony",
+   "spec": "75|1.2",
+   "name": "Viltrox 75mm F1.2 E Pro"
+  },
+  {
+   "make": "sony",
+   "spec": "75|1.5",
+   "name": "Voigtlander NOKTON 75mm F1.5 Aspherical"
+  },
+  {
+   "make": "sony",
+   "spec": "75|1.8",
+   "name": "Samyang AF 75mm F1.8"
+  },
+  {
+   "make": "sony",
+   "spec": "85|1.4",
+   "name": "Sony FE 85mm F1.4 GM or Samyang AF 85mm F1.4"
+  },
+  {
+   "make": "sony",
+   "spec": "85|1.8",
+   "name": "Sony FE 85mm F1.8 or Viltrox PFU RBMH 85mm F1.8"
+  },
+  {
+   "make": "sony",
+   "spec": "85|2",
+   "name": "Viltrox 85mm F2.0 FE EVO"
+  },
+  {
+   "make": "sony",
+   "spec": "85|2.4",
+   "name": "Zeiss Loxia 85mm F2.4"
+  },
+  {
+   "make": "sony",
+   "spec": "90|2.8",
+   "name": "Sony FE 90mm F2.8 Macro G OSS"
+  },
+  {
+   "make": "sony",
+   "spec": "9|2.8",
+   "name": "Viltrox 9mm F2.8 E Air"
   }
  ]
 }

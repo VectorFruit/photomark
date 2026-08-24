@@ -760,17 +760,26 @@ async function importBrowserFiles(files: File[]) {
 }
 
 // Helper: resolve generic lens specs back to official lens names.
-// The database is generated from ExifTool's Nikon LensID table and is keyed
-// by the normalized focal-length/aperture spec, which disambiguates lenses
-// that share the same numeric Lightroom LensID.
-interface LensDbEntry { spec: string; name: string; }
+// The database is generated from ExifTool lens ID tables (Nikon, Canon, Sony,
+// Sigma, Pentax, Olympus, Panasonic, Minolta, Samsung) and is keyed by the
+// normalized focal-length/aperture spec plus camera maker.
+interface LensDbEntry { make: string; spec: string; name: string; }
 const LENS_DB = (lensDatabase as { lenses: LensDbEntry[] }).lenses;
-const LENS_DB_MAP = new Map(LENS_DB.map((e) => [e.spec, e.name]));
+const LENS_DB_MAP = new Map(LENS_DB.map((e) => [e.make + '|' + e.spec, e.name]));
 
-const GENERIC_LENS_SPEC_RE = /^[\d.]+\s*-\s*[\d.]+\s*mm\s*f\/[\d.]+(?:\s*-\s*[\d.]+)?/i;
+const GENERIC_LENS_SPEC_RE = /\d+(?:\.\d+)?(?:\s*-\s*\d+(?:\.\d+)?)?\s*mm\s*(?:[fF]\s*\/\s*)?[fF]?\s*\d+(?:\.\d+)?/i;
+
+function normalizeMake(make: string | undefined): string | null {
+  if (!make) return null;
+  const raw = make.trim().toLowerCase().replace(/[^a-z]/g, '');
+  if (raw === 'fuji' || raw === 'fujifilm') return 'fujifilm';
+  if (raw === 'om' || raw === 'omdigital' || raw === 'omsystem') return 'olympus';
+  if (raw === 'nikkor') return 'nikon';
+  return raw || null;
+}
 
 function extractLensSpecKey(text: string): string | null {
-  const m = text.match(/(\d+(?:\.\d+)?)(?:\s*-\s*(\d+(?:\.\d+)?))?\s*mm\s*f\/\s*(\d+(?:\.\d+)?)(?:\s*[-/]\s*(\d+(?:\.\d+)?))?/i);
+  const m = text.match(/(\d+(?:\.\d+)?)(?:\s*-\s*(\d+(?:\.\d+)?))?\s*mm\s*(?:[fF]\s*\/\s*)?[fF]?\s*(\d+(?:\.\d+)?)(?:\s*[-/]\s*(\d+(?:\.\d+)?))?/i);
   if (!m) return null;
   const a = String(Number(m[1]));
   const b = m[2] ? String(Number(m[2])) : '';
@@ -779,10 +788,11 @@ function extractLensSpecKey(text: string): string | null {
   return b ? (d ? a + '-' + b + '|' + c + '-' + d : a + '-' + b + '|' + c) : a + '|' + c;
 }
 
-function resolveLensName(lensModel: string, lens: string | undefined): string | null {
+function resolveLensName(lensModel: string, make: string | undefined, lens: string | undefined): string | null {
   if (!GENERIC_LENS_SPEC_RE.test(lensModel.trim())) return null;
+  const makeKey = normalizeMake(make);
   const key = extractLensSpecKey((lens || lensModel).replace(/\s+/g, ' ').trim());
-  return key ? LENS_DB_MAP.get(key) || null : null;
+  return makeKey && key ? LENS_DB_MAP.get(makeKey + '|' + key) || null : null;
 }
 async function parseExifInBrowser(file: File): Promise<ExifData> {
   const exifr = await import('exifr');
@@ -809,7 +819,7 @@ async function parseExifInBrowser(file: File): Promise<ExifData> {
   const lens = getTag(['LensModel'], 42036);
   const lensText = lens ? String(lens).trim() : '';
   if (lensText) {
-    const resolved = resolveLensName(lensText, raw.Lens || raw.LensInfo);
+    const resolved = resolveLensName(lensText, raw.Make, raw.Lens || raw.LensInfo);
     exif.lens_model = resolved || lensText;
   }
 
