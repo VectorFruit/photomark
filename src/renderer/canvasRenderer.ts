@@ -237,7 +237,7 @@ function renderBottomBar(
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const mainFontSize = Math.max(Math.round(22 * fontScale), 16);
   const subFontSize = Math.max(Math.round(15 * fontScale), 12);
-  const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
+  const fontFam = config.fontFamily || 'Noto Sans SC';
   const mainWeight = config.fontWeight || 500;
   const subWeight = config.secondaryFontWeight || 400;
 
@@ -401,7 +401,7 @@ function renderBorderFrame(
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const fontSize = Math.max(Math.round(18 * fontScale), 14);
   const subFontSize = Math.max(Math.round(13 * fontScale), 11);
-  const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
+  const fontFam = config.fontFamily || 'Noto Sans SC';
   const mainWeight = config.fontWeight || 500;
   const subWeight = config.secondaryFontWeight || 400;
 
@@ -510,7 +510,7 @@ function renderPolaroid(
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const fontSize = Math.max(Math.round(20 * fontScale), 15);
   const subFontSize = Math.max(Math.round(14 * fontScale), 12);
-  const fontFam = config.fontFamily || 'Georgia, serif, -apple-system';
+  const fontFam = config.fontFamily || 'Noto Serif SC';
   const mainWeight = config.fontWeight || 500;
   const subWeight = config.secondaryFontWeight || 400;
 
@@ -639,7 +639,7 @@ function renderMinimalBadge(
 
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const fontSize = Math.max(Math.round(15 * fontScale), 12);
-  const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
+  const fontFam = config.fontFamily || 'Noto Sans SC';
   const mainWeight = config.fontWeight || 500;
 
   // Sample the bottom-right corner and pick a glass style that keeps contrast

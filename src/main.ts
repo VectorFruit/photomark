@@ -602,7 +602,7 @@ function syncUIWithConfig() {
 
   // Update Font Family Input
   const fontFamilyInput = document.getElementById('cfg-font-family') as HTMLInputElement | null;
-  if (fontFamilyInput) fontFamilyInput.value = config.fontFamily || 'Inter';
+  if (fontFamilyInput) fontFamilyInput.value = config.fontFamily || 'Noto Sans SC';
 
   // Update Inputs & Checkboxes
   const customNoteInput = document.getElementById('cfg-custom-note') as HTMLInputElement | null;

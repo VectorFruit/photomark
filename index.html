@@ -238,19 +238,20 @@
 
           <div class="control-block">
             <div class="control-row">
-              <span class="control-label">字体族（系统字体）</span>
+              <span class="control-label">字体（内置 / 系统）</span>
             </div>
-            <input type="text" id="cfg-font-family" list="font-family-list" placeholder="输入系统字体名称，如 Inter / PingFang SC" value="Inter" />
+            <input type="text" id="cfg-font-family" list="font-family-list" placeholder="输入字体名：Noto Sans SC / Noto Serif SC / Brass Mono" value="Noto Sans SC" />
             <datalist id="font-family-list">
+              <option value="Noto Sans SC"></option>
+              <option value="Noto Serif SC"></option>
+              <option value="Brass Mono"></option>
               <option value="Inter"></option>
+              <option value="PingFang SC"></option>
               <option value="Helvetica Neue"></option>
               <option value="Arial"></option>
               <option value="SF Pro Display"></option>
-              <option value="PingFang SC"></option>
               <option value="Segoe UI"></option>
               <option value="Microsoft YaHei"></option>
-              <option value="Noto Sans SC"></option>
-              <option value="Noto Serif SC"></option>
               <option value="Georgia"></option>
               <option value="Times New Roman"></option>
               <option value="Palatino"></option>
@@ -259,7 +260,7 @@
               <option value="DejaVu Sans"></option>
               <option value="Ubuntu"></option>
             </datalist>
-            <div class="export-note">输入系统已安装的字体名；未安装时会自动回退到 sans-serif。</div>
+            <div class="export-note">内置思源黑体 / 思源宋体 / Brass Mono；也可输入其他系统字体名。</div>
           </div>
 
           <!-- Padding Slider -->
@@ -282,8 +283,8 @@
           <!-- Main Font Weight Slider -->
           <div class="control-block">
             <div class="control-row">
-              <span class="control-label">主文字重 <span class="val-badge" id="val-font-weight">500</span></span>
-              <button class="btn-reset-single" data-reset="font-weight" title="恢复默认主字重">↺</button>
+              <span class="control-label">主字体粗细 <span class="val-badge" id="val-font-weight">500</span></span>
+              <button class="btn-reset-single" data-reset="font-weight" title="恢复默认主字体粗细">↺</button>
             </div>
             <input type="range" id="cfg-font-weight" min="300" max="800" step="100" value="500" />
           </div>
@@ -291,8 +292,8 @@
           <!-- Secondary Font Weight Slider -->
           <div class="control-block">
             <div class="control-row">
-              <span class="control-label">辅助文字重 <span class="val-badge" id="val-secondary-font-weight">400</span></span>
-              <button class="btn-reset-single" data-reset="secondary-font-weight" title="恢复默认辅助字重">↺</button>
+              <span class="control-label">辅助字体粗细 <span class="val-badge" id="val-secondary-font-weight">400</span></span>
+              <button class="btn-reset-single" data-reset="secondary-font-weight" title="恢复默认辅助字体粗细">↺</button>
             </div>
             <input type="range" id="cfg-secondary-font-weight" min="300" max="800" step="100" value="400" />
           </div>

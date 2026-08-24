@@ -62,7 +62,7 @@ export const DEFAULT_FRAME_CONFIG: FrameConfig = {
   template: 'bottom_bar',
   backgroundType: 'white',
   customBackgroundColor: '#ffffff',
-  fontFamily: 'Inter, -apple-system, sans-serif',
+  fontFamily: 'Noto Sans SC',
   fontSizeScale: 1.0,
   fontWeight: 500,
   secondaryFontWeight: 400,
