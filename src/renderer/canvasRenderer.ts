@@ -492,10 +492,18 @@ function renderPolaroid(
   canvas.width = canvasW;
   canvas.height = canvasH;
 
+  const isDarkBg = isFrosted || config.backgroundType === 'dark';
+
   if (isFrosted) {
     drawDeepFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
+  } else if (config.backgroundType === 'dark') {
+    ctx.fillStyle = '#14151a';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.10)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0, 0, canvasW, canvasH);
   } else {
-    ctx.fillStyle = config.customBackgroundColor || '#fbfaf8';
+    ctx.fillStyle = config.backgroundType === 'custom' ? (config.customBackgroundColor || '#fbfaf8') : '#fbfaf8';
     ctx.fillRect(0, 0, canvasW, canvasH);
     ctx.strokeStyle = 'rgba(0,0,0,0.06)';
     ctx.lineWidth = 1;
@@ -545,7 +553,7 @@ function renderPolaroid(
       ctx.fillStyle = subTextColor;
       ctx.fillText(subLine, leftX, midY);
 
-      drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isFrosted);
+      drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isDarkBg);
     } else if (subLine || hasNote) {
       ctx.drawImage(nikonModelImg, leftX, (midY - fontSize * 0.6) - modelLogoH / 2, modelLogoW, modelLogoH);
 
@@ -554,7 +562,7 @@ function renderPolaroid(
         ctx.fillStyle = subTextColor;
         ctx.fillText(subLine, leftX, midY + subFontSize * 0.8);
       } else {
-        drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isFrosted);
+        drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isDarkBg);
       }
     } else {
       ctx.drawImage(nikonModelImg, leftX, midY - modelLogoH / 2, modelLogoW, modelLogoH);
@@ -568,7 +576,7 @@ function renderPolaroid(
     ctx.fillStyle = subTextColor;
     ctx.fillText(subLine, leftX, midY);
 
-    drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isFrosted);
+    drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isDarkBg);
   } else if (subLine || hasNote) {
     ctx.font = `${mainWeight} ${fontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
@@ -579,7 +587,7 @@ function renderPolaroid(
       ctx.fillStyle = subTextColor;
       ctx.fillText(subLine, leftX, midY + subFontSize * 0.8);
     } else {
-      drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isFrosted);
+      drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isDarkBg);
     }
   } else {
     ctx.font = `${mainWeight} ${fontSize * 1.1}px ${fontFam}`;
@@ -595,7 +603,7 @@ function renderPolaroid(
 
     ctx.textAlign = 'right';
     ctx.font = `${subWeight} ${subFontSize * 0.95}px 'Courier New', Courier, monospace`;
-    ctx.fillStyle = isFrosted ? '#fdba74' : '#c2410c';
+    ctx.fillStyle = isDarkBg ? '#fdba74' : '#c2410c';
     ctx.fillText(dateText, rightX, midY + subFontSize * 0.85);
   } else if (logoImg) {
     const logoH = Math.round(fontSize * 1.5);
@@ -604,7 +612,7 @@ function renderPolaroid(
   } else if (dateText) {
     ctx.textAlign = 'right';
     ctx.font = `${subWeight} ${subFontSize}px 'Courier New', Courier, monospace`;
-    ctx.fillStyle = isFrosted ? '#fdba74' : '#c2410c';
+    ctx.fillStyle = isDarkBg ? '#fdba74' : '#c2410c';
     ctx.fillText(dateText, rightX, midY);
   }
 
@@ -740,9 +748,9 @@ function drawSignatureNote(
   x: number,
   y: number,
   size: number,
-  isFrosted: boolean
+  isLightText: boolean
 ) {
-  const color = isFrosted ? '#e0e7ff' : '#4b5563';
+  const color = isLightText ? '#ece9e3' : '#4b5563';
   ctx.font = `italic 500 ${Math.round(size * 0.95)}px ${SIGNATURE_FONT_STACK}`;
   ctx.fillStyle = color;
   ctx.fillText(text, x, y);

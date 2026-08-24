@@ -1,41 +1,40 @@
-# Maintainer: vectorfruit <vectorfruit@local>
+# Maintainer: vectorfruit <vectorfruit@outlook.com>
 
 pkgname=photomark
-pkgver=1.4.0
+pkgver=1.4.1
 pkgrel=1
-pkgdesc="A modern, ultra-lightweight photo EXIF watermark and frame studio (Clean-Room Tauri 2.0 implementation)"
+pkgdesc="Photo EXIF watermark and frame studio"
 arch=('x86_64')
 url="https://github.com/vectorfruit/photomark"
 license=('GPL-3.0-or-later')
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/vectorfruit/photomark/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('7abe5f7ef6da58f669890764cece060cb553d16228579c37f38fba05c573c802')
 depends=(
   'cairo'
+  'dbus'
   'gdk-pixbuf2'
   'glib2'
-  'glibc'
   'gtk3'
   'libsoup3'
+  'openssl'
   'pango'
   'webkit2gtk-4.1'
 )
 makedepends=(
-  'cargo'
-  'git'
   'nodejs>=18'
   'rust'
   'yarn'
 )
 
 prepare() {
-  cd "${srcdir}/${pkgname}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
-  # 配置本地 yarn 缓存与国内镜像源
   export YARN_CACHE_FOLDER="${srcdir}/yarn-cache"
-  yarn config set registry https://registry.npmmirror.com || true
-  yarn install
+  yarn install --frozen-lockfile --registry "${YARN_REGISTRY:-https://registry.npmmirror.com}"
 }
 
 build() {
-  cd "${srcdir}/${pkgname}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   export NODE_ENV=production
   # 编译前端并将静态资源完整嵌入 Rust 原生二进制中
@@ -43,7 +42,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   # 1. 安装原生二进制文件至 /usr/bin/photomark
   install -Dm755 src-tauri/target/release/photomark "${pkgdir}/usr/bin/${pkgname}"
@@ -56,8 +55,8 @@ Name=PhotoMark
 Name[zh_CN]=照片水印相框
 GenericName=Photo EXIF Watermark & Frame Studio
 GenericName[zh_CN]=照片 EXIF 参数相框与水印工坊
-Comment=A modern, ultra-lightweight photo EXIF watermark and frame studio
-Comment[zh_CN]=现代轻量级相机 EXIF 参数水印与相框处理工具
+Comment=Photo EXIF watermark and frame studio
+Comment[zh_CN]=照片 EXIF 水印与相框工具
 Exec=/usr/bin/photomark %U
 Icon=photomark
 Terminal=false
@@ -70,8 +69,12 @@ EOF
   chmod 644 "${pkgdir}/usr/share/applications/${pkgname}.desktop"
 
   # 3. 安装图标至 hicolor 主题目录
-  install -Dm644 src-tauri/icons/32x32.png "${pkgdir}/usr/share/icons/hicolor/32x32/apps/${pkgname}.png"
-  install -Dm644 src-tauri/icons/128x128.png "${pkgdir}/usr/share/icons/hicolor/128x128/apps/${pkgname}.png"
-  install -Dm644 src-tauri/icons/icon.png "${pkgdir}/usr/share/icons/hicolor/512x512/apps/${pkgname}.png"
-  install -Dm644 src-tauri/icons/icon.png "${pkgdir}/usr/share/pixmaps/${pkgname}.png"
+  install -Dm644 src-tauri/icons/32x32.png \
+    "${pkgdir}/usr/share/icons/hicolor/32x32/apps/${pkgname}.png"
+  install -Dm644 src-tauri/icons/128x128.png \
+    "${pkgdir}/usr/share/icons/hicolor/128x128/apps/${pkgname}.png"
+  install -Dm644 src-tauri/icons/icon.png \
+    "${pkgdir}/usr/share/icons/hicolor/512x512/apps/${pkgname}.png"
+  install -Dm644 src-tauri/icons/icon.png \
+    "${pkgdir}/usr/share/pixmaps/${pkgname}.png"
 }

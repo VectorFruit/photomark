@@ -51,6 +51,7 @@ let exportSettings: ExportSettings = {
 
 let exportCancelled = false;
 let keepProgressModalOpen = false;
+let confirmAction: (() => void) | null = null;
 
 // DOM Elements
 const photoListEl = document.getElementById('photo-list') as HTMLDivElement;
@@ -63,15 +64,20 @@ const compareBtn = document.getElementById('btn-compare-original') as HTMLButton
 const zoomLevelEl = document.getElementById('zoom-level') as HTMLSpanElement;
 const toastEl = document.getElementById('toast') as HTMLDivElement;
 const fileInputEl = document.getElementById('file-input') as HTMLInputElement;
+const pointerGlowEl = document.getElementById('pointer-glow') as HTMLDivElement | null;
+const confirmModalEl = document.getElementById('confirm-modal') as HTMLDivElement;
+const confirmTitleEl = document.getElementById('confirm-title') as HTMLDivElement;
+const confirmMessageEl = document.getElementById('confirm-message') as HTMLParagraphElement;
+const confirmOkBtn = document.getElementById('btn-confirm-ok') as HTMLButtonElement;
+const confirmCancelBtn = document.getElementById('btn-confirm-cancel') as HTMLButtonElement;
 
 // UI Scale DOM
 const selectUiScale = document.getElementById('select-ui-scale') as HTMLSelectElement;
 const btnUiScaleDown = document.getElementById('btn-ui-scale-down') as HTMLButtonElement;
 const btnUiScaleUp = document.getElementById('btn-ui-scale-up') as HTMLButtonElement;
 
-// Theme Toggle DOM
-const themeToggleBtn = document.getElementById('btn-theme-toggle') as HTMLButtonElement;
-const themeTextEl = document.getElementById('theme-text') as HTMLSpanElement;
+// Theme Toggle DOM (segmented control)
+const themeOptionButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.theme-option'));
 
 // Language DOM
 const selectLanguageEl = document.getElementById('select-language') as HTMLSelectElement | null;
@@ -109,6 +115,7 @@ const previewImageCache: Map<string, HTMLImageElement> = new Map();
 async function init() {
   applyTheme(currentTheme);
   applyUiScale(currentUiScale);
+  bindPointerGlow();
   loadPersistedState();
   bindEvents();
   setupProgressListeners();
@@ -146,14 +153,62 @@ function applyTheme(theme: 'dark' | 'light' | 'system') {
   const resolved = resolveTheme(theme);
   document.documentElement.setAttribute('data-theme', resolved);
   localStorage.setItem('photomark_theme', theme);
+  updateThemeToggleUI();
+}
 
-  if (theme === 'system') {
-    themeTextEl.textContent = translateText('跟随系统');
-  } else if (resolved === 'light') {
-    themeTextEl.textContent = translateText('深色模式');
-  } else {
-    themeTextEl.textContent = translateText('浅色模式');
-  }
+function updateThemeToggleUI() {
+  themeOptionButtons.forEach((btn) => {
+    const option = btn.getAttribute('data-theme-option');
+    const active = option === currentTheme;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-checked', active ? 'true' : 'false');
+  });
+}
+
+// -----------------------------------------------------------------------------
+// Immersive pointer glow (HarmonyOS-style light follows the cursor)
+// -----------------------------------------------------------------------------
+let pointerGlowRaf = 0;
+
+function bindPointerGlow() {
+  window.addEventListener('pointermove', (e) => {
+    if (pointerGlowRaf) return;
+    pointerGlowRaf = requestAnimationFrame(() => {
+      pointerGlowRaf = 0;
+      if (pointerGlowEl) {
+        pointerGlowEl.style.setProperty('--pointer-x', String(e.clientX) + 'px');
+        pointerGlowEl.style.setProperty('--pointer-y', String(e.clientY) + 'px');
+        document.body.classList.add('has-pointer');
+      }
+    });
+  });
+
+  window.addEventListener('pointerout', (e) => {
+    if (!e.relatedTarget) document.body.classList.remove('has-pointer');
+  });
+}
+
+// -----------------------------------------------------------------------------
+// Dangerous action confirmation modal
+// -----------------------------------------------------------------------------
+function openConfirm(options: {
+  message: string;
+  confirmLabel?: string;
+  danger?: boolean;
+  onConfirm: () => void;
+}) {
+  confirmAction = options.onConfirm;
+  confirmTitleEl.textContent = translateText('确认操作');
+  confirmMessageEl.textContent = translateText(options.message);
+  confirmOkBtn.textContent = translateText(options.confirmLabel || '确认');
+  confirmOkBtn.className = 'btn ' + (options.danger === false ? 'btn-primary' : 'btn-danger');
+  confirmModalEl.style.display = 'flex';
+  confirmCancelBtn?.focus();
+}
+
+function closeConfirm() {
+  confirmModalEl.style.display = 'none';
+  confirmAction = null;
 }
 
 function loadPersistedState() {
@@ -325,11 +380,14 @@ function bindEvents() {
     applyUiScale(UI_SCALES[nextIdx]);
   });
 
-  // Theme Toggle Button (dark -> light -> system)
-  themeToggleBtn?.addEventListener('click', () => {
-    const order: ('dark' | 'light' | 'system')[] = ['dark', 'light', 'system'];
-    const next = order[(order.indexOf(currentTheme) + 1) % 3];
-    applyTheme(next);
+  // Theme Mode Segmented Control (Light / Dark / System)
+  themeOptionButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const option = btn.getAttribute('data-theme-option');
+      if (option === 'light' || option === 'dark' || option === 'system') {
+        applyTheme(option);
+      }
+    });
   });
 
   // Follow OS theme changes while in system mode
@@ -341,6 +399,20 @@ function bindEvents() {
   selectLanguageEl?.addEventListener('change', () => {
     setStoredLang(selectLanguageEl.value as 'zh' | 'en');
     applyLanguage();
+  });
+
+  // Dangerous Action Confirmation Modal
+  confirmOkBtn?.addEventListener('click', () => {
+    const action = confirmAction;
+    closeConfirm();
+    action?.();
+  });
+  confirmCancelBtn?.addEventListener('click', closeConfirm);
+  confirmModalEl?.addEventListener('click', (e) => {
+    if (e.target === confirmModalEl) closeConfirm();
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && confirmModalEl?.style.display === 'flex') closeConfirm();
   });
 
   // Collapsible Inspector Groups
@@ -363,21 +435,37 @@ function bindEvents() {
     }
   });
 
-  // Clear All Photos
+  // Clear All Photos (with confirmation)
   document.getElementById('btn-clear-all')?.addEventListener('click', () => {
-    photos = [];
-    activeIndex = -1;
-    previewImageCache.clear();
-    renderPhotoList();
-    clearCanvas();
+    if (photos.length === 0) return;
+    openConfirm({
+      message: '确定要清空照片列表吗？此操作不可撤销。',
+      confirmLabel: '清空',
+      danger: true,
+      onConfirm: () => {
+        photos = [];
+        activeIndex = -1;
+        previewImageCache.clear();
+        renderPhotoList();
+        clearCanvas();
+        showToast('已清空照片列表', 'info');
+      },
+    });
   });
 
-  // Global Reset All Config Button
+  // Global Reset All Config Button (with confirmation)
   document.getElementById('btn-reset-all')?.addEventListener('click', () => {
-    Object.assign(config, DEFAULT_FRAME_CONFIG);
-    syncUIWithConfig();
-    triggerReRender();
-    showToast('已重置所有参数为默认配置', 'info');
+    openConfirm({
+      message: '确定要恢复所有参数为默认配置吗？',
+      confirmLabel: '重置',
+      danger: false,
+      onConfirm: () => {
+        Object.assign(config, DEFAULT_FRAME_CONFIG);
+        syncUIWithConfig();
+        triggerReRender();
+        showToast('已重置所有参数为默认配置', 'info');
+      },
+    });
   });
 
   // Single Slider Reset Buttons
