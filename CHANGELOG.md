@@ -4,6 +4,21 @@
 
 ---
 
+## 🚀 [v1.4.1] - 2026-08-24
+
+### 🔎 镜头信息解析 (Lens Metadata)
+* **标准 LensID 读取**：镜头信息明确从标准 EXIF `0xA434`（LensID / LensModel 槽位）读取；
+* **XMP LensID 解析**：当标准 `LensModel` 是焦距范围规格（如 `18.0-140.0 mm f/3.5-5.6`）时，自动从 XMP `aux:LensID` / `aux:Lens` 解析回完整镜头名；
+* **正式镜头数据库**：接入 ExifTool 官方镜头 ID 表生成 `src/lensDatabase.json`，当前覆盖 **1238 条**镜头数据，包含 Nikon / Canon / Sony / Sigma / Pentax / Olympus / Panasonic / Minolta / Samsung；
+* **厂商 + 规格双键匹配**：按相机厂商和焦距/光圈规格联合匹配，避免跨厂商同规格镜头串名；同规格多候选时优先官方品牌名；
+* **光圈格式兼容**：同时支持 `f/2.8`、`F2.8`、`F4.5-6.3` 等写法。
+
+### 🐛 缺陷修复 (Bug Fixes)
+* 修复 `DSC_0427-已增强-降噪.jpg` 只显示焦距范围、无法显示 `AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR` 的问题；
+* 修复 MakerNotes / XMP 中的数值型 `LensID` 直接作为镜头名显示的问题。
+
+---
+
 ## 🚀 [v1.4.0] - 2026-08-24
 
 ### ✨ 功能新增与优化 (Features & Improvements)
