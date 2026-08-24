@@ -760,7 +760,7 @@ async function importBrowserFiles(files: File[]) {
 
 async function parseExifInBrowser(file: File): Promise<ExifData> {
   const exifr = await import('exifr');
-  const raw: any = (await exifr.parse(file, { tiff: true, xmp: true, makerNote: true })) || {};
+  const raw: any = (await exifr.parse(file)) || {};
   const exif: ExifData = {};
 
   // exifr names tags per-IFD; some files store tags flattened into IFD0
@@ -777,7 +777,10 @@ async function parseExifInBrowser(file: File): Promise<ExifData> {
   if (make) exif.make = String(make).trim();
   const model = getTag(['Model'], 272);
   if (model) exif.model = String(model).trim();
-  const lens = getTag(['LensID', 'LensModel'], 42036);
+  // LensID is stored in the same standard EXIF slot as LensModel (0xA434).
+  // Prefer the human-readable LensModel string; MakerNotes LensID values are
+  // often numeric IDs and must not replace the readable name.
+  const lens = getTag(['LensModel'], 42036);
   if (lens) exif.lens_model = String(lens).trim();
 
   const fNumber = exifToNumber(getTag(['FNumber'], 33437));
