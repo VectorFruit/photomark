@@ -1,6 +1,7 @@
 import { ExifData, FocalLengthMode, FrameConfig } from '../types';
 import { detectBrandId, loadLogoImage } from './logoManager';
 import { drawDeepFrostedBackground } from './blurEngine';
+import { isNikonCamera, loadNikonModelLogoImage } from './nikonTypography';
 
 function formatFocalLength(exif: ExifData, mode: FocalLengthMode): string {
   const physical = exif.focal_length;
@@ -51,6 +52,12 @@ export async function renderPhotoFrame(
   const logoDarkImg = config.showLogo ? await loadLogoImage(brandId, false) : null;
   const logoImg = isMinimalBadge ? null : (isDark ? logoLightImg : logoDarkImg);
 
+  // Determine Nikon Model Logo (if camera is Nikon and model display is enabled)
+  const isNikon = isNikonCamera(exif.make, exif.model) || brandId === 'nikon';
+  const nikonModelLightImg = (config.showModel && isNikon) ? await loadNikonModelLogoImage(exif.model, exif.make, true) : null;
+  const nikonModelDarkImg = (config.showModel && isNikon) ? await loadNikonModelLogoImage(exif.model, exif.make, false) : null;
+  const nikonModelImg = isMinimalBadge ? null : (isDark ? nikonModelLightImg : nikonModelDarkImg);
+
   // Build text strings
   const modelText = config.showModel
     ? (exif.model || exif.make || '')
@@ -90,7 +97,8 @@ export async function renderPhotoFrame(
         paramsText,
         dateText,
         noteText,
-        logoImg
+        logoImg,
+        nikonModelImg
       );
       break;
     case 'border':
@@ -109,7 +117,8 @@ export async function renderPhotoFrame(
         paramsText,
         dateText,
         noteText,
-        logoImg
+        logoImg,
+        nikonModelImg
       );
       break;
     case 'polaroid':
@@ -128,7 +137,8 @@ export async function renderPhotoFrame(
         paramsText,
         dateText,
         noteText,
-        logoImg
+        logoImg,
+        nikonModelImg
       );
       break;
     case 'minimal_badge':
@@ -145,7 +155,9 @@ export async function renderPhotoFrame(
         dateText,
         noteText,
         logoLightImg,
-        logoDarkImg
+        logoDarkImg,
+        nikonModelLightImg,
+        nikonModelDarkImg
       );
       break;
   }
@@ -172,11 +184,12 @@ function renderBottomBar(
   paramsText: string,
   dateText: string,
   noteText: string,
-  logoImg: HTMLImageElement | null
+  logoImg: HTMLImageElement | null,
+  nikonModelImg: HTMLImageElement | null
 ) {
   const padX = Math.round(imgW * (config.paddingPercent / 100));
-  const padTop = padX;
-  const barHeight = Math.max(Math.round(imgH * (config.bottomBarHeightPercent / 100)), 120);
+  const padTop = Math.round(imgH * (config.paddingPercent / 100));
+  const barHeight = Math.round(imgH * (config.bottomBarHeightPercent / 100));
 
   const canvasW = imgW + padX * 2;
   const canvasH = imgH + padTop + barHeight;
@@ -184,11 +197,11 @@ function renderBottomBar(
   canvas.width = canvasW;
   canvas.height = canvasH;
 
-  // Background Rendering
+  // Background
   if (isFrosted) {
     drawDeepFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else if (config.backgroundType === 'dark') {
-    ctx.fillStyle = '#121316';
+    ctx.fillStyle = '#14151a';
     ctx.fillRect(0, 0, canvasW, canvasH);
   } else if (config.backgroundType === 'custom') {
     ctx.fillStyle = config.customBackgroundColor || '#ffffff';
@@ -198,11 +211,11 @@ function renderBottomBar(
     ctx.fillRect(0, 0, canvasW, canvasH);
   }
 
-  // Draw Photo with shadow (Frosted mode always gives a prominent floating shadow)
+  // Draw Photo
   const photoX = padX;
   const photoY = padTop;
-  const shadowBlur = isFrosted ? Math.max(config.shadowRadius, 35) : config.shadowRadius;
-  const shadowOpacity = isFrosted ? Math.max(config.shadowOpacity, 0.45) : config.shadowOpacity;
+  const shadowBlur = isFrosted ? Math.max(config.shadowRadius, 30) : config.shadowRadius;
+  const shadowOpacity = isFrosted ? Math.max(config.shadowOpacity, 0.4) : config.shadowOpacity;
 
   drawPhotoWithOptionalShadow(
     ctx,
@@ -239,7 +252,21 @@ function renderBottomBar(
   ctx.textBaseline = 'middle';
 
   const hasLens = !!lensText;
-  if (hasLens) {
+  const hasModel = !!modelText || !!nikonModelImg;
+
+  if (nikonModelImg) {
+    const modelLogoH = Math.round(barHeight * (hasLens ? 0.30 : 0.36));
+    const modelLogoW = Math.round((nikonModelImg.width / nikonModelImg.height) * modelLogoH);
+    const modelLogoY = hasLens ? midY - modelLogoH * 0.95 : midY - modelLogoH / 2;
+
+    ctx.drawImage(nikonModelImg, leftX, modelLogoY, modelLogoW, modelLogoH);
+
+    if (hasLens) {
+      ctx.font = `400 ${subFontSize}px ${fontFam}`;
+      ctx.fillStyle = subTextColor;
+      ctx.fillText(lensText, leftX, midY + subFontSize * 0.8);
+    }
+  } else if (hasModel && hasLens) {
     ctx.font = `600 ${mainFontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(modelText, leftX, midY - mainFontSize * 0.6);
@@ -247,10 +274,10 @@ function renderBottomBar(
     ctx.font = `400 ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
     ctx.fillText(lensText, leftX, midY + subFontSize * 0.8);
-  } else {
-    ctx.font = `600 ${mainFontSize * 1.1}px ${fontFam}`;
+  } else if (hasModel || hasLens) {
+    ctx.font = `600 ${mainFontSize * 1.05}px ${fontFam}`;
     ctx.fillStyle = textColor;
-    ctx.fillText(modelText, leftX, midY);
+    ctx.fillText(modelText || lensText, leftX, midY);
   }
 
   // Right Section: Logo & Params
@@ -322,7 +349,8 @@ function renderBorderFrame(
   paramsText: string,
   dateText: string,
   noteText: string,
-  logoImg: HTMLImageElement | null
+  logoImg: HTMLImageElement | null,
+  nikonModelImg: HTMLImageElement | null
 ) {
   const pad = Math.round(Math.min(imgW, imgH) * (config.paddingPercent / 100));
   const subMetaParts = [noteText, dateText].filter(Boolean);
@@ -379,32 +407,43 @@ function renderBorderFrame(
     ctx.shadowOffsetY = 2;
   }
 
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  const summaryParts = [modelText, lensText, paramsText].filter(Boolean);
-  const summaryLine = summaryParts.join('  •  ');
+  const remainingParts = [nikonModelImg ? '' : modelText, lensText, paramsText].filter(Boolean);
+  const remainingText = remainingParts.join('  •  ');
   const hasSubLine = !!subMetaLine;
   const mainY = hasSubLine ? bottomAreaY + captionH * 0.42 : bottomAreaY + captionH * 0.5;
 
+  ctx.font = `500 ${fontSize}px ${fontFam}`;
+  const spacing = Math.round(14 * fontScale);
+  const textWidth = remainingText ? ctx.measureText(remainingText).width : 0;
+
+  const logoH = Math.round(fontSize * 1.25);
+  const logoW = logoImg ? Math.round((logoImg.width / logoImg.height) * logoH) : 0;
+
+  const modelLogoH = Math.round(fontSize * 1.15);
+  const modelLogoW = nikonModelImg ? Math.round((nikonModelImg.width / nikonModelImg.height) * modelLogoH) : 0;
+
+  let totalWidth = 0;
+  if (logoImg) totalWidth += logoW;
+  if (nikonModelImg) totalWidth += (totalWidth > 0 ? spacing : 0) + modelLogoW;
+  if (remainingText) totalWidth += (totalWidth > 0 ? spacing : 0) + textWidth;
+
+  let curX = (canvasW - totalWidth) / 2;
+
   if (logoImg) {
-    const logoH = Math.round(fontSize * 1.25);
-    const logoW = Math.round((logoImg.width / logoImg.height) * logoH);
-    ctx.font = `500 ${fontSize}px ${fontFam}`;
-    const textWidth = ctx.measureText(summaryLine).width;
-    const spacing = Math.round(14 * fontScale);
-    const totalWidth = logoW + spacing + textWidth;
+    ctx.drawImage(logoImg, curX, mainY - logoH / 2, logoW, logoH);
+    curX += logoW + spacing;
+  }
 
-    const startX = (canvasW - totalWidth) / 2;
-    ctx.drawImage(logoImg, startX, mainY - logoH / 2, logoW, logoH);
+  if (nikonModelImg) {
+    ctx.drawImage(nikonModelImg, curX, mainY - modelLogoH / 2, modelLogoW, modelLogoH);
+    curX += modelLogoW + (remainingText ? spacing : 0);
+  }
 
+  if (remainingText) {
     ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
     ctx.fillStyle = textColor;
-    ctx.fillText(summaryLine, startX + logoW + spacing, mainY);
-  } else {
-    ctx.font = `500 ${fontSize}px ${fontFam}`;
-    ctx.fillStyle = textColor;
-    ctx.fillText(summaryLine, canvasW / 2, mainY);
+    ctx.fillText(remainingText, curX, mainY);
   }
 
   if (hasSubLine) {
@@ -437,7 +476,8 @@ function renderPolaroid(
   paramsText: string,
   dateText: string,
   noteText: string,
-  logoImg: HTMLImageElement | null
+  logoImg: HTMLImageElement | null,
+  nikonModelImg: HTMLImageElement | null
 ) {
   const pad = Math.round(imgW * 0.06);
   const bottomExtra = Math.round(imgH * 0.24);
@@ -451,12 +491,7 @@ function renderPolaroid(
   if (isFrosted) {
     drawDeepFrostedBackground(ctx, img, canvasW, canvasH, config.blurIntensity);
   } else {
-    ctx.fillStyle =
-      config.backgroundType === 'dark'
-        ? '#121316'
-        : config.backgroundType === 'custom'
-          ? config.customBackgroundColor || '#fbfaf8'
-          : '#fbfaf8';
+    ctx.fillStyle = config.customBackgroundColor || '#fbfaf8';
     ctx.fillRect(0, 0, canvasW, canvasH);
     ctx.strokeStyle = 'rgba(0,0,0,0.06)';
     ctx.lineWidth = 1;
@@ -493,7 +528,32 @@ function renderPolaroid(
   const subLine = [lensText, paramsText].filter(Boolean).join('  |  ');
   const hasNote = !!noteText;
 
-  if (hasNote && subLine) {
+  if (nikonModelImg) {
+    const modelLogoH = Math.round(fontSize * (hasNote && subLine ? 1.2 : 1.35));
+    const modelLogoW = Math.round((nikonModelImg.width / nikonModelImg.height) * modelLogoH);
+
+    if (hasNote && subLine) {
+      ctx.drawImage(nikonModelImg, leftX, (midY - fontSize * 0.95) - modelLogoH / 2, modelLogoW, modelLogoH);
+
+      ctx.font = `400 ${subFontSize}px ${fontFam}`;
+      ctx.fillStyle = subTextColor;
+      ctx.fillText(subLine, leftX, midY);
+
+      drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isFrosted);
+    } else if (subLine || hasNote) {
+      ctx.drawImage(nikonModelImg, leftX, (midY - fontSize * 0.6) - modelLogoH / 2, modelLogoW, modelLogoH);
+
+      if (subLine) {
+        ctx.font = `400 ${subFontSize}px ${fontFam}`;
+        ctx.fillStyle = subTextColor;
+        ctx.fillText(subLine, leftX, midY + subFontSize * 0.8);
+      } else {
+        drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isFrosted);
+      }
+    } else {
+      ctx.drawImage(nikonModelImg, leftX, midY - modelLogoH / 2, modelLogoW, modelLogoH);
+    }
+  } else if (hasNote && subLine) {
     ctx.font = `600 ${fontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(modelText, leftX, midY - fontSize * 0.95);
@@ -521,7 +581,7 @@ function renderPolaroid(
     ctx.fillText(modelText, leftX, midY);
   }
 
-  // Right Content: Logo + Vintage Date Stamp (Supports showing BOTH simultaneously)
+  // Right Content: Logo + Vintage Date Stamp
   if (logoImg && dateText) {
     const logoH = Math.round(fontSize * 1.25);
     const logoW = Math.round((logoImg.width / logoImg.height) * logoH);
@@ -529,7 +589,7 @@ function renderPolaroid(
 
     ctx.textAlign = 'right';
     ctx.font = `500 ${subFontSize * 0.95}px 'Courier New', Courier, monospace`;
-    ctx.fillStyle = isFrosted ? '#fdba74' : '#c2410c'; // Vintage retro amber stamp
+    ctx.fillStyle = isFrosted ? '#fdba74' : '#c2410c';
     ctx.fillText(dateText, rightX, midY + subFontSize * 0.85);
   } else if (logoImg) {
     const logoH = Math.round(fontSize * 1.5);
@@ -562,7 +622,9 @@ function renderMinimalBadge(
   dateText: string,
   noteText: string,
   logoLightImg: HTMLImageElement | null,
-  logoDarkImg: HTMLImageElement | null
+  logoDarkImg: HTMLImageElement | null,
+  nikonModelLightImg: HTMLImageElement | null,
+  nikonModelDarkImg: HTMLImageElement | null
 ) {
   canvas.width = imgW;
   canvas.height = imgH;
@@ -572,12 +634,6 @@ function renderMinimalBadge(
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const fontSize = Math.max(Math.round(15 * fontScale), 12);
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
-
-  const extraParts = [noteText, dateText].filter(Boolean).join('  ');
-  const summary = [modelText, paramsText, extraParts].filter(Boolean).join('  |  ');
-
-  // No text and no logo: keep the photo untouched instead of an empty badge
-  if (!summary && !logoLightImg && !logoDarkImg) return;
 
   // Sample the bottom-right corner and pick a glass style that keeps contrast
   let useLightBadge = false;
@@ -593,19 +649,33 @@ function renderMinimalBadge(
     }
     useLightBadge = (sum / count) < 128;
   } catch {
-    // If sampling fails, keep the classic dark pill
     useLightBadge = false;
   }
 
   const logoImg = useLightBadge ? logoDarkImg : logoLightImg;
+  const modelImg = useLightBadge ? nikonModelDarkImg : nikonModelLightImg;
+
+  const extraParts = [noteText, dateText].filter(Boolean).join('  ');
+  const summary = [modelImg ? '' : modelText, paramsText, extraParts].filter(Boolean).join('  |  ');
+
+  // No text and no logo: keep the photo untouched instead of an empty badge
+  if (!summary && !logoImg && !modelImg) return;
 
   ctx.font = '500 ' + fontSize + 'px ' + fontFam;
-  const textW = ctx.measureText(summary).width;
+  const textW = summary ? ctx.measureText(summary).width : 0;
   const logoH = Math.round(fontSize * 1.1);
   const logoW = logoImg ? Math.round((logoImg.width / logoImg.height) * logoH) : 0;
+  const modelLogoH = Math.round(fontSize * 1.05);
+  const modelLogoW = modelImg ? Math.round((modelImg.width / modelImg.height) * modelLogoH) : 0;
   const pad = Math.round(fontSize * 0.8);
+  const spacing = Math.round(pad * 0.6);
 
-  const badgeW = textW + (logoW ? logoW + pad * 0.6 : 0) + pad * 2;
+  let contentW = 0;
+  if (logoW) contentW += logoW;
+  if (modelLogoW) contentW += (contentW > 0 ? spacing : 0) + modelLogoW;
+  if (textW) contentW += (contentW > 0 ? spacing : 0) + textW;
+
+  const badgeW = contentW + pad * 2;
   const badgeH = fontSize * 2.2;
   const badgeX = imgW - badgeW - Math.round(imgW * 0.03);
   const badgeY = imgH - badgeH - Math.round(imgH * 0.03);
@@ -635,13 +705,20 @@ function renderMinimalBadge(
 
   if (logoImg) {
     ctx.drawImage(logoImg, curX, midY - logoH / 2, logoW, logoH);
-    curX += logoW + Math.round(pad * 0.6);
+    curX += logoW + spacing;
   }
 
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = useLightBadge ? '#111827' : '#ffffff';
-  ctx.fillText(summary, curX, midY);
+  if (modelImg) {
+    ctx.drawImage(modelImg, curX, midY - modelLogoH / 2, modelLogoW, modelLogoH);
+    curX += modelLogoW + (textW ? spacing : 0);
+  }
+
+  if (summary) {
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = useLightBadge ? '#111827' : '#ffffff';
+    ctx.fillText(summary, curX, midY);
+  }
   ctx.restore();
 }
 
