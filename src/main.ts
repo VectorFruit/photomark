@@ -164,6 +164,11 @@ function loadPersistedState() {
       if (parsed && typeof parsed === 'object') {
         Object.assign(config, { ...DEFAULT_FRAME_CONFIG, ...parsed });
       }
+      // Only the three built-in fonts are selectable; force legacy/system font
+      // values back to the default 思源黑体 so fresh installs and old configs agree.
+      if (!['Noto Sans SC', 'Noto Serif SC', 'Brass Mono'].includes(config.fontFamily)) {
+        config.fontFamily = 'Noto Sans SC';
+      }
     }
   } catch {
     // ignore corrupted persisted config
