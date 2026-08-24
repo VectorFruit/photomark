@@ -1,8 +1,12 @@
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
-use exif::{In, Reader, Tag, Value};
+use exif::{Context, In, Reader, Tag, Value};
 use crate::models::ExifData;
+
+/// Lens info is read from the standard EXIF "LensID" tag, which is stored in
+/// the same IFD slot as LensModel (tag 0xA434 / decimal 42036).
+const LENS_ID_TAG: Tag = Tag(Context::Exif, 0xa434);
 
 pub fn read_exif_from_path<P: AsRef<Path>>(path: P) -> ExifData {
     let mut exif_data = ExifData::default();
@@ -36,8 +40,8 @@ pub fn read_exif_from_path<P: AsRef<Path>>(path: P) -> ExifData {
         }
     }
 
-    // Lens Model
-    if let Some(field) = exif.get_field(Tag::LensModel, In::PRIMARY) {
+    // Lens ID (standard EXIF tag 0xA434, same slot as LensModel)
+    if let Some(field) = exif.get_field(LENS_ID_TAG, In::PRIMARY) {
         let val = field.display_value().to_string();
         let clean = clean_string(&val);
         if !clean.is_empty() {
