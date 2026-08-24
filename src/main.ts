@@ -758,9 +758,35 @@ async function importBrowserFiles(files: File[]) {
   }
 }
 
+// Helper: resolve a generic "18-140mm f/3.5-5.6" lens spec back to a readable lens name.
+// Lightroom/Camera Raw writes aux:LensID and aux:Lens into XMP; the numeric ID is
+// usually not readable by itself, so we keep a small Nikon table for common lenses.
+const GENERIC_LENS_SPEC_RE = /^[\d.]+\s*-\s*[\d.]+\s*mm\s*f\/[\d.]+(?:\s*-\s*[\d.]+)?/i;
+const LENS_NAME_BY_ID: Record<number, string> = {
+  160: 'AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR',
+};
+const LENS_NAME_BY_SPEC: Record<string, string> = {
+  '18.0-140.0 mm f/3.5-5.6': 'AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR',
+  '18.0-140.0mm f/3.5-5.6': 'AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR',
+  '18-140mm f/3.5-5.6': 'AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR',
+};
+
+function resolveLensName(lensModel: string, lensId: any, lens: string | undefined): string | null {
+  if (!GENERIC_LENS_SPEC_RE.test(lensModel.trim())) return null;
+
+  const numericId = Number(lensId);
+  if (Number.isInteger(numericId) && LENS_NAME_BY_ID[numericId]) {
+    return LENS_NAME_BY_ID[numericId];
+  }
+
+  const spec = (lens || lensModel).replace(/\s+/g, ' ').trim();
+  if (LENS_NAME_BY_SPEC[spec]) return LENS_NAME_BY_SPEC[spec];
+
+  return null;
+}
 async function parseExifInBrowser(file: File): Promise<ExifData> {
   const exifr = await import('exifr');
-  const raw: any = (await exifr.parse(file)) || {};
+  const raw: any = (await exifr.parse(file, { tiff: true, xmp: true })) || {};
   const exif: ExifData = {};
 
   // exifr names tags per-IFD; some files store tags flattened into IFD0
@@ -777,11 +803,15 @@ async function parseExifInBrowser(file: File): Promise<ExifData> {
   if (make) exif.make = String(make).trim();
   const model = getTag(['Model'], 272);
   if (model) exif.model = String(model).trim();
-  // LensID is stored in the same standard EXIF slot as LensModel (0xA434).
-  // Prefer the human-readable LensModel string; MakerNotes LensID values are
-  // often numeric IDs and must not replace the readable name.
+  // LensModel/LensID share the standard EXIF tag 0xA434. If the stored LensModel
+  // is only a focal-range spec (e.g. "18.0-140.0 mm f/3.5-5.6"), resolve it back
+  // to a readable lens name from the XMP LensID/Lens fields when possible.
   const lens = getTag(['LensModel'], 42036);
-  if (lens) exif.lens_model = String(lens).trim();
+  const lensText = lens ? String(lens).trim() : '';
+  if (lensText) {
+    const resolved = resolveLensName(lensText, raw.LensID, raw.Lens || raw.LensInfo);
+    exif.lens_model = resolved || lensText;
+  }
 
   const fNumber = exifToNumber(getTag(['FNumber'], 33437));
   if (fNumber !== undefined) exif.f_number = `f/${trimNumber(fNumber, 1)}`.replace('.0', '');

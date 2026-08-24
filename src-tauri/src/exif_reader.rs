@@ -8,6 +8,52 @@ use crate::models::ExifData;
 /// the same IFD slot as LensModel (tag 0xA434 / decimal 42036).
 const LENS_ID_TAG: Tag = Tag(Context::Exif, 0xa434);
 
+/// Lightroom/Camera Raw writes `aux:LensID` and `aux:Lens` into XMP. The
+/// numeric LensID is not readable by itself, so we keep a small Nikon table.
+const LENS_NAME_BY_ID: &[(u32, &str)] = &[
+    (160, "AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"),
+];
+
+const LENS_NAME_BY_SPEC: &[(&str, &str)] = &[
+    ("18.0-140.0 mm f/3.5-5.6", "AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"),
+    ("18.0-140.0mm f/3.5-5.6", "AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"),
+    ("18-140mm f/3.5-5.6", "AF-S DX Nikkor 18-140mm f/3.5-5.6G ED VR"),
+];
+
+fn looks_like_lens_spec(s: &str) -> bool {
+    let t = s.trim().to_lowercase();
+    t.contains("mm") && t.contains("f/")
+        && !t.contains("nikkor") && !t.contains("af-") && !t.contains("nikon ")
+}
+
+fn extract_xmp_attr(text: &str, name: &str) -> Option<String> {
+    let needle = format!("{}=\"", name);
+    let start = text.find(&needle)? + needle.len();
+    let end = text[start..].find('"')? + start;
+    Some(text[start..end].to_string())
+}
+
+fn resolve_lens_name(lens_model: &str, lens_id: Option<&str>, lens: Option<&str>) -> Option<String> {
+    if !looks_like_lens_spec(lens_model) {
+        return None;
+    }
+
+    if let Some(id) = lens_id.and_then(|v| v.trim().parse::<u32>().ok()) {
+        if let Some((_, name)) = LENS_NAME_BY_ID.iter().find(|(k, _)| *k == id) {
+            return Some((*name).to_string());
+        }
+    }
+
+    if let Some(spec) = lens {
+        let spec = spec.split_whitespace().collect::<Vec<_>>().join(" ");
+        if let Some((_, name)) = LENS_NAME_BY_SPEC.iter().find(|(k, _)| *k == &spec) {
+            return Some((*name).to_string());
+        }
+    }
+
+    None
+}
+
 pub fn read_exif_from_path<P: AsRef<Path>>(path: P) -> ExifData {
     let mut exif_data = ExifData::default();
 
@@ -46,6 +92,21 @@ pub fn read_exif_from_path<P: AsRef<Path>>(path: P) -> ExifData {
         let clean = clean_string(&val);
         if !clean.is_empty() {
             exif_data.lens_model = Some(clean);
+        }
+    }
+
+    // If the stored LensModel is only a focal-range spec (e.g. "18.0-140.0 mm f/3.5-5.6"),
+    // resolve it back to a readable lens name from XMP aux:LensID / aux:Lens when possible.
+    if let Some(current) = exif_data.lens_model.clone() {
+        if looks_like_lens_spec(&current) {
+            if let Ok(bytes) = std::fs::read(&path) {
+                let text = String::from_utf8_lossy(&bytes);
+                let lens_id = extract_xmp_attr(&text, "aux:LensID");
+                let lens = extract_xmp_attr(&text, "aux:Lens");
+                if let Some(name) = resolve_lens_name(&current, lens_id.as_deref(), lens.as_deref()) {
+                    exif_data.lens_model = Some(name);
+                }
+            }
         }
     }
 
@@ -194,3 +255,4 @@ fn clean_string(input: &str) -> String {
         .trim()
         .to_string()
 }
+
