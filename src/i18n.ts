@@ -126,9 +126,11 @@ const zhToEn: Record<string, string> = {
   '恢复默认辅助字体粗细': 'Reset secondary font weight',
   '主字体粗细': 'Main font weight',
   '辅助字体粗细': 'Secondary font weight',
-  '字体（内置 / 系统）': 'Font (built-in / system)',
-  '输入字体名：Noto Sans SC / Noto Serif SC / Brass Mono': 'Enter a font name: Noto Sans SC / Noto Serif SC / Brass Mono',
-  '内置思源黑体 / 思源宋体 / Brass Mono；也可输入其他系统字体名。': 'Built-in Noto Sans SC / Noto Serif SC / Brass Mono; other system font names are accepted too.',
+  '字体': 'Font',
+  '思源黑体 Noto Sans SC（无衬线）': 'Noto Sans SC (sans-serif)',
+  '思源宋体 Noto Serif SC（衬线）': 'Noto Serif SC (serif)',
+  'Brass Mono（等宽复古）': 'Brass Mono (retro monospace)',
+  '使用内置字体，无需安装。': 'Uses built-in fonts; no installation needed.',
   '照片 EXIF 水印与相框': 'Photo EXIF Watermark & Frame Studio',
 };
 

@@ -238,29 +238,14 @@
 
           <div class="control-block">
             <div class="control-row">
-              <span class="control-label">字体（内置 / 系统）</span>
+              <span class="control-label">字体</span>
             </div>
-            <input type="text" id="cfg-font-family" list="font-family-list" placeholder="输入字体名：Noto Sans SC / Noto Serif SC / Brass Mono" value="Noto Sans SC" />
-            <datalist id="font-family-list">
-              <option value="Noto Sans SC"></option>
-              <option value="Noto Serif SC"></option>
-              <option value="Brass Mono"></option>
-              <option value="Inter"></option>
-              <option value="PingFang SC"></option>
-              <option value="Helvetica Neue"></option>
-              <option value="Arial"></option>
-              <option value="SF Pro Display"></option>
-              <option value="Segoe UI"></option>
-              <option value="Microsoft YaHei"></option>
-              <option value="Georgia"></option>
-              <option value="Times New Roman"></option>
-              <option value="Palatino"></option>
-              <option value="Courier New"></option>
-              <option value="Consolas"></option>
-              <option value="DejaVu Sans"></option>
-              <option value="Ubuntu"></option>
-            </datalist>
-            <div class="export-note">内置思源黑体 / 思源宋体 / Brass Mono；也可输入其他系统字体名。</div>
+            <select id="cfg-font-family" style="width: 100%">
+              <option value="Noto Sans SC" selected>思源黑体 Noto Sans SC（无衬线）</option>
+              <option value="Noto Serif SC">思源宋体 Noto Serif SC（衬线）</option>
+              <option value="Brass Mono">Brass Mono（等宽复古）</option>
+            </select>
+            <div class="export-note">使用内置字体，无需安装。</div>
           </div>
 
           <!-- Padding Slider -->

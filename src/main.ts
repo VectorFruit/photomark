@@ -452,7 +452,7 @@ function bindEvents() {
   bindCheckbox('cfg-show-logo', (val) => (config.showLogo = val));
   bindSelect('cfg-brand-logo', (val) => (config.selectedLogo = val));
   bindSelect('cfg-focal-mode', (val) => (config.focalLengthMode = val as any));
-  bindInput('cfg-font-family', (val) => (config.fontFamily = val));
+  bindSelect('cfg-font-family', (val) => (config.fontFamily = val));
   bindCheckbox('cfg-show-model', (val) => (config.showModel = val));
   bindCheckbox('cfg-show-lens', (val) => (config.showLens = val));
   bindCheckbox('cfg-show-params', (val) => (config.showParams = val));
@@ -601,8 +601,8 @@ function syncUIWithConfig() {
   if (focalSelect) focalSelect.value = config.focalLengthMode || 'physical';
 
   // Update Font Family Input
-  const fontFamilyInput = document.getElementById('cfg-font-family') as HTMLInputElement | null;
-  if (fontFamilyInput) fontFamilyInput.value = config.fontFamily || 'Noto Sans SC';
+  const fontFamilySelect = document.getElementById('cfg-font-family') as HTMLSelectElement | null;
+  if (fontFamilySelect) fontFamilySelect.value = config.fontFamily || 'Noto Sans SC';
 
   // Update Inputs & Checkboxes
   const customNoteInput = document.getElementById('cfg-custom-note') as HTMLInputElement | null;
