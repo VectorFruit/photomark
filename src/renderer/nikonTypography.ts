@@ -17,6 +17,7 @@ export function isNikonCamera(make?: string, model?: string): boolean {
 
 /**
  * 标准化并解析 Nikon 相机型号
+ * 若机型不在官方支持库内（例如 COOLPIX 系列、Nikon 1 微单等），则返回 null 触发纯文本 fallback
  */
 export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonModelMatch | null {
   if (!rawModel && !rawMake) return null;
@@ -27,7 +28,7 @@ export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonMod
   // 去除常见品牌前缀
   text = text.replace(/^NIKON\s+/i, '').replace(/^NIKON_CORPORATION\s+/i, '').trim();
 
-  // 标准化 EXIF 固件中的世代标识 (如 Z 6_2 -> Z6II, Z 7_2 -> Z7II, Z 6_3 -> Z6III)
+  // 标准化 EXIF 固件中的世代标识 (如 Z 6_2 -> Z 6II, Z 7_2 -> Z 7II, Z 6_3 -> Z 6III)
   text = text
     .replace(/_2$/i, 'II')
     .replace(/_3$/i, 'III')
@@ -38,7 +39,7 @@ export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonMod
 
   const normKey = text.replace(/[\s_\-]/g, '').toLowerCase();
 
-  // 匹配 Z 系列微单官方白名单
+  // 1. 匹配 Z 系列微单官方白名单
   for (const z of NIKON_OFFICIAL_MODELS.z_series_mirrorless) {
     const zNorm = z.replace(/[\s_\-]/g, '').toLowerCase();
     if (normKey === zNorm) {
@@ -46,7 +47,7 @@ export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonMod
     }
   }
 
-  // 匹配 D 系列单反官方白名单
+  // 2. 匹配 D 系列单反官方白名单
   for (const d of NIKON_OFFICIAL_MODELS.d_series_dslr) {
     const dNorm = d.replace(/[\s_\-]/g, '').toLowerCase();
     if (normKey === dNorm) {
@@ -54,13 +55,7 @@ export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonMod
     }
   }
 
-  // 宽容匹配：以 Z 或 D 开头的自定义/未收录机型
-  if (normKey.startsWith('z')) {
-    return { officialName: text, system: 'z' };
-  } else if (normKey.startsWith('d')) {
-    return { officialName: text, system: 'd' };
-  }
-
+  // 3. 不在支持名单中（如 COOLPIX P1000, Nikon 1 J5 等），返回 null 走默认纯文本逻辑
   return null;
 }
 
