@@ -236,14 +236,30 @@
         <div class="settings-group">
           <div class="group-title">相框细节微调</div>
 
-          <div class="control-row">
-            <span class="control-label">字体族</span>
-            <select id="cfg-font-family" style="width: 150px">
-              <option value="Inter, -apple-system, sans-serif" selected>Inter / 系统</option>
-              <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">系统 UI / 中文</option>
-              <option value="Georgia, 'Noto Serif SC', serif">衬线 / 杂志</option>
-              <option value="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, monospace">等宽 / 胶片</option>
-            </select>
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">字体族（系统字体）</span>
+            </div>
+            <input type="text" id="cfg-font-family" list="font-family-list" placeholder="输入系统字体名称，如 Inter / PingFang SC" value="Inter" />
+            <datalist id="font-family-list">
+              <option value="Inter"></option>
+              <option value="Helvetica Neue"></option>
+              <option value="Arial"></option>
+              <option value="SF Pro Display"></option>
+              <option value="PingFang SC"></option>
+              <option value="Segoe UI"></option>
+              <option value="Microsoft YaHei"></option>
+              <option value="Noto Sans SC"></option>
+              <option value="Noto Serif SC"></option>
+              <option value="Georgia"></option>
+              <option value="Times New Roman"></option>
+              <option value="Palatino"></option>
+              <option value="Courier New"></option>
+              <option value="Consolas"></option>
+              <option value="DejaVu Sans"></option>
+              <option value="Ubuntu"></option>
+            </datalist>
+            <div class="export-note">输入系统已安装的字体名；未安装时会自动回退到 sans-serif。</div>
           </div>
 
           <!-- Padding Slider -->
@@ -262,6 +278,23 @@
               <button class="btn-reset-single" data-reset="font-scale" title="恢复默认字号">↺</button>
             </div>
             <input type="range" id="cfg-font-scale" min="80" max="150" value="100" />
+          </div>
+          <!-- Main Font Weight Slider -->
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">主文字重 <span class="val-badge" id="val-font-weight">500</span></span>
+              <button class="btn-reset-single" data-reset="font-weight" title="恢复默认主字重">↺</button>
+            </div>
+            <input type="range" id="cfg-font-weight" min="300" max="800" step="100" value="500" />
+          </div>
+
+          <!-- Secondary Font Weight Slider -->
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">辅助文字重 <span class="val-badge" id="val-secondary-font-weight">400</span></span>
+              <button class="btn-reset-single" data-reset="secondary-font-weight" title="恢复默认辅助字重">↺</button>
+            </div>
+            <input type="range" id="cfg-secondary-font-weight" min="300" max="800" step="100" value="400" />
           </div>
 
           <!-- Border Radius Slider -->

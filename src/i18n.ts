@@ -122,6 +122,12 @@ const zhToEn: Record<string, string> = {
   '恢复默认圆角': 'Reset corner radius',
   '恢复默认阴影': 'Reset shadow',
   '恢复默认模糊度': 'Reset blur',
+  '恢复默认主字重': 'Reset main weight',
+  '恢复默认辅助字重': 'Reset secondary weight',
+  '主文字重': 'Main font weight',
+  '辅助文字重': 'Secondary font weight',
+  '输入系统字体名称，如 Inter / PingFang SC': 'Enter a system font name, e.g. Inter / PingFang SC',
+  '输入系统已安装的字体名；未安装时会自动回退到 sans-serif。': 'Enter an installed system font name; uninstalled fonts fall back to sans-serif.',
   '照片 EXIF 水印与相框': 'Photo EXIF Watermark & Frame Studio',
 };
 

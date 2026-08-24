@@ -90,11 +90,15 @@ const blurRowEl = document.getElementById('row-blur-intensity') as HTMLDivElemen
 const valBlurEl = document.getElementById('val-blur-intensity') as HTMLSpanElement;
 const valPaddingEl = document.getElementById('val-padding') as HTMLSpanElement;
 const valFontScaleEl = document.getElementById('val-font-scale') as HTMLSpanElement;
+const valFontWeightEl = document.getElementById('val-font-weight') as HTMLSpanElement;
+const valSecondaryFontWeightEl = document.getElementById('val-secondary-font-weight') as HTMLSpanElement;
 const valBorderRadiusEl = document.getElementById('val-border-radius') as HTMLSpanElement;
 const valShadowEl = document.getElementById('val-shadow') as HTMLSpanElement;
 
 const inputPadding = document.getElementById('cfg-padding') as HTMLInputElement;
 const inputFontScale = document.getElementById('cfg-font-scale') as HTMLInputElement;
+const inputFontWeight = document.getElementById('cfg-font-weight') as HTMLInputElement;
+const inputSecondaryFontWeight = document.getElementById('cfg-secondary-font-weight') as HTMLInputElement;
 const inputBorderRadius = document.getElementById('cfg-border-radius') as HTMLInputElement;
 const inputShadow = document.getElementById('cfg-shadow') as HTMLInputElement;
 const inputBlurIntensity = document.getElementById('cfg-blur-intensity') as HTMLInputElement;
@@ -287,6 +291,8 @@ function hideProgressModal() {
 function updateValueBadges() {
   if (valPaddingEl) valPaddingEl.textContent = `${config.paddingPercent}%`;
   if (valFontScaleEl) valFontScaleEl.textContent = `${Math.round(config.fontSizeScale * 100)}%`;
+  if (valFontWeightEl) valFontWeightEl.textContent = `${config.fontWeight}`;
+  if (valSecondaryFontWeightEl) valSecondaryFontWeightEl.textContent = `${config.secondaryFontWeight}`;
   if (valBorderRadiusEl) valBorderRadiusEl.textContent = `${config.borderRadius}px`;
   if (valShadowEl) valShadowEl.textContent = `${config.shadowRadius}`;
   if (valBlurEl) valBlurEl.textContent = `${config.blurIntensity}`;
@@ -382,6 +388,14 @@ function bindEvents() {
           config.fontSizeScale = DEFAULT_FRAME_CONFIG.fontSizeScale;
           inputFontScale.value = `${Math.round(config.fontSizeScale * 100)}`;
           break;
+        case 'font-weight':
+          config.fontWeight = DEFAULT_FRAME_CONFIG.fontWeight;
+          inputFontWeight.value = `${config.fontWeight}`;
+          break;
+        case 'secondary-font-weight':
+          config.secondaryFontWeight = DEFAULT_FRAME_CONFIG.secondaryFontWeight;
+          inputSecondaryFontWeight.value = `${config.secondaryFontWeight}`;
+          break;
         case 'border-radius':
           config.borderRadius = DEFAULT_FRAME_CONFIG.borderRadius;
           inputBorderRadius.value = `${config.borderRadius}`;
@@ -438,7 +452,7 @@ function bindEvents() {
   bindCheckbox('cfg-show-logo', (val) => (config.showLogo = val));
   bindSelect('cfg-brand-logo', (val) => (config.selectedLogo = val));
   bindSelect('cfg-focal-mode', (val) => (config.focalLengthMode = val as any));
-  bindSelect('cfg-font-family', (val) => (config.fontFamily = val));
+  bindInput('cfg-font-family', (val) => (config.fontFamily = val));
   bindCheckbox('cfg-show-model', (val) => (config.showModel = val));
   bindCheckbox('cfg-show-lens', (val) => (config.showLens = val));
   bindCheckbox('cfg-show-params', (val) => (config.showParams = val));
@@ -457,6 +471,18 @@ function bindEvents() {
 
   inputFontScale?.addEventListener('input', () => {
     config.fontSizeScale = parseInt(inputFontScale.value, 10) / 100;
+    updateValueBadges();
+    triggerReRender();
+  });
+
+  inputFontWeight?.addEventListener('input', () => {
+    config.fontWeight = parseInt(inputFontWeight.value, 10);
+    updateValueBadges();
+    triggerReRender();
+  });
+
+  inputSecondaryFontWeight?.addEventListener('input', () => {
+    config.secondaryFontWeight = parseInt(inputSecondaryFontWeight.value, 10);
     updateValueBadges();
     triggerReRender();
   });
@@ -564,6 +590,8 @@ function bindEvents() {
 function syncUIWithConfig() {
   inputPadding.value = `${config.paddingPercent}`;
   inputFontScale.value = `${Math.round(config.fontSizeScale * 100)}`;
+  inputFontWeight.value = `${config.fontWeight}`;
+  inputSecondaryFontWeight.value = `${config.secondaryFontWeight}`;
   inputBorderRadius.value = `${config.borderRadius}`;
   inputShadow.value = `${config.shadowRadius}`;
   inputBlurIntensity.value = `${config.blurIntensity}`;
@@ -572,9 +600,9 @@ function syncUIWithConfig() {
   const focalSelect = document.getElementById('cfg-focal-mode') as HTMLSelectElement | null;
   if (focalSelect) focalSelect.value = config.focalLengthMode || 'physical';
 
-  // Update Font Family Select
-  const fontFamilySelect = document.getElementById('cfg-font-family') as HTMLSelectElement | null;
-  if (fontFamilySelect) fontFamilySelect.value = config.fontFamily || 'Inter, -apple-system, sans-serif';
+  // Update Font Family Input
+  const fontFamilyInput = document.getElementById('cfg-font-family') as HTMLInputElement | null;
+  if (fontFamilyInput) fontFamilyInput.value = config.fontFamily || 'Inter';
 
   // Update Inputs & Checkboxes
   const customNoteInput = document.getElementById('cfg-custom-note') as HTMLInputElement | null;

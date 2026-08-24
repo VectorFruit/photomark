@@ -36,6 +36,8 @@ export interface FrameConfig {
   customBackgroundColor: string;
   fontFamily: string;
   fontSizeScale: number; // 0.8 to 1.5
+  fontWeight: number; // 300 to 800 (main text)
+  secondaryFontWeight: number; // 300 to 800 (sub text)
   paddingPercent: number; // 2% to 15%
   bottomBarHeightPercent: number; // 8% to 25%
   shadowRadius: number; // 0 to 50
@@ -62,6 +64,8 @@ export const DEFAULT_FRAME_CONFIG: FrameConfig = {
   customBackgroundColor: '#ffffff',
   fontFamily: 'Inter, -apple-system, sans-serif',
   fontSizeScale: 1.0,
+  fontWeight: 500,
+  secondaryFontWeight: 400,
   paddingPercent: 4,
   bottomBarHeightPercent: 12,
   shadowRadius: 15,

@@ -238,6 +238,8 @@ function renderBottomBar(
   const mainFontSize = Math.max(Math.round(22 * fontScale), 16);
   const subFontSize = Math.max(Math.round(15 * fontScale), 12);
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
+  const mainWeight = config.fontWeight || 500;
+  const subWeight = config.secondaryFontWeight || 400;
 
   // If frosted blur, apply text drop shadow for pristine legibility
   if (isFrosted) {
@@ -262,20 +264,20 @@ function renderBottomBar(
     ctx.drawImage(nikonModelImg, leftX, modelLogoY, modelLogoW, modelLogoH);
 
     if (hasLens) {
-      ctx.font = `400 ${subFontSize}px ${fontFam}`;
+      ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
       ctx.fillStyle = subTextColor;
       ctx.fillText(lensText, leftX, midY + subFontSize * 0.8);
     }
   } else if (hasModel && hasLens) {
-    ctx.font = `600 ${mainFontSize}px ${fontFam}`;
+    ctx.font = `${mainWeight} ${mainFontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(modelText, leftX, midY - mainFontSize * 0.6);
 
-    ctx.font = `400 ${subFontSize}px ${fontFam}`;
+    ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
     ctx.fillText(lensText, leftX, midY + subFontSize * 0.8);
   } else if (hasModel || hasLens) {
-    ctx.font = `600 ${mainFontSize * 1.05}px ${fontFam}`;
+    ctx.font = `${mainWeight} ${mainFontSize * 1.05}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(modelText || lensText, leftX, midY);
   }
@@ -313,15 +315,15 @@ function renderBottomBar(
   const rightSubText = subMetaParts.join('   •   ');
 
   if (rightSubText) {
-    ctx.font = `600 ${mainFontSize}px ${fontFam}`;
+    ctx.font = `${mainWeight} ${mainFontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(paramsText, currentRightX, midY - mainFontSize * 0.6);
 
-    ctx.font = `400 ${subFontSize}px ${fontFam}`;
+    ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
     ctx.fillText(rightSubText, currentRightX, midY + subFontSize * 0.8);
   } else {
-    ctx.font = `600 ${mainFontSize * 1.05}px ${fontFam}`;
+    ctx.font = `${mainWeight} ${mainFontSize * 1.05}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(paramsText, currentRightX, midY);
   }
@@ -400,6 +402,8 @@ function renderBorderFrame(
   const fontSize = Math.max(Math.round(18 * fontScale), 14);
   const subFontSize = Math.max(Math.round(13 * fontScale), 11);
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
+  const mainWeight = config.fontWeight || 500;
+  const subWeight = config.secondaryFontWeight || 400;
 
   if (isFrosted) {
     ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
@@ -412,7 +416,7 @@ function renderBorderFrame(
   const hasSubLine = !!subMetaLine;
   const mainY = hasSubLine ? bottomAreaY + captionH * 0.42 : bottomAreaY + captionH * 0.5;
 
-  ctx.font = `500 ${fontSize}px ${fontFam}`;
+  ctx.font = `${mainWeight} ${fontSize}px ${fontFam}`;
   const spacing = Math.round(14 * fontScale);
   const textWidth = remainingText ? ctx.measureText(remainingText).width : 0;
 
@@ -447,7 +451,7 @@ function renderBorderFrame(
   }
 
   if (hasSubLine) {
-    ctx.font = `400 ${subFontSize}px ${fontFam}`;
+    ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
     ctx.textAlign = 'center';
     ctx.fillText(subMetaLine, canvasW / 2, mainY + fontSize * 1.25);
@@ -507,6 +511,8 @@ function renderPolaroid(
   const fontSize = Math.max(Math.round(20 * fontScale), 15);
   const subFontSize = Math.max(Math.round(14 * fontScale), 12);
   const fontFam = config.fontFamily || 'Georgia, serif, -apple-system';
+  const mainWeight = config.fontWeight || 500;
+  const subWeight = config.secondaryFontWeight || 400;
 
   const bottomAreaY = pad + imgH;
   const bottomAreaH = bottomExtra - pad * 0.5;
@@ -535,7 +541,7 @@ function renderPolaroid(
     if (hasNote && subLine) {
       ctx.drawImage(nikonModelImg, leftX, (midY - fontSize * 0.95) - modelLogoH / 2, modelLogoW, modelLogoH);
 
-      ctx.font = `400 ${subFontSize}px ${fontFam}`;
+      ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
       ctx.fillStyle = subTextColor;
       ctx.fillText(subLine, leftX, midY);
 
@@ -544,7 +550,7 @@ function renderPolaroid(
       ctx.drawImage(nikonModelImg, leftX, (midY - fontSize * 0.6) - modelLogoH / 2, modelLogoW, modelLogoH);
 
       if (subLine) {
-        ctx.font = `400 ${subFontSize}px ${fontFam}`;
+        ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
         ctx.fillStyle = subTextColor;
         ctx.fillText(subLine, leftX, midY + subFontSize * 0.8);
       } else {
@@ -554,29 +560,29 @@ function renderPolaroid(
       ctx.drawImage(nikonModelImg, leftX, midY - modelLogoH / 2, modelLogoW, modelLogoH);
     }
   } else if (hasNote && subLine) {
-    ctx.font = `600 ${fontSize}px ${fontFam}`;
+    ctx.font = `${mainWeight} ${fontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(modelText, leftX, midY - fontSize * 0.95);
 
-    ctx.font = `400 ${subFontSize}px ${fontFam}`;
+    ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
     ctx.fillText(subLine, leftX, midY);
 
     drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isFrosted);
   } else if (subLine || hasNote) {
-    ctx.font = `600 ${fontSize}px ${fontFam}`;
+    ctx.font = `${mainWeight} ${fontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(modelText, leftX, midY - fontSize * 0.6);
 
     if (subLine) {
-      ctx.font = `400 ${subFontSize}px ${fontFam}`;
+      ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
       ctx.fillStyle = subTextColor;
       ctx.fillText(subLine, leftX, midY + subFontSize * 0.8);
     } else {
       drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isFrosted);
     }
   } else {
-    ctx.font = `600 ${fontSize * 1.1}px ${fontFam}`;
+    ctx.font = `${mainWeight} ${fontSize * 1.1}px ${fontFam}`;
     ctx.fillStyle = textColor;
     ctx.fillText(modelText, leftX, midY);
   }
@@ -588,7 +594,7 @@ function renderPolaroid(
     ctx.drawImage(logoImg, rightX - logoW, midY - logoH * 1.05, logoW, logoH);
 
     ctx.textAlign = 'right';
-    ctx.font = `500 ${subFontSize * 0.95}px 'Courier New', Courier, monospace`;
+    ctx.font = `${subWeight} ${subFontSize * 0.95}px 'Courier New', Courier, monospace`;
     ctx.fillStyle = isFrosted ? '#fdba74' : '#c2410c';
     ctx.fillText(dateText, rightX, midY + subFontSize * 0.85);
   } else if (logoImg) {
@@ -597,7 +603,7 @@ function renderPolaroid(
     ctx.drawImage(logoImg, rightX - logoW, midY - logoH / 2, logoW, logoH);
   } else if (dateText) {
     ctx.textAlign = 'right';
-    ctx.font = `500 ${subFontSize}px 'Courier New', Courier, monospace`;
+    ctx.font = `${subWeight} ${subFontSize}px 'Courier New', Courier, monospace`;
     ctx.fillStyle = isFrosted ? '#fdba74' : '#c2410c';
     ctx.fillText(dateText, rightX, midY);
   }
@@ -634,6 +640,7 @@ function renderMinimalBadge(
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const fontSize = Math.max(Math.round(15 * fontScale), 12);
   const fontFam = config.fontFamily || 'Inter, -apple-system, sans-serif';
+  const mainWeight = config.fontWeight || 500;
 
   // Sample the bottom-right corner and pick a glass style that keeps contrast
   let useLightBadge = false;
@@ -661,7 +668,7 @@ function renderMinimalBadge(
   // No text and no logo: keep the photo untouched instead of an empty badge
   if (!summary && !logoImg && !modelImg) return;
 
-  ctx.font = '500 ' + fontSize + 'px ' + fontFam;
+  ctx.font = mainWeight + ' ' + fontSize + 'px ' + fontFam;
   const textW = summary ? ctx.measureText(summary).width : 0;
   const logoH = Math.round(fontSize * 1.1);
   const logoW = logoImg ? Math.round((logoImg.width / logoImg.height) * logoH) : 0;
