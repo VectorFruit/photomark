@@ -64,7 +64,7 @@ export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonMod
  */
 export function composeNikonD(modelName: string, fillColor: string, kerning: number = 24.5): string | null {
   const cleanText = modelName.trim();
-  const upper = cleanText.toUpperCase();
+  const upper = cleanText.toUpperCase().replace(/[\s_\-]/g, '');
 
   // 特殊复古单反: Nikon Df
   if (upper === 'DF' || upper === 'D_F') {
@@ -75,7 +75,9 @@ export function composeNikonD(modelName: string, fillColor: string, kerning: num
   const padY = 20.0;
   const padX = 20.0;
 
-  const isFlagship = ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'].some((p) => upper.startsWith(p));
+  // 仅当为单数字顶级旗舰机型时 (D1~D6, D2H, D2Hs, D2X, D2Xs, D3, D3S, D3X, D4, D4S, D5, D6)
+  // 规则：紧随 'D' 之后只有一位数字 1~6 且后续无其他数字 (如 D200, D300, D3000, D5600 均为普通数字机型)
+  const isFlagship = /^D[1-6]([A-Z]*)$/.test(upper);
   let currentX = 0.0;
   const charNodes: string[] = [];
 
@@ -83,10 +85,21 @@ export function composeNikonD(modelName: string, fillColor: string, kerning: num
     const ch = cleanText[i];
     let glyphKey = ch;
 
-    // 顶级旗舰数字双线空心替换
-    if (isFlagship && ['2', '3', '4', '5', '6'].includes(ch)) {
-      if (`${ch}_outline` in D_GLYPHS) {
+    // 顶级旗舰数字双线空心替换 (仅替换 D 之后的第一位数字，如 D2H 中的 2, D6 中的 6)
+    if (isFlagship && i === 1 && ['2', '3', '4', '5', '6'].includes(ch)) {
+      if (`${ch}_flagship` in D_GLYPHS) {
+        glyphKey = `${ch}_flagship`;
+      } else if (`${ch}_outline` in D_GLYPHS) {
         glyphKey = `${ch}_outline`;
+      }
+    }
+
+    // 旗舰后缀 S 字母替换
+    if (isFlagship && i > 1 && ch.toUpperCase() === 'S') {
+      if ('S_flagship' in D_GLYPHS) {
+        glyphKey = 'S_flagship';
+      } else if ('s' in D_GLYPHS) {
+        glyphKey = 's';
       }
     }
 

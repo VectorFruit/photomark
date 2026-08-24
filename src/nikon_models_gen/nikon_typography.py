@@ -28,6 +28,7 @@ Nikon Dual-System Typography & Vectorization Engine (Unified Edition with Offici
 
 import os
 import sys
+import re
 import json
 import difflib
 import argparse
@@ -302,24 +303,29 @@ class NikonTypographySystem:
         pad_x = 20.0
         default_kerning = 24.5 if kerning is None else kerning
 
-        # 判断是否为个位数顶级旗舰机型 (D1~D6, D2H, D3X, D2Xs, D4s 等)
-        upper_text = clean_text.upper()
-        is_flagship = force_flagship or any(
-            upper_text.startswith(prefix) for prefix in [
-                "D1", "D2", "D3", "D4", "D5", "D6"
-            ]
-        )
+        # 判断是否为个位数顶级旗舰机型 (D1~D6, D2H, D2Hs, D2X, D2Xs, D3, D3S, D3X, D4, D4S, D5, D6)
+        # 仅当 D 之后只有一位数字 1~6 且后续无其他数字时，才判定为个位数旗舰 (如 D200, D300, D3000, D5600 均为普通数字机型)
+        upper_text = clean_text.upper().replace(" ", "").replace("_", "").replace("-", "")
+        is_flagship = force_flagship or bool(re.match(r"^D[1-6]([A-Z]*)$", upper_text))
 
         i = 0
         while i < len(clean_text):
             ch = clean_text[i]
             glyph_key = ch
 
-            # 旗舰数字替换
-            if is_flagship and ch in ["2", "3", "4", "5", "6"]:
-                outline_key = f"{ch}_outline"
-                if outline_key in self.d_glyphs:
-                    glyph_key = outline_key
+            # 旗舰数字替换 (仅替换 D 之后的第一位数字，如 D2H 中的 2, D6 中的 6)
+            if is_flagship and i == 1 and ch in ["2", "3", "4", "5", "6"]:
+                if f"{ch}_flagship" in self.d_glyphs:
+                    glyph_key = f"{ch}_flagship"
+                elif f"{ch}_outline" in self.d_glyphs:
+                    glyph_key = f"{ch}_outline"
+
+            # 旗舰后缀 S 字母替换
+            if is_flagship and i > 1 and ch.upper() == 'S':
+                if "S_flagship" in self.d_glyphs:
+                    glyph_key = "S_flagship"
+                elif "s" in self.d_glyphs:
+                    glyph_key = "s"
 
             # 大小写查找匹配
             if glyph_key not in self.d_glyphs:
