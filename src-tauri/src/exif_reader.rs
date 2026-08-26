@@ -34,13 +34,33 @@ fn norm_lens_number(s: &str) -> Option<String> {
 fn normalize_make(make: &str) -> String {
     let raw: String = make
         .chars()
-        .filter(|c| c.is_ascii_alphabetic())
+        .filter(|c| c.is_ascii_alphanumeric())
         .map(|c| c.to_ascii_lowercase())
         .collect();
+
     match raw.as_str() {
-        "fuji" | "fujifilm" => "fujifilm".to_string(),
-        "om" | "omdigital" | "omsystem" => "olympus".to_string(),
-        "nikkor" => "nikon".to_string(),
+        "nikoncorporation" | "nikkor" => "nikon".to_string(),
+        "canoninc" => "canon".to_string(),
+        "sonycorporation" => "sony".to_string(),
+        "olympuscorporation" | "olympusimagingcorporation" | "omdigital" | "omsystem" => "olympus".to_string(),
+        "fuji" | "fujifilmcorporation" => "fujifilm".to_string(),
+        "panasoniccorporation" | "matsushitaelectricindustrialcoltd" => "panasonic".to_string(),
+        "pentaxcorporation" => "pentax".to_string(),
+        "ricohimagingcompanyltd" => "ricoh".to_string(),
+        "samsungelectronics" => "samsung".to_string(),
+        "sigmacorporation" => "sigma".to_string(),
+        "minoltacoltd" => "minolta".to_string(),
+        _ if raw.contains("nikon") => "nikon".to_string(),
+        _ if raw.contains("canon") => "canon".to_string(),
+        _ if raw.contains("sony") => "sony".to_string(),
+        _ if raw.contains("olympus") || raw.contains("omsystem") || raw == "om" => "olympus".to_string(),
+        _ if raw.contains("fujifilm") || raw == "fuji" => "fujifilm".to_string(),
+        _ if raw.contains("panasonic") => "panasonic".to_string(),
+        _ if raw.contains("pentax") => "pentax".to_string(),
+        _ if raw.contains("ricoh") => "ricoh".to_string(),
+        _ if raw.contains("samsung") => "samsung".to_string(),
+        _ if raw.contains("sigma") => "sigma".to_string(),
+        _ if raw.contains("minolta") => "minolta".to_string(),
         _ => raw,
     }
 }

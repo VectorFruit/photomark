@@ -892,11 +892,43 @@ const GENERIC_LENS_SPEC_RE = /\d+(?:\.\d+)?(?:\s*-\s*\d+(?:\.\d+)?)?\s*mm\s*(?:[
 
 function normalizeMake(make: string | undefined): string | null {
   if (!make) return null;
-  const raw = make.trim().toLowerCase().replace(/[^a-z]/g, '');
-  if (raw === 'fuji' || raw === 'fujifilm') return 'fujifilm';
-  if (raw === 'om' || raw === 'omdigital' || raw === 'omsystem') return 'olympus';
-  if (raw === 'nikkor') return 'nikon';
-  return raw || null;
+  const raw = make.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!raw) return null;
+
+  // Common full manufacturer strings -> compact make keys used by lensDatabase.json.
+  const aliases: Record<string, string> = {
+    'nikoncorporation': 'nikon',
+    'nikkor': 'nikon',
+    'canoninc': 'canon',
+    'sonycorporation': 'sony',
+    'olympuscorporation': 'olympus',
+    'olympusimagingcorporation': 'olympus',
+    'omdigital': 'olympus',
+    'omsystem': 'olympus',
+    'fuji': 'fujifilm',
+    'fujifilmcorporation': 'fujifilm',
+    'panasoniccorporation': 'panasonic',
+    'matsushitaelectricindustrialcoltd': 'panasonic',
+    'pentaxcorporation': 'pentax',
+    'ricohimagingcompanyltd': 'ricoh',
+    'samsungelectronics': 'samsung',
+    'sigmacorporation': 'sigma',
+    'minoltacoltd': 'minolta',
+  };
+  if (aliases[raw]) return aliases[raw];
+
+  if (raw.includes('nikon')) return 'nikon';
+  if (raw.includes('canon')) return 'canon';
+  if (raw.includes('sony')) return 'sony';
+  if (raw.includes('olympus') || raw.includes('omsystem') || raw === 'om') return 'olympus';
+  if (raw.includes('fujifilm') || raw === 'fuji') return 'fujifilm';
+  if (raw.includes('panasonic')) return 'panasonic';
+  if (raw.includes('pentax')) return 'pentax';
+  if (raw.includes('ricoh')) return 'ricoh';
+  if (raw.includes('samsung')) return 'samsung';
+  if (raw.includes('sigma')) return 'sigma';
+  if (raw.includes('minolta')) return 'minolta';
+  return raw;
 }
 
 function extractLensSpecKey(text: string): string | null {
