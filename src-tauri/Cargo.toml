@@ -1,6 +1,6 @@
 [package]
 name = "photomark"
-version = "1.5.0"
+version = "1.5.1"
 description = "A modern, lightweight photo EXIF watermark and frame studio"
 authors = ["vectorfruit"]
 edition = "2021"
@@ -29,3 +29,6 @@ rayon = "1.10"
 lto = "thin"
 codegen-units = 1
 strip = true
+
+[dev-dependencies]
+glob = "0.3"

@@ -1,7 +1,7 @@
 # Maintainer: vectorfruit <vectorfruit@outlook.com>
 
 pkgname=photomark
-pkgver=1.5.0
+pkgver=1.5.1
 pkgrel=1
 pkgdesc="Photo EXIF watermark and frame studio"
 arch=('x86_64')

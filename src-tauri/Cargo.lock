@@ -2742,6 +2742,7 @@ version = "1.5.0"
 dependencies = [
  "base64 0.22.1",
  "font-kit",
+ "glob",
  "image",
  "kamadak-exif",
  "rayon",
