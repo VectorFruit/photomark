@@ -20,15 +20,11 @@
 
 ## 简介
 
-PhotoMark 是一个桌面应用，用于给照片添加 EXIF 参数水印与相框效果。前端使用 TypeScript 与 Canvas 渲染，后端使用 Rust 解析 EXIF 并处理图片输出。
-
-项目采用 Tauri 2.0 构建，使用系统 WebView；相比常见的 Electron 方案，安装包与运行时通常更小。
+PhotoMark 读取照片的 EXIF 信息，给照片加上相框和参数水印。界面用 TypeScript 和 Canvas 渲染，EXIF 解析和图片输出由 Rust 完成，基于 Tauri 2.0 运行在系统 WebView 上，安装包和内存占用比 Electron 方案小。
 
 ## 安装
 
 ### Arch Linux (AUR)
-
-已发布到 [AUR](https://aur.archlinux.org/packages/photomark)：
 
 ```bash
 yay -S photomark
@@ -40,31 +36,34 @@ paru -S photomark
 
 ### 相框模板
 
-- **经典底栏**：底部参数栏，支持品牌 Logo
-- **画廊相框**：全包围相框，底部居中显示参数
-- **拍立得**：复古拍立得风格
-- **极简微章**：右下角半透明玻璃胶囊水印
+- **经典底栏**：照片下方是参数栏，可带品牌 Logo
+- **画廊相框**：四边留白，参数居中在底部
+- **拍立得**：复古拍立得样式
+- **极简微章**：右下角半透明胶囊水印
 
-### 背景与参数
+### 相框与参数
 
-- 背景类型：白色、深色、毛玻璃、自定义颜色
-- 可调节参数：边距、字号、字重、圆角、阴影、毛玻璃强度
-- 可显示内容：相机型号、镜头型号、曝光参数、拍摄日期、自定义签名
-- 品牌 Logo：根据 EXIF 自动匹配，也可手动选择
+- 背景：白色、深色、毛玻璃、自定义颜色
+- 可调项：边距、底栏高度、字号、字重、圆角、阴影、毛玻璃强度、水印上下位置
+- 可显示内容：相机型号、镜头、曝光参数、拍摄日期、自定义签名；焦距可选实际值 / 35mm 等效 / 两者
+- 预设：内置 4 种常用组合，可以把当前配置保存为自定义预设
+- 品牌 Logo 按 EXIF 自动匹配，也可手动指定
+- 字体：内置思源黑体 / 思源宋体 / Brass Mono，也可选用本机安装的字体
 
 ### 界面
 
-- 深浅色主题，支持跟随系统
-- 中文 / English 切换
-- 80% ~ 150% 界面缩放
-- 实时进度弹窗与操作提示
+- 环境光颜色可跟随照片主色，强度分三档，可关闭
+- 5 组主题色；深浅色主题，可跟随系统；中英双语
+- 照片列表和设置面板可折叠；预览区可用滚轮缩放
+- 快捷键：←/→ 切换照片，Space 按住看原图，F 适应屏幕，+/− 缩放，E 导出，Delete 移除，? 帮助
+- 启动时恢复上次的照片列表
 
 ### 导出
 
-- 格式：JPEG / PNG / WebP
-- 品质：JPEG 100% / 95% / 90% / 85%
-- 支持单张导出与批量导出
+- 格式：JPEG / PNG / WebP；JPEG 质量 0–100 连续可调
+- 单张与批量导出，保持原分辨率
 - 文件名模板支持 `{filename}`、`{model}`、`{date}` 等变量
+- 导出过的照片再次导入时使用磁盘缩略图缓存，几乎不用等待
 
 ## 效果预览
 
@@ -99,68 +98,8 @@ yarn install
 yarn tauri dev
 ```
 
-## 打包
+## 许可证
 
-### Windows
+本项目基于 [GPL-3.0](./LICENSE) 协议开源。
 
-```powershell
-yarn install
-yarn tauri build
-# 产物位于 src-tauri/target/release/bundle/nsis/
-```
-
-### Arch Linux
-
-项目根目录提供了 `PKGBUILD`。由于仓库自带 `src/` 目录会和 makepkg 的构建目录重名，建议在独立目录中构建：
-
-```bash
-mkdir -p photomark-build
-cd photomark-build
-cp /path/to/photomark/PKGBUILD .
-makepkg -sric
-```
-
-### Linux AppImage
-
-```bash
-./build-appimage.sh
-# 产物位于 dist-appimage/photomark-x86_64.AppImage
-```
-
-## 项目结构
-
-```
-photomark/
-├── src-tauri/                 # Rust 后端
-│   └── src/
-│       ├── exif_reader.rs     # EXIF 解析
-│       ├── image_engine.rs    # 图片解码、处理与批量导出
-│       ├── commands.rs        # Tauri 命令与进度事件
-│       ├── models.rs          # 数据结构
-│       └── lib.rs             # 应用生命周期
-├── src/                       # 前端
-│   ├── renderer/
-│   │   ├── canvasRenderer.ts  # 相框渲染
-│   │   ├── blurEngine.ts      # 毛玻璃模糊
-│   │   └── logoManager.ts     # 品牌 Logo 匹配
-│   ├── main.ts                # 交互逻辑
-│   ├── i18n.ts                # 国际化
-│   ├── styles.css             # 样式
-│   └── types.ts               # TypeScript 类型
-├── public/logos/              # 品牌 Logo SVG
-├── PKGBUILD
-├── build-appimage.sh
-└── LICENSE
-```
-
-## 商标声明
-
-项目中出现的相机品牌名称、Logo 与商标归各自权利人所有。本项目仅用于 EXIF 元数据展示与事实性标识，与相关品牌没有商业关联、从属关系或官方授权。
-
-## 参与贡献
-
-欢迎提交 Issue 或 Pull Request。请参考 [CONTRIBUTING.md](./CONTRIBUTING.md)（或 [CONTRIBUTING.en.md](./CONTRIBUTING.en.md)）。
-
-## 许可协议
-
-本项目基于 [GNU General Public License v3.0 (GPLv3)](LICENSE) 开源。
+内置字体：[Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC)、[Noto Serif SC](https://fonts.google.com/noto/specimen/Noto+Serif+SC)、[Brass Mono](https://fonts.google.com/specimen/Brass+Mono)（SIL Open Font License）。

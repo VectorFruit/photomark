@@ -2,7 +2,7 @@
 
 # 📷 PhotoMark
 
-**A Tauri 2.0 + Rust photo EXIF watermark & frame tool**
+**Photo EXIF watermark and frame studio built with Tauri 2.0 + Rust**
 
 [![CI & AppImage Build](https://github.com/vectorfruit/photomark/actions/workflows/ci.yml/badge.svg)](https://github.com/vectorfruit/photomark/actions/workflows/ci.yml)
 [![AUR](https://img.shields.io/aur/version/photomark?label=AUR&color=1793d1)](https://aur.archlinux.org/packages/photomark)
@@ -14,21 +14,17 @@
 
 </div>
 
-> **Language / 语言:** [English](./README.en.md) | [中文](./README.md)
+> **语言 / Language:** [中文](./README.md) | [English](./README.en.md)
 
 ---
 
-## Overview
+## Introduction
 
-PhotoMark is a desktop application for adding EXIF metadata watermarks and frame effects to photos. The frontend is built with TypeScript and Canvas; the backend uses Rust to parse EXIF data and process image output.
+PhotoMark reads a photo's EXIF data and renders it into a framed image with a metadata watermark. The UI is TypeScript + Canvas; EXIF parsing and image output are handled in Rust. It runs on the system WebView through Tauri 2.0, so the package and memory footprint stay smaller than Electron alternatives.
 
-It is built with Tauri 2.0 and the system WebView, which usually results in a smaller installer and smaller runtime footprint than Electron-based applications.
-
-## Installation
+## Install
 
 ### Arch Linux (AUR)
-
-Available in the [AUR](https://aur.archlinux.org/packages/photomark):
 
 ```bash
 yay -S photomark
@@ -40,57 +36,60 @@ paru -S photomark
 
 ### Frame templates
 
-- **Classic bottom bar**: metadata bar with optional brand logo
-- **Gallery border**: full frame with centered captions below the photo
-- **Polaroid**: retro instant-photo style
-- **Minimal badge**: semi-transparent glass capsule in the bottom-right corner
+- **Classic bottom bar**: metadata strip under the photo, optional brand logo
+- **Gallery border**: even margins with a centered caption at the bottom
+- **Polaroid**: retro instant-print style
+- **Minimal badge**: translucent capsule in the bottom-right corner
 
-### Backgrounds & settings
+### Frame & settings
 
-- Background types: white, dark, frosted blur, custom color
-- Adjustable: padding, font size, font weight, corner radius, shadow, blur intensity
-- Display options: camera model, lens model, exposure parameters, date, custom signature
-- Brand logos: auto-detected from EXIF, or selected manually
+- Backgrounds: white, dark, frosted blur, custom color
+- Adjustable: padding, bottom bar height, font size, font weight, corner radius, shadow, blur intensity, watermark vertical position
+- Display options: camera model, lens, exposure parameters, date, custom signature; focal length as physical / 35mm equivalent / both
+- Presets: 4 built-in combinations, plus save-your-own
+- Brand logos auto-detected from EXIF, or selected manually
+- Fonts: bundled Noto Sans SC / Noto Serif SC / Brass Mono, plus fonts installed on your system
 
 ### Interface
 
-- Light / dark themes, including follow-system mode
-- Chinese / English language switching
-- 80% – 150% UI scaling
-- Live progress dialogs and toast notifications
+- Ambient light color follows the photo, three intensity levels, can be turned off
+- 5 accent palettes; light / dark themes with follow-system mode; Chinese / English
+- Collapsible photo list and settings panels; mouse-wheel zoom on the preview
+- Keyboard shortcuts: ←/→ navigate, Space original, F fit, +/− zoom, E export, Delete remove, ? help
+- Restores the last photo list on launch
 
 ### Export
 
-- Formats: JPEG / PNG / WebP
-- JPEG quality: 100% / 95% / 90% / 85%
-- Single-photo and batch export
+- Formats: JPEG / PNG / WebP; JPEG quality adjustable 0–100
+- Single and batch export at original resolution
 - Filename templates with variables such as `{filename}`, `{model}`, `{date}`
+- Previously imported photos use a disk thumbnail cache, so reopening is nearly instant
 
 ## Showcase
 
-![Landscape result](docs/assets/DSC_0427_framed.jpg)
+![Landscape example](docs/assets/DSC_0427_framed.jpg)
 
-![Portrait result](docs/assets/DSC_0693_framed.jpg)
+![Portrait example](docs/assets/DSC_0693_framed.jpg)
 
 ## Supported formats
 
-- Input: JPG / JPEG / PNG / WebP / TIFF / TIF (TIFF is supported in the desktop app; browser preview mode supports JPG / PNG / WebP only)
+- Input: JPG / JPEG / PNG / WebP / TIFF / TIF (TIFF on desktop; browser preview mode supports JPG / PNG / WebP)
 - Export: JPEG (selectable quality), PNG, WebP
 
 ## Development
 
-### Prerequisites
+### Requirements
 
 - Node.js >= 18
 - Yarn
 - Rust >= 1.80
-- Linux system dependencies (Arch Linux example):
+- Linux system packages (Arch Linux example):
 
   ```bash
   sudo pacman -S --needed webkit2gtk-4.1 gtk3 libsoup3 cairo gdk-pixbuf2 glib2
   ```
 
-### Run locally
+### Local development
 
 ```bash
 git clone https://github.com/vectorfruit/photomark.git
@@ -99,68 +98,8 @@ yarn install
 yarn tauri dev
 ```
 
-## Build & distribution
-
-### Windows
-
-```powershell
-yarn install
-yarn tauri build
-# Output is located at src-tauri/target/release/bundle/nsis/
-```
-
-### Arch Linux
-
-A `PKGBUILD` is included at the project root. Because the repository already contains a `src/` directory (which conflicts with makepkg's build directory), build it from a separate directory:
-
-```bash
-mkdir -p photomark-build
-cd photomark-build
-cp /path/to/photomark/PKGBUILD .
-makepkg -sric
-```
-
-### Linux AppImage
-
-```bash
-./build-appimage.sh
-# Output is located at dist-appimage/photomark-x86_64.AppImage
-```
-
-## Project structure
-
-```
-photomark/
-├── src-tauri/                 # Rust backend
-│   └── src/
-│       ├── exif_reader.rs     # EXIF parsing
-│       ├── image_engine.rs    # Image decoding, processing and batch export
-│       ├── commands.rs        # Tauri commands and progress events
-│       ├── models.rs          # Data models
-│       └── lib.rs             # Application lifecycle
-├── src/                       # Frontend
-│   ├── renderer/
-│   │   ├── canvasRenderer.ts  # Frame rendering
-│   │   ├── blurEngine.ts      # Frosted blur
-│   │   └── logoManager.ts     # Brand logo matching
-│   ├── main.ts                # Interaction logic
-│   ├── i18n.ts                # Internationalization
-│   ├── styles.css             # Styles
-│   └── types.ts               # TypeScript types
-├── public/logos/              # Brand logo SVGs
-├── PKGBUILD
-├── build-appimage.sh
-└── LICENSE
-```
-
-## Trademark disclaimer
-
-Camera brand names, logos and trademarks appearing in this project belong to their respective owners. They are used solely for EXIF metadata display and factual indication, with no commercial affiliation, dependency, or official endorsement.
-
-## Contributing
-
-Issues and Pull Requests are welcome. See [CONTRIBUTING.en.md](./CONTRIBUTING.en.md) (or [CONTRIBUTING.md](./CONTRIBUTING.md) in Chinese).
-
 ## License
 
-This project is released under the [GNU General Public License v3.0 (GPLv3)](LICENSE).
+This project is licensed under [GPL-3.0](./LICENSE).
+
+Bundled fonts: [Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC), [Noto Serif SC](https://fonts.google.com/noto/specimen/Noto+Serif+SC), [Brass Mono](https://fonts.google.com/specimen/Brass+Mono) (SIL Open Font License).
