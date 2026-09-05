@@ -1,4 +1,29 @@
-import { D_GLYPHS, Z_GLYPHS, NIKON_OFFICIAL_MODELS } from './nikonGlyphsData';
+interface GlyphInfo {
+  d: string;
+  width: number;
+  height: number;
+}
+
+interface NikonGlyphModule {
+  D_GLYPHS: Record<string, GlyphInfo>;
+  Z_GLYPHS: Record<string, GlyphInfo>;
+  NIKON_OFFICIAL_MODELS: { z_series_mirrorless: string[]; d_series_dslr: string[] };
+}
+
+// The ~112KB glyph database is dynamically imported on first Nikon render,
+// keeping it out of the startup chunk entirely.
+let glyphs: NikonGlyphModule | null = null;
+let glyphsPromise: Promise<NikonGlyphModule> | null = null;
+
+function ensureGlyphs(): Promise<NikonGlyphModule> {
+  if (!glyphsPromise) {
+    glyphsPromise = import('./nikonGlyphsData').then((m) => {
+      glyphs = m;
+      return m;
+    });
+  }
+  return glyphsPromise;
+}
 
 export interface NikonModelMatch {
   officialName: string;
@@ -19,7 +44,7 @@ export function isNikonCamera(make?: string, model?: string): boolean {
  * 标准化并解析 Nikon 相机型号
  * 若机型不在官方支持库内（例如 COOLPIX 系列、Nikon 1 微单等），则返回 null 触发纯文本 fallback
  */
-export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonModelMatch | null {
+async function resolveNikonModel(rawModel?: string, rawMake?: string): Promise<NikonModelMatch | null> {
   if (!rawModel && !rawMake) return null;
 
   let text = (rawModel || '').trim();
@@ -39,8 +64,10 @@ export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonMod
 
   const normKey = text.replace(/[\s_\-]/g, '').toLowerCase();
 
+  const models = (await ensureGlyphs()).NIKON_OFFICIAL_MODELS;
+
   // 1. 匹配 Z 系列微单官方白名单
-  for (const z of NIKON_OFFICIAL_MODELS.z_series_mirrorless) {
+  for (const z of models.z_series_mirrorless) {
     const zNorm = z.replace(/[\s_\-]/g, '').toLowerCase();
     if (normKey === zNorm) {
       return { officialName: z, system: 'z' };
@@ -48,7 +75,7 @@ export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonMod
   }
 
   // 2. 匹配 D 系列单反官方白名单
-  for (const d of NIKON_OFFICIAL_MODELS.d_series_dslr) {
+  for (const d of models.d_series_dslr) {
     const dNorm = d.replace(/[\s_\-]/g, '').toLowerCase();
     if (normKey === dNorm) {
       return { officialName: d, system: 'd' };
@@ -62,13 +89,13 @@ export function resolveNikonModel(rawModel?: string, rawMake?: string): NikonMod
 /**
  * 拼装 D 系列单反型号矢量 SVG
  */
-export function composeNikonD(modelName: string, fillColor: string, kerning: number = 24.5): string | null {
+export function composeNikonD(g: NikonGlyphModule, modelName: string, fillColor: string, kerning: number = 24.5): string | null {
   const cleanText = modelName.trim();
   const upper = cleanText.toUpperCase().replace(/[\s_\-]/g, '');
 
   // 特殊复古单反: Nikon Df
   if (upper === 'DF' || upper === 'D_F') {
-    return composeDf(fillColor);
+    return composeDf(g, fillColor);
   }
 
   const standardCapH = 395.0;
@@ -87,29 +114,29 @@ export function composeNikonD(modelName: string, fillColor: string, kerning: num
 
     // 顶级旗舰数字双线空心替换 (仅替换 D 之后的第一位数字，如 D2H 中的 2, D6 中的 6)
     if (isFlagship && i === 1 && ['2', '3', '4', '5', '6'].includes(ch)) {
-      if (`${ch}_flagship` in D_GLYPHS) {
+      if (`${ch}_flagship` in g.D_GLYPHS) {
         glyphKey = `${ch}_flagship`;
-      } else if (`${ch}_outline` in D_GLYPHS) {
+      } else if (`${ch}_outline` in g.D_GLYPHS) {
         glyphKey = `${ch}_outline`;
       }
     }
 
     // 旗舰后缀 S 字母替换
     if (isFlagship && i > 1 && ch.toUpperCase() === 'S') {
-      if ('S_flagship' in D_GLYPHS) {
+      if ('S_flagship' in g.D_GLYPHS) {
         glyphKey = 'S_flagship';
-      } else if ('s' in D_GLYPHS) {
+      } else if ('s' in g.D_GLYPHS) {
         glyphKey = 's';
       }
     }
 
-    if (!(glyphKey in D_GLYPHS)) {
-      if (ch.toUpperCase() in D_GLYPHS) glyphKey = ch.toUpperCase();
-      else if (ch.toLowerCase() in D_GLYPHS) glyphKey = ch.toLowerCase();
+    if (!(glyphKey in g.D_GLYPHS)) {
+      if (ch.toUpperCase() in g.D_GLYPHS) glyphKey = ch.toUpperCase();
+      else if (ch.toLowerCase() in g.D_GLYPHS) glyphKey = ch.toLowerCase();
       else return null;
     }
 
-    const gInfo = D_GLYPHS[glyphKey];
+    const gInfo = g.D_GLYPHS[glyphKey];
     const offsetY = padY + (standardCapH - gInfo.height);
     charNodes.push(
       `<g id="d-glyph-${glyphKey}" transform="translate(${currentX.toFixed(2)}, ${offsetY.toFixed(2)})"><path d="${gInfo.d}" /></g>`
@@ -128,9 +155,9 @@ export function composeNikonD(modelName: string, fillColor: string, kerning: num
 </svg>`;
 }
 
-function composeDf(fillColor: string): string {
-  const gD = D_GLYPHS['D'];
-  const gF = D_GLYPHS['f'];
+function composeDf(g: NikonGlyphModule, fillColor: string): string {
+  const gD = g.D_GLYPHS['D'];
+  const gF = g.D_GLYPHS['f'];
   const padX = 25.0;
   const padTop = 20.0;
   const standardCapH = 395.0;
@@ -154,15 +181,15 @@ function composeDf(fillColor: string): string {
 /**
  * 拼装 Z 系列微单型号矢量 SVG
  */
-export function composeNikonZ(modelName: string, fillColor: string): string | null {
+export function composeNikonZ(g: NikonGlyphModule, modelName: string, fillColor: string): string | null {
   const cleanText = modelName.trim();
   const upper = cleanText.toUpperCase().replace(/[\s_\-]/g, '');
 
   if (upper === 'ZF' || upper === 'Z_F') {
-    return composeZf(fillColor);
+    return composeZf(g, fillColor);
   }
   if (upper === 'ZFC' || upper === 'Z_FC') {
-    return composeZfc(fillColor);
+    return composeZfc(g, fillColor);
   }
 
   let t = cleanText.replace(/[\s_\-]/g, '');
@@ -197,10 +224,10 @@ export function composeNikonZ(modelName: string, fillColor: string): string | nu
   const charNodes: string[] = [];
 
   for (const token of tokens) {
-    if (!(token in Z_GLYPHS)) {
+    if (!(token in g.Z_GLYPHS)) {
       return null;
     }
-    const gInfo = Z_GLYPHS[token];
+    const gInfo = g.Z_GLYPHS[token];
     if (token === 'Z') {
       const posY = +(yBase - standardCapH).toFixed(2);
       charNodes.push(
@@ -235,9 +262,9 @@ export function composeNikonZ(modelName: string, fillColor: string): string | nu
 </svg>`;
 }
 
-function composeZf(fillColor: string): string {
-  const gZ = Z_GLYPHS['Z'];
-  const gF = Z_GLYPHS['f'] || Z_GLYPHS['F'];
+function composeZf(g: NikonGlyphModule, fillColor: string): string {
+  const gZ = g.Z_GLYPHS['Z'];
+  const gF = g.Z_GLYPHS['f'] || g.Z_GLYPHS['F'];
   const padX = 25.0;
   const padTop = 20.0;
   const standardCapH = 395.0;
@@ -258,10 +285,10 @@ function composeZf(fillColor: string): string {
 </svg>`;
 }
 
-function composeZfc(fillColor: string): string {
-  const gZ = Z_GLYPHS['Z'];
-  const gF = Z_GLYPHS['f'] || Z_GLYPHS['F'];
-  const gC = Z_GLYPHS['c'];
+function composeZfc(g: NikonGlyphModule, fillColor: string): string {
+  const gZ = g.Z_GLYPHS['Z'];
+  const gF = g.Z_GLYPHS['f'] || g.Z_GLYPHS['F'];
+  const gC = g.Z_GLYPHS['c'];
   const padX = 25.0;
   const padTop = 20.0;
   const standardCapH = 395.0;
@@ -293,8 +320,8 @@ export async function loadNikonModelLogoImage(
   rawMake?: string,
   isDarkTheme: boolean = false
 ): Promise<HTMLImageElement | null> {
-  const match = resolveNikonModel(rawModel, rawMake);
-  if (!match) return null;
+  const match = await resolveNikonModel(rawModel, rawMake);
+  if (!match || !glyphs) return null;
 
   const fillColor = isDarkTheme ? '#f3f4f6' : '#111827';
   const cacheKey = `${match.system}-${match.officialName}-${fillColor}`;
@@ -305,9 +332,9 @@ export async function loadNikonModelLogoImage(
 
   let svgStr: string | null = null;
   if (match.system === 'z') {
-    svgStr = composeNikonZ(match.officialName, fillColor);
+    svgStr = composeNikonZ(glyphs, match.officialName, fillColor);
   } else {
-    svgStr = composeNikonD(match.officialName, fillColor);
+    svgStr = composeNikonD(glyphs, match.officialName, fillColor);
   }
 
   if (!svgStr) return null;

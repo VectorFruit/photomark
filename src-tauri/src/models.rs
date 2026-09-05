@@ -25,6 +25,9 @@ pub struct PhotoInfo {
     pub size_bytes: u64,
     pub exif: ExifData,
     pub thumbnail_data_url: Option<String>,
+    /// Cache file for the preview thumbnail; the webview reads it through the
+    /// asset protocol instead of hauling base64 over IPC.
+    pub thumbnail_path: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

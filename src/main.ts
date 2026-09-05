@@ -1,6 +1,8 @@
 import { invoke } from '@tauri-apps/api/core';
+import { convertFileSrc } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { open, save } from '@tauri-apps/plugin-dialog';
+import { revealItemInDir } from '@tauri-apps/plugin-opener';
 import {
   BackgroundType,
   DEFAULT_FRAME_CONFIG,
@@ -9,10 +11,10 @@ import {
   FrameTemplateId,
   ParseProgressEvent,
   PhotoItem,
+  thumbnailSrc,
 } from './types';
 import { renderPhotoFrame } from './renderer/canvasRenderer';
 import { applyLanguage, getStoredLang, setStoredLang, translateText } from './i18n';
-import lensDatabase from './lensDatabase.json';
 
 // Application State
 const isTauri = typeof window !== 'undefined' && !!(window as any).__TAURI_INTERNALS__;
@@ -28,6 +30,14 @@ let panStartY = 0;
 let isComparing = false;
 let dragFromIndex = -1;
 let currentTheme: 'dark' | 'light' | 'system' = (localStorage.getItem('photomark_theme') as 'dark' | 'light' | 'system') || 'system';
+
+// Immersive-light preferences (HarmonyOS 沉浸光感): intensity tier, accent
+// palette, and whether the ambient light field follows the photo's colors.
+type FxIntensity = 'strong' | 'balanced' | 'weak';
+const PALETTES = ['amber', 'sunset', 'celadon', 'peakblue', 'crimson'];
+let currentPalette = localStorage.getItem('photomark_palette') || 'amber';
+let currentFx: FxIntensity = (localStorage.getItem('photomark_fx') as FxIntensity) || 'balanced';
+let photoLightEnabled = localStorage.getItem('photomark_photo_light') !== '0';
 const UI_SCALES = [0.8, 0.85, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5];
 let currentUiScale = parseFloat(localStorage.getItem('photomark_ui_scale') || '1.0');
 
@@ -95,6 +105,8 @@ const progressFailuresEl = document.getElementById('progress-failures') as HTMLD
 const blurRowEl = document.getElementById('row-blur-intensity') as HTMLDivElement;
 const valBlurEl = document.getElementById('val-blur-intensity') as HTMLSpanElement;
 const valPaddingEl = document.getElementById('val-padding') as HTMLSpanElement;
+const valBarHeightEl = document.getElementById('val-bar-height') as HTMLSpanElement;
+const valVerticalOffsetEl = document.getElementById('val-vertical-offset') as HTMLSpanElement;
 const valFontScaleEl = document.getElementById('val-font-scale') as HTMLSpanElement;
 const valFontWeightEl = document.getElementById('val-font-weight') as HTMLSpanElement;
 const valSecondaryFontWeightEl = document.getElementById('val-secondary-font-weight') as HTMLSpanElement;
@@ -102,6 +114,8 @@ const valBorderRadiusEl = document.getElementById('val-border-radius') as HTMLSp
 const valShadowEl = document.getElementById('val-shadow') as HTMLSpanElement;
 
 const inputPadding = document.getElementById('cfg-padding') as HTMLInputElement;
+const inputBarHeight = document.getElementById('cfg-bar-height') as HTMLInputElement;
+const inputVerticalOffset = document.getElementById('cfg-vertical-offset') as HTMLInputElement;
 const inputFontScale = document.getElementById('cfg-font-scale') as HTMLInputElement;
 const inputFontWeight = document.getElementById('cfg-font-weight') as HTMLInputElement;
 const inputSecondaryFontWeight = document.getElementById('cfg-secondary-font-weight') as HTMLInputElement;
@@ -114,8 +128,12 @@ const previewImageCache: Map<string, HTMLImageElement> = new Map();
 
 async function init() {
   applyTheme(currentTheme);
+  applyPalette(currentPalette);
+  applyFxIntensity(currentFx);
   applyUiScale(currentUiScale);
   bindPointerGlow();
+  bindLightFieldControls();
+  bindUsabilityHelpers();
   loadPersistedState();
   bindEvents();
   setupProgressListeners();
@@ -126,6 +144,208 @@ async function init() {
   applyLanguage();
   renderPhotoList();
   clearCanvas();
+  bindPresetControls();
+  bindSidebarCollapse();
+  if (isTauri) {
+    void loadSystemFontsIntoSelect();
+    void restoreLastSession();
+  }
+}
+
+/* ---- Frame presets: built-in looks + user-saved configurations ---- */
+const PRESETS_KEY = 'photomark_presets';
+const BUILT_IN_PRESETS: { name: string; config: Partial<FrameConfig> }[] = [
+  { name: '经典白', config: {} },
+  {
+    name: '深色画廊',
+    config: { template: 'border', backgroundType: 'dark', paddingPercent: 5, bottomBarHeightPercent: 12 },
+  },
+  {
+    name: '毛玻璃底栏',
+    config: { template: 'bottom_bar', backgroundType: 'frosted_blur', blurIntensity: 60 },
+  },
+  {
+    name: '拍立得',
+    config: { template: 'polaroid', backgroundType: 'white' },
+  },
+];
+
+function getCustomPresets(): { name: string; config: FrameConfig }[] {
+  try {
+    const raw = localStorage.getItem(PRESETS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.slice(0, 12) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomPresets(list: { name: string; config: FrameConfig }[]) {
+  try {
+    localStorage.setItem(PRESETS_KEY, JSON.stringify(list));
+  } catch {
+    // ignore quota errors
+  }
+}
+
+function applyPreset(presetConfig: Partial<FrameConfig>, name: string) {
+  Object.assign(config, JSON.parse(JSON.stringify(DEFAULT_FRAME_CONFIG)), JSON.parse(JSON.stringify(presetConfig)));
+  syncUIWithConfig();
+  triggerReRender();
+  showToast(`已应用预设「${name}」`, 'success');
+}
+
+function renderPresets() {
+  const grid = document.getElementById('preset-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const makeChip = (label: string, onClick: () => void, deletable = false) => {
+    const chip = document.createElement('div');
+    chip.className = 'preset-chip';
+    const text = document.createElement('span');
+    text.textContent = translateText(label);
+    text.addEventListener('click', onClick);
+    chip.appendChild(text);
+    if (deletable) {
+      const del = document.createElement('button');
+      del.className = 'preset-delete';
+      del.textContent = '×';
+      del.title = translateText('删除此预设');
+      del.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onClickDelete(label);
+      });
+      chip.appendChild(del);
+    }
+    grid.appendChild(chip);
+  };
+
+  const onClickDelete = (name: string) => {
+    const rest = getCustomPresets().filter((p) => p.name !== name);
+    saveCustomPresets(rest);
+    renderPresets();
+    showToast(`已删除预设「${name}」`, 'info');
+  };
+
+  for (const p of BUILT_IN_PRESETS) {
+    makeChip(p.name, () => applyPreset(p.config, p.name));
+  }
+  for (const p of getCustomPresets()) {
+    makeChip(p.name, () => applyPreset(p.config, p.name), true);
+  }
+}
+
+function bindPresetControls() {
+  const row = document.getElementById('preset-save-row');
+  const input = document.getElementById('preset-name-input') as HTMLInputElement | null;
+  const showRow = (show: boolean) => {
+    if (row) row.style.display = show ? 'flex' : 'none';
+    if (show && input) input.focus();
+  };
+
+  document.getElementById('btn-preset-save')?.addEventListener('click', () => {
+    showRow(true);
+  });
+  document.getElementById('btn-preset-save-cancel')?.addEventListener('click', () => showRow(false));
+  const confirmSave = () => {
+    const name = (input?.value || '').trim() || `预设 ${getCustomPresets().length + 1}`;
+    const list = getCustomPresets();
+    list.push({ name, config: JSON.parse(JSON.stringify(config)) });
+    if (list.length > 12) {
+      list.shift();
+      showToast('预设已达上限，最早的预设已被移除', 'info');
+    }
+    saveCustomPresets(list);
+    renderPresets();
+    showRow(false);
+    if (input) input.value = '';
+    showToast(`已保存预设「${name}」`, 'success');
+  };
+  document.getElementById('btn-preset-save-confirm')?.addEventListener('click', confirmSave);
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') confirmSave();
+    if (e.key === 'Escape') showRow(false);
+  });
+  renderPresets();
+}
+
+/* ---- Session restore (Tauri only): remember the last photo list ---- */
+const SESSION_KEY = 'photomark_last_session';
+
+function persistSession() {
+  if (!isTauri) return;
+  try {
+    const paths = photos.map((p) => p.path).filter((p) => !p.startsWith('browser://'));
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ paths, activeIndex }));
+  } catch {
+    // ignore quota errors
+  }
+}
+
+async function restoreLastSession() {
+  if (!isTauri) return;
+  let saved: { paths?: string[]; activeIndex?: number } | null = null;
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    saved = raw ? JSON.parse(raw) : null;
+  } catch {
+    return;
+  }
+  const paths = saved?.paths;
+  if (!Array.isArray(paths) || paths.length === 0) return;
+
+  try {
+    showProgressModal('正在恢复上次会话...', `共 ${paths.length} 张照片`, 5);
+    const items: PhotoItem[] = await invoke('load_photos', { paths });
+    if (items.length > 0) {
+      photos.push(...items);
+      const savedIdx = Math.max(0, Math.min(items.length - 1, saved?.activeIndex ?? 0));
+      activeIndex = savedIdx;
+      renderPhotoList();
+      triggerReRender();
+    }
+  } catch {
+    // restore is best-effort; start empty on failure
+  } finally {
+    hideProgressModal();
+  }
+}
+/* ---- System font enumeration (Tauri only) ----
+   Fills the font picker with the families actually installed on this machine.
+   Invalid persisted values fall back to the default once the list arrives. */
+const EMBEDDED_FONTS = ['Noto Sans SC', 'Noto Serif SC', 'Brass Mono'];
+
+async function loadSystemFontsIntoSelect() {
+  const select = document.getElementById('cfg-font-family') as HTMLSelectElement | null;
+  if (!select) return;
+  try {
+    const families = await invoke<string[]>('list_system_fonts');
+    const usable = families.filter((f) => f && !EMBEDDED_FONTS.includes(f));
+    if (usable.length === 0) return;
+
+    const group = document.createElement('optgroup');
+    group.label = '系统字体';
+    for (const family of usable) {
+      const opt = document.createElement('option');
+      opt.value = family;
+      opt.textContent = family;
+      group.appendChild(opt);
+    }
+    select.appendChild(group);
+
+    // A persisted font that exists on neither list falls back to the default.
+    if (
+      !EMBEDDED_FONTS.includes(config.fontFamily) &&
+      !usable.includes(config.fontFamily)
+    ) {
+      config.fontFamily = DEFAULT_FRAME_CONFIG.fontFamily;
+      syncUIWithConfig();
+      triggerReRender();
+    }
+  } catch {
+    // Enumeration unavailable: keep the embedded fonts only
+  }
 }
 
 function applyUiScale(scale: number) {
@@ -154,6 +374,118 @@ function applyTheme(theme: 'dark' | 'light' | 'system') {
   document.documentElement.setAttribute('data-theme', resolved);
   localStorage.setItem('photomark_theme', theme);
   updateThemeToggleUI();
+}
+
+function applyPalette(palette: string) {
+  currentPalette = PALETTES.includes(palette) ? palette : 'amber';
+  document.documentElement.dataset.palette = currentPalette;
+  localStorage.setItem('photomark_palette', currentPalette);
+  document.querySelectorAll('.swatch').forEach((s) => {
+    s.classList.toggle('active', s.getAttribute('data-palette') === currentPalette);
+  });
+}
+
+function applyFxIntensity(level: FxIntensity) {
+  currentFx = ['strong', 'balanced', 'weak'].includes(level) ? level : 'balanced';
+  document.body.classList.toggle('fx-strong', currentFx === 'strong');
+  document.body.classList.toggle('fx-balanced', currentFx === 'balanced');
+  document.body.classList.toggle('fx-weak', currentFx === 'weak');
+  localStorage.setItem('photomark_fx', currentFx);
+  document.querySelectorAll('.fx-btn').forEach((b) => {
+    b.classList.toggle('active', b.getAttribute('data-fx') === currentFx);
+  });
+}
+
+function applyPhotoLight(on: boolean) {
+  photoLightEnabled = on;
+  document.body.classList.toggle('photo-light', on && !isNoPhoto());
+  localStorage.setItem('photomark_photo_light', on ? '1' : '0');
+  const cb = document.getElementById('cfg-photo-light') as HTMLInputElement | null;
+  if (cb) cb.checked = on;
+}
+
+function isNoPhoto(): boolean {
+  return activeIndex < 0 || activeIndex >= photos.length;
+}
+
+/* ---- Photo-reactive light field ----
+   Extract a vibrant dominant color from the preview thumbnail (8×8 downsample,
+   saturation-weighted average) and drive the ambient orbs / edge flows / photo
+   bloom via CSS variables. Runs once per photo (cached by path). */
+const photoColorCache = new Map<string, [number, number, number]>();
+
+function extractPhotoDominantColor(img: HTMLImageElement, key: string): [number, number, number] {
+  const cached = photoColorCache.get(key);
+  if (cached) return cached;
+  let result: [number, number, number] = [212, 162, 76];
+  try {
+    const c = document.createElement('canvas');
+    c.width = 8;
+    c.height = 8;
+    const cx = c.getContext('2d', { willReadFrequently: true });
+    if (cx) {
+      cx.drawImage(img, 0, 0, 8, 8);
+      const d = cx.getImageData(0, 0, 8, 8).data;
+      const vibrant: [number, number, number, number][] = [];
+      let sr = 0;
+      let sg = 0;
+      let sb = 0;
+      let n = 0;
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i];
+        const g = d[i + 1];
+        const b = d[i + 2];
+        sr += r;
+        sg += g;
+        sb += b;
+        n++;
+        const sat = Math.max(r, g, b) - Math.min(r, g, b);
+        vibrant.push([r, g, b, sat]);
+      }
+      vibrant.sort((a, b) => b[3] - a[3]);
+      const half = Math.max(1, Math.floor(vibrant.length / 2));
+      let vr = 0;
+      let vg = 0;
+      let vb = 0;
+      for (let i = 0; i < half; i++) {
+        vr += vibrant[i][0];
+        vg += vibrant[i][1];
+        vb += vibrant[i][2];
+      }
+      vr = Math.round(vr / half) || 1;
+      vg = Math.round(vg / half) || 1;
+      vb = Math.round(vb / half) || 1;
+      // Keep the tint in a pleasant luminance band (avoid near-black/white)
+      const scaleIn = (v: number) => Math.round(v + (150 - v) * 0.35);
+      const ar = Math.min(240, Math.max(70, scaleIn(vr)));
+      const ag = Math.min(240, Math.max(70, scaleIn(vg)));
+      const ab = Math.min(240, Math.max(70, scaleIn(vb)));
+      // Secondary tone: the photo's global average, softly lightened —
+      // pairs with the vibrant dominant without clashing.
+      const avg = (v: number) => Math.round(v / n);
+      const br = Math.min(235, Math.max(80, avg(sr) + 26));
+      const bg2 = Math.min(235, Math.max(80, avg(sg) + 26));
+      const bb = Math.min(235, Math.max(80, avg(sb) + 26));
+      result = [ar, ag, ab];
+      const rootStyle = document.documentElement.style;
+      rootStyle.setProperty('--photo-orb-a', `rgba(${ar}, ${ag}, ${ab}, 0.58)`);
+      rootStyle.setProperty('--photo-orb-b', `rgba(${Math.round(br / 2 + 96)}, ${Math.round(bg2 / 2 + 96)}, ${Math.round(bb / 2 + 96)}, 0.40)`);
+      rootStyle.setProperty('--photo-orb-c', `rgba(${ar}, ${ag}, ${ab}, 0.24)`);
+      rootStyle.setProperty('--photo-glow-rgb', `${ar} ${ag} ${ab}`);
+    }
+  } catch {
+    // Cross-origin or decode issues: keep the palette default light field
+  }
+  photoColorCache.set(key, result);
+  if (photoColorCache.size > 24) {
+    photoColorCache.delete(photoColorCache.keys().next().value as string);
+  }
+  return result;
+}
+
+/* ---- Pause the light field when hidden / unfocused ---- */
+function setLightFieldPaused(paused: boolean) {
+  document.body.classList.toggle('fx-paused', paused);
 }
 
 function updateThemeToggleUI() {
@@ -189,6 +521,218 @@ function bindPointerGlow() {
 }
 
 // -----------------------------------------------------------------------------
+// Immersive-light controls: intensity tier, accent palette, photo-follow
+// -----------------------------------------------------------------------------
+function bindLightFieldControls() {
+  document.querySelectorAll('.fx-btn').forEach((btn) => {
+    btn.addEventListener('click', () => applyFxIntensity((btn.getAttribute('data-fx') || 'balanced') as FxIntensity));
+  });
+
+  document.querySelectorAll('.swatch').forEach((sw) => {
+    sw.addEventListener('click', () => applyPalette(sw.getAttribute('data-palette') || 'amber'));
+  });
+
+  bindCheckbox('cfg-photo-light', (val) => applyPhotoLight(val));
+  const cb = document.getElementById('cfg-photo-light') as HTMLInputElement | null;
+  if (cb) cb.checked = photoLightEnabled;
+
+  // Pause the whole light field while hidden or unfocused — zero idle GPU.
+  document.addEventListener('visibilitychange', () => setLightFieldPaused(document.hidden));
+  window.addEventListener('blur', () => setLightFieldPaused(true));
+  window.addEventListener('focus', () => setLightFieldPaused(false));
+}
+
+// -----------------------------------------------------------------------------
+// Usability: keyboard shortcuts, wheel zoom, drag-over highlight, shortcuts card
+// -----------------------------------------------------------------------------
+let dragDepth = 0;
+
+function bindUsabilityHelpers() {
+  const shortcutsModal = document.getElementById('shortcuts-modal');
+
+  function toggleShortcuts(show?: boolean) {
+    if (!shortcutsModal) return;
+    const visible = shortcutsModal.style.display === 'flex';
+    shortcutsModal.style.display = (show === undefined ? !visible : show) ? 'flex' : 'none';
+  }
+
+  document.getElementById('btn-shortcuts')?.addEventListener('click', () => toggleShortcuts(true));
+  document.getElementById('btn-shortcuts-close')?.addEventListener('click', () => toggleShortcuts(false));
+  shortcutsModal?.addEventListener('click', (e) => {
+    if (e.target === shortcutsModal) toggleShortcuts(false);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    const target = e.target as HTMLElement | null;
+    if (target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) return;
+
+    // Close the shortcuts card first so Esc/? behave locally
+    if (e.key === 'Escape' && shortcutsModal?.style.display === 'flex') {
+      toggleShortcuts(false);
+      return;
+    }
+    if (e.key === '?') {
+      toggleShortcuts();
+      return;
+    }
+
+    if (isNoPhoto() && !['+', '=', '-', '_'].includes(e.key)) return;
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        switchPhoto(-1);
+        break;
+      case 'ArrowRight':
+        switchPhoto(1);
+        break;
+      case ' ':
+        if (!e.repeat) {
+          isComparing = true;
+          drawOriginalPreview();
+        }
+        e.preventDefault();
+        break;
+      case 'f':
+      case 'F':
+        setZoom(1.0);
+        break;
+      case '+':
+      case '=':
+        setZoom(currentZoom + 0.15);
+        break;
+      case '-':
+      case '_':
+        setZoom(Math.max(0.2, currentZoom - 0.15));
+        break;
+      case 'e':
+      case 'E':
+        handleExportCurrent();
+        break;
+      case 'Delete':
+      case 'Backspace':
+        removePhoto(activeIndex);
+        break;
+    }
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (e.key === ' ' && isComparing) {
+      isComparing = false;
+      triggerReRender();
+    }
+  });
+
+  // Wheel zoom around the cursor
+  viewportEl?.addEventListener(
+    'wheel',
+    (e) => {
+      if (isNoPhoto()) return;
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+      const newZoom = Math.min(5, Math.max(0.2, currentZoom * factor));
+      if (newZoom === currentZoom) return;
+      const rect = viewportEl.getBoundingClientRect();
+      const cx = e.clientX - rect.left - rect.width / 2;
+      const cy = e.clientY - rect.top - rect.height / 2;
+      const ux = (cx - panX) / currentZoom;
+      const uy = (cy - panY) / currentZoom;
+      currentZoom = newZoom;
+      if (newZoom <= 1.01) {
+        panX = 0;
+        panY = 0;
+      } else {
+        panX = cx - ux * newZoom;
+        panY = cy - uy * newZoom;
+      }
+      applyCanvasTransform();
+      if (zoomLevelEl) zoomLevelEl.textContent = Math.round(currentZoom * 100) + '%';
+    },
+    { passive: false }
+  );
+
+  // Drag-over highlight on the whole stage
+  window.addEventListener('dragenter', (e) => {
+    if (e.dataTransfer?.types?.includes('Files')) {
+      dragDepth++;
+      document.body.classList.add('import-dragover');
+    }
+  });
+  window.addEventListener('dragleave', () => {
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) document.body.classList.remove('import-dragover');
+  });
+  window.addEventListener('drop', () => {
+    dragDepth = 0;
+    document.body.classList.remove('import-dragover');
+  });
+}
+
+function switchPhoto(dir: number) {
+  if (photos.length === 0) return;
+  const next = (activeIndex + dir + photos.length) % photos.length;
+  if (next === activeIndex) return;
+  activeIndex = next;
+  renderPhotoList();
+  triggerReRender();
+  persistSession();
+}
+
+/* ---- Sidebar collapse: give the photo the full stage when needed ---- */
+const SIDEBAR_STATE_KEY = 'photomark_sidebar_collapsed';
+
+function applySidebarCollapse(left: boolean, right: boolean) {
+  const workspace = document.querySelector('.workspace');
+  if (!workspace) return;
+  workspace.classList.toggle('collapse-left', left);
+  workspace.classList.toggle('collapse-right', right);
+  const restoreLeft = document.getElementById('btn-restore-left');
+  const restoreRight = document.getElementById('btn-restore-right');
+  if (restoreLeft) restoreLeft.style.display = left ? 'flex' : 'none';
+  if (restoreRight) restoreRight.style.display = right ? 'flex' : 'none';
+}
+
+function bindSidebarCollapse() {
+  let state: { left: boolean; right: boolean } = { left: false, right: false };
+  try {
+    const raw = localStorage.getItem(SIDEBAR_STATE_KEY);
+    if (raw) state = { left: false, right: false, ...JSON.parse(raw) };
+  } catch {
+    // defaults
+  }
+  applySidebarCollapse(state.left, state.right);
+
+  const toggle = (side: 'left' | 'right') => {
+    state[side] = !state[side];
+    applySidebarCollapse(state.left, state.right);
+    try {
+      localStorage.setItem(SIDEBAR_STATE_KEY, JSON.stringify(state));
+    } catch {
+      // ignore
+    }
+    applyPreviewFit();
+  };
+
+  document.getElementById('btn-collapse-left')?.addEventListener('click', () => toggle('left'));
+  document.getElementById('btn-collapse-right')?.addEventListener('click', () => toggle('right'));
+  document.getElementById('btn-restore-left')?.addEventListener('click', () => toggle('left'));
+  document.getElementById('btn-restore-right')?.addEventListener('click', () => toggle('right'));
+
+  document.getElementById('btn-prev-photo')?.addEventListener('click', () => switchPhoto(-1));
+  document.getElementById('btn-next-photo')?.addEventListener('click', () => switchPhoto(1));
+}
+
+function removePhoto(index: number) {
+  if (index < 0 || index >= photos.length) return;
+  const removed = photos.splice(index, 1)[0];
+  previewImageCache.delete(removed.path);
+  if (activeIndex >= photos.length) activeIndex = photos.length - 1;
+  renderPhotoList();
+  triggerReRender();
+  persistSession();
+  showToast(`已移除 ${removed.filename}`, 'info');
+}
+
+// -----------------------------------------------------------------------------
 // Dangerous action confirmation modal
 // -----------------------------------------------------------------------------
 function openConfirm(options: {
@@ -219,10 +763,10 @@ function loadPersistedState() {
       if (parsed && typeof parsed === 'object') {
         Object.assign(config, { ...DEFAULT_FRAME_CONFIG, ...parsed });
       }
-      // Only the three built-in fonts are selectable; force legacy/system font
-      // values back to the default 思源黑体 so fresh installs and old configs agree.
-      if (!['Noto Sans SC', 'Noto Serif SC', 'Brass Mono'].includes(config.fontFamily)) {
-        config.fontFamily = 'Noto Sans SC';
+      // Fonts: embedded faces are always valid; system font names (from the
+      // Tauri font enumeration) are kept as-is and validated once the list arrives.
+      if (!config.fontFamily || typeof config.fontFamily !== 'string') {
+        config.fontFamily = DEFAULT_FRAME_CONFIG.fontFamily;
       }
     }
   } catch {
@@ -235,8 +779,8 @@ function loadPersistedState() {
       const parsed = JSON.parse(savedExport);
       if (parsed && typeof parsed === 'object') {
         if (['jpeg', 'png', 'webp'].includes(parsed.format)) exportSettings.format = parsed.format;
-        if (typeof parsed.quality === 'number' && parsed.quality >= 70 && parsed.quality <= 100) {
-          exportSettings.quality = parsed.quality;
+        if (typeof parsed.quality === 'number' && parsed.quality >= 0 && parsed.quality <= 100) {
+          exportSettings.quality = Math.round(parsed.quality);
         }
         if (typeof parsed.filenameTemplate === 'string') {
           exportSettings.filenameTemplate = parsed.filenameTemplate;
@@ -266,11 +810,17 @@ function persistExportSettings() {
 
 function syncExportSettingsUI() {
   const formatEl = document.getElementById('export-format') as HTMLSelectElement | null;
-  const qualityEl = document.getElementById('export-quality-select') as HTMLSelectElement | null;
+  const qualitySlider = document.getElementById('export-quality') as HTMLInputElement | null;
   const templateEl = document.getElementById('export-filename-template') as HTMLInputElement | null;
   if (formatEl) formatEl.value = exportSettings.format;
-  if (qualityEl) qualityEl.value = exportSettings.quality + '';
+  if (qualitySlider) qualitySlider.value = String(exportSettings.quality);
+  updateExportQualityBadge();
   if (templateEl) templateEl.value = exportSettings.filenameTemplate;
+}
+
+function updateExportQualityBadge() {
+  const input = document.getElementById('export-quality-val') as HTMLInputElement | null;
+  if (input) input.value = String(exportSettings.quality);
 }
 
 function sanitizeFilenamePart(input: string): string {
@@ -350,6 +900,11 @@ function hideProgressModal() {
 
 function updateValueBadges() {
   if (valPaddingEl) valPaddingEl.textContent = `${config.paddingPercent}%`;
+  if (valBarHeightEl) valBarHeightEl.textContent = `${config.bottomBarHeightPercent}%`;
+  if (valVerticalOffsetEl) {
+    const offset = config.contentVerticalOffset || 0;
+    valVerticalOffsetEl.textContent = offset === 0 ? translateText('居中') : offset > 0 ? `+${offset}` : `${offset}`;
+  }
   if (valFontScaleEl) valFontScaleEl.textContent = `${Math.round(config.fontSizeScale * 100)}%`;
   if (valFontWeightEl) valFontWeightEl.textContent = `${config.fontWeight}`;
   if (valSecondaryFontWeightEl) valSecondaryFontWeightEl.textContent = `${config.secondaryFontWeight}`;
@@ -395,10 +950,14 @@ function bindEvents() {
     if (currentTheme === 'system') applyTheme('system');
   });
 
-  // Language Switcher
+  // Language Switcher — re-translate the DOM, refresh dynamic badges/list and
+  // re-render the canvas (watermark text follows the interface language).
   selectLanguageEl?.addEventListener('change', () => {
     setStoredLang(selectLanguageEl.value as 'zh' | 'en');
     applyLanguage();
+    updateValueBadges();
+    renderPhotoList();
+    triggerReRender();
   });
 
   // Dangerous Action Confirmation Modal
@@ -448,6 +1007,7 @@ function bindEvents() {
         previewImageCache.clear();
         renderPhotoList();
         clearCanvas();
+        persistSession();
         showToast('已清空照片列表', 'info');
       },
     });
@@ -476,6 +1036,14 @@ function bindEvents() {
         case 'padding':
           config.paddingPercent = DEFAULT_FRAME_CONFIG.paddingPercent;
           inputPadding.value = `${config.paddingPercent}`;
+          break;
+        case 'bar-height':
+          config.bottomBarHeightPercent = DEFAULT_FRAME_CONFIG.bottomBarHeightPercent;
+          inputBarHeight.value = `${config.bottomBarHeightPercent}`;
+          break;
+        case 'vertical-offset':
+          config.contentVerticalOffset = DEFAULT_FRAME_CONFIG.contentVerticalOffset;
+          inputVerticalOffset.value = `${config.contentVerticalOffset}`;
           break;
         case 'font-scale':
           config.fontSizeScale = DEFAULT_FRAME_CONFIG.fontSizeScale;
@@ -514,6 +1082,7 @@ function bindEvents() {
       document.querySelectorAll('.template-card').forEach((c) => c.classList.remove('active'));
       card.classList.add('active');
       config.template = card.getAttribute('data-template') as FrameTemplateId;
+      updateTemplateSpecificRows();
       triggerReRender();
     });
   });
@@ -558,6 +1127,18 @@ function bindEvents() {
   // Sliders with Live Badge Updates
   inputPadding?.addEventListener('input', () => {
     config.paddingPercent = parseInt(inputPadding.value, 10);
+    updateValueBadges();
+    triggerReRender();
+  });
+
+  inputBarHeight?.addEventListener('input', () => {
+    config.bottomBarHeightPercent = parseInt(inputBarHeight.value, 10);
+    updateValueBadges();
+    triggerReRender();
+  });
+
+  inputVerticalOffset?.addEventListener('input', () => {
+    config.contentVerticalOffset = parseInt(inputVerticalOffset.value, 10);
     updateValueBadges();
     triggerReRender();
   });
@@ -630,6 +1211,7 @@ function bindEvents() {
     panStartY = e.clientY - panY;
     viewportEl.style.cursor = 'grabbing';
   });
+  window.addEventListener('resize', applyPreviewFit);
   viewportEl?.addEventListener('pointermove', (e) => {
     if (!isPanning) return;
     panX = e.clientX - panStartX;
@@ -649,16 +1231,27 @@ function bindEvents() {
 
   // Export Settings Persistence
   const exportFormatEl = document.getElementById('export-format') as HTMLSelectElement | null;
-  const exportQualityEl = document.getElementById('export-quality-select') as HTMLSelectElement | null;
+  const exportQualitySlider = document.getElementById('export-quality') as HTMLInputElement | null;
+  const exportQualityNum = document.getElementById('export-quality-val') as HTMLInputElement | null;
   const exportTemplateEl = document.getElementById('export-filename-template') as HTMLInputElement | null;
   exportFormatEl?.addEventListener('change', () => {
     exportSettings.format = exportFormatEl.value as ExportSettings['format'];
     persistExportSettings();
   });
-  exportQualityEl?.addEventListener('change', () => {
-    exportSettings.quality = parseInt(exportQualityEl.value, 10);
+  exportQualitySlider?.addEventListener('input', () => {
+    exportSettings.quality = parseInt(exportQualitySlider.value, 10);
+    updateExportQualityBadge();
     persistExportSettings();
   });
+  exportQualityNum?.addEventListener('input', () => {
+    const v = parseInt(exportQualityNum.value, 10);
+    if (Number.isNaN(v)) return;
+    const clamped = Math.max(0, Math.min(100, v));
+    exportSettings.quality = clamped;
+    if (exportQualitySlider) exportQualitySlider.value = String(clamped);
+    persistExportSettings();
+  });
+  exportQualityNum?.addEventListener('blur', updateExportQualityBadge);
   exportTemplateEl?.addEventListener('input', () => {
     exportSettings.filenameTemplate = exportTemplateEl.value;
     persistExportSettings();
@@ -680,8 +1273,26 @@ function bindEvents() {
   window.addEventListener('drop', handleFileDrop);
 }
 
+/**
+ * Template-scoped controls: options that only affect specific templates are
+ * hidden unless a template that uses them is selected.
+ */
+function updateTemplateSpecificRows() {
+  const t = config.template;
+  const show = (id: string, cond: boolean) => {
+    const el = document.getElementById(id) as HTMLElement | null;
+    if (el) el.style.display = cond ? 'block' : 'none';
+  };
+  show('block-padding', t === 'bottom_bar' || t === 'border');
+  show('block-bar-height', t === 'bottom_bar');
+  show('block-border-radius', t !== 'minimal_badge');
+  show('block-shadow', t === 'bottom_bar' || t === 'border');
+}
+
 function syncUIWithConfig() {
   inputPadding.value = `${config.paddingPercent}`;
+  inputBarHeight.value = `${config.bottomBarHeightPercent}`;
+  inputVerticalOffset.value = `${config.contentVerticalOffset || 0}`;
   inputFontScale.value = `${Math.round(config.fontSizeScale * 100)}`;
   inputFontWeight.value = `${config.fontWeight}`;
   inputSecondaryFontWeight.value = `${config.secondaryFontWeight}`;
@@ -723,6 +1334,8 @@ function syncUIWithConfig() {
   document.querySelectorAll('.template-card').forEach((card) => {
     card.classList.toggle('active', card.getAttribute('data-template') === config.template);
   });
+
+  updateTemplateSpecificRows();
 
   // Update Background Button Active
   document.querySelectorAll('.bg-type-btn').forEach((btn) => {
@@ -815,6 +1428,7 @@ async function importPaths(paths: string[]) {
       }
       renderPhotoList();
       triggerReRender();
+      persistSession();
       showToast(`成功导入 ${newItems.length} 张照片`, 'success');
     }
   } catch (err) {
@@ -871,6 +1485,7 @@ async function importBrowserFiles(files: File[]) {
       if (activeIndex === -1) activeIndex = 0;
       renderPhotoList();
       triggerReRender();
+      persistSession();
       showToast(`成功导入 ${newItems.length} 张照片`, 'success');
     }
   } catch (err) {
@@ -883,10 +1498,23 @@ async function importBrowserFiles(files: File[]) {
 // Helper: resolve generic lens specs back to official lens names.
 // The database is generated from ExifTool lens ID tables (Nikon, Canon, Sony,
 // Sigma, Pentax, Olympus, Panasonic, Minolta, Samsung) and is keyed by the
-// normalized focal-length/aperture spec plus camera maker.
+// normalized focal-length/aperture spec plus camera maker. The 122KB database
+// is dynamically imported (browser-mode EXIF path only) to keep the startup
+// chunk lean.
 interface LensDbEntry { make: string; spec: string; name: string; }
-const LENS_DB = (lensDatabase as { lenses: LensDbEntry[] }).lenses;
-const LENS_DB_MAP = new Map(LENS_DB.map((e) => [e.make + '|' + e.spec, e.name]));
+let lensDbMapPromise: Promise<Map<string, string>> | null = null;
+
+function ensureLensDbMap(): Promise<Map<string, string>> {
+  if (!lensDbMapPromise) {
+    lensDbMapPromise = import('./lensDatabase.json').then(
+      (mod) =>
+        new Map(
+          (mod.default as { lenses: LensDbEntry[] }).lenses.map((e) => [e.make + '|' + e.spec, e.name])
+        )
+    );
+  }
+  return lensDbMapPromise;
+}
 
 const GENERIC_LENS_SPEC_RE = /\d+(?:\.\d+)?(?:\s*-\s*\d+(?:\.\d+)?)?\s*mm\s*(?:[fF]\s*\/\s*)?[fF]?\s*\d+(?:\.\d+)?/i;
 
@@ -941,11 +1569,13 @@ function extractLensSpecKey(text: string): string | null {
   return b ? (d ? a + '-' + b + '|' + c + '-' + d : a + '-' + b + '|' + c) : a + '|' + c;
 }
 
-function resolveLensName(lensModel: string, make: string | undefined, lens: string | undefined): string | null {
+async function resolveLensName(lensModel: string, make: string | undefined, lens: string | undefined): Promise<string | null> {
   if (!GENERIC_LENS_SPEC_RE.test(lensModel.trim())) return null;
   const makeKey = normalizeMake(make);
   const key = extractLensSpecKey((lens || lensModel).replace(/\s+/g, ' ').trim());
-  return makeKey && key ? LENS_DB_MAP.get(makeKey + '|' + key) || null : null;
+  if (!makeKey || !key) return null;
+  const map = await ensureLensDbMap();
+  return map.get(makeKey + '|' + key) || null;
 }
 async function parseExifInBrowser(file: File): Promise<ExifData> {
   const exifr = await import('exifr');
@@ -972,7 +1602,7 @@ async function parseExifInBrowser(file: File): Promise<ExifData> {
   const lens = getTag(['LensModel'], 42036);
   const lensText = lens ? String(lens).trim() : '';
   if (lensText) {
-    const resolved = resolveLensName(lensText, raw.Make, raw.Lens || raw.LensInfo);
+    const resolved = await resolveLensName(lensText, raw.Make, raw.Lens || raw.LensInfo);
     exif.lens_model = resolved || lensText;
   }
 
@@ -1108,6 +1738,11 @@ function downloadBlob(blob: Blob, filename: string) {
 function renderPhotoList() {
   photoCountEl.textContent = String(photos.length);
   emptyQueueEl.style.display = photos.length === 0 ? 'flex' : 'none';
+  const navPrev = document.getElementById('btn-prev-photo');
+  const navNext = document.getElementById('btn-next-photo');
+  const showNav = photos.length > 1 ? 'flex' : 'none';
+  if (navPrev) navPrev.style.display = showNav;
+  if (navNext) navNext.style.display = showNav;
   photoListEl.innerHTML = '';
 
   photos.forEach((photo, idx) => {
@@ -1118,7 +1753,7 @@ function renderPhotoList() {
 
     const thumb = document.createElement('img');
     thumb.className = 'photo-thumb';
-    thumb.src = photo.thumbnail_data_url || '';
+    thumb.src = thumbnailSrc(photo, isTauri ? convertFileSrc : undefined);
 
     const meta = document.createElement('div');
     meta.className = 'photo-meta';
@@ -1146,6 +1781,7 @@ function renderPhotoList() {
       if (activeIndex >= photos.length) activeIndex = photos.length - 1;
       renderPhotoList();
       triggerReRender();
+      persistSession();
     };
 
     card.appendChild(thumb);
@@ -1178,12 +1814,14 @@ function renderPhotoList() {
       dragFromIndex = -1;
       renderPhotoList();
       triggerReRender();
+      persistSession();
     });
 
     card.onclick = () => {
       activeIndex = idx;
       renderPhotoList();
       triggerReRender();
+      persistSession();
     };
 
     photoListEl.appendChild(card);
@@ -1214,12 +1852,39 @@ async function doRender() {
 
   if (!img) {
     img = new Image();
-    img.src = currentPhoto.thumbnail_data_url || '';
+    img.src = thumbnailSrc(currentPhoto, isTauri ? convertFileSrc : undefined);
     await new Promise((res) => (img!.onload = res));
     previewImageCache.set(currentPhoto.path, img);
+    // LRU cap: bound memory when large queues are browsed for a long time
+    if (previewImageCache.size > 16) {
+      const oldest = previewImageCache.keys().next().value;
+      if (oldest !== undefined && oldest !== currentPhoto.path) {
+        previewImageCache.delete(oldest);
+      }
+    }
   }
 
   await renderPhotoFrame(img, currentPhoto.exif, config, previewCanvas);
+  applyPreviewFit();
+  extractPhotoDominantColor(img, currentPhoto.path);
+  document.body.classList.toggle('photo-light', photoLightEnabled);
+}
+
+/**
+ * Fit the preview canvas into the viewport: portrait canvases are much taller
+ * than landscape ones, so the max box must be measured from the real viewport
+ * padding instead of a brittle vh estimate — otherwise the frame gets clipped
+ * (bottom bar cut off, top margin hidden) and looks broken.
+ */
+function applyPreviewFit() {
+  if (!viewportEl || !previewCanvas) return;
+  const cs = getComputedStyle(viewportEl);
+  const availH =
+    viewportEl.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  const availW =
+    viewportEl.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  previewCanvas.style.maxHeight = `${Math.max(120, Math.floor(availH))}px`;
+  previewCanvas.style.maxWidth = `${Math.max(120, Math.floor(availW))}px`;
 }
 
 function clearCanvas() {
@@ -1260,6 +1925,71 @@ function drawOriginalPreview() {
 // -----------------------------------------------------------------------------
 // Exporting Operations (Full Original Resolution)
 // -----------------------------------------------------------------------------
+/**
+ * Load the full-resolution original for export/preview:
+ * - Tauri + JPEG/PNG/WebP: stream the file straight into the webview via the
+ *   asset protocol (no 33MB base64 IPC, no Rust re-encode; the browser applies
+ *   EXIF orientation natively).
+ * - TIFF/other or asset failures: fall back to the Rust decode path.
+ */
+async function loadFullImage(item: PhotoItem): Promise<HTMLImageElement> {
+  const ext = (item.filename.split('.').pop() || '').toLowerCase();
+  if (isTauri && ['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
+    try {
+      const img = new Image();
+      img.src = convertFileSrc(item.path);
+      await new Promise((res, rej) => {
+        img.onload = () => res(null);
+        img.onerror = () => rej(new Error('asset load failed'));
+      });
+      return img;
+    } catch {
+      // fall through to the Rust decode path
+    }
+  }
+  const fullResDataUrl: string = await invoke('load_full_photo', {
+    path: item.path,
+    orientation: item.exif.orientation,
+  });
+  const img = new Image();
+  img.src = fullResDataUrl;
+  await new Promise((res) => (img.onload = res));
+  return img;
+}
+
+/**
+ * Encode the framed canvas and write it out.
+ * - JPEG @ 100%: keep the PNG → Rust exact-encode path (quality unchanged).
+ * - Everything else: browser-encode directly to the target format (skips the
+ *   old detour of PNG-encoding every export and re-encoding in Rust), which
+ *   cuts CPU and shrinks the base64 IPC payload several-fold.
+ */
+async function encodeAndSaveExport(
+  canvas: HTMLCanvasElement,
+  outputPath: string,
+  format: 'jpeg' | 'png' | 'webp',
+  quality: number
+): Promise<void> {
+  if (format === 'jpeg' && quality >= 100) {
+    const base64Data = canvas.toDataURL('image/png');
+    await invoke('save_rendered_photo', { outputPath, base64Data, format, quality });
+    return;
+  }
+  const blob = await canvasToBlob(canvas, format, quality);
+  if (!blob) throw new Error('画布编码失败');
+  const base64Data = await blobToBase64(blob);
+  await invoke('save_rendered_photo', { outputPath, base64Data, format, quality });
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error('读取编码数据失败'));
+    reader.readAsDataURL(blob);
+  });
+}
+
 async function handleExportCurrent() {
   if (activeIndex < 0 || activeIndex >= photos.length) {
     showToast('当前没有选中任何照片', 'info');
@@ -1288,34 +2018,25 @@ async function handleExportCurrent() {
 
     if (!savePath) return;
 
-    showProgressModal('正在导出照片...', '读取原始分辨率像素...', 25);
+    showProgressModal('正在导出照片...', '正在读取原片...', 25);
 
-    const fullResDataUrl: string = await invoke('load_full_photo', {
-      path: currentPhoto.path,
-      orientation: currentPhoto.exif.orientation,
-    });
+    const fullImg = await loadFullImage(currentPhoto);
 
-    showProgressModal('正在渲染照片...', '生成相框排版...', 60);
-
-    const fullImg = new Image();
-    fullImg.src = fullResDataUrl;
-    await new Promise((res) => (fullImg.onload = res));
+    showProgressModal('正在渲染照片...', '正在生成相框...', 60);
 
     const exportCanvas = document.createElement('canvas');
     await renderPhotoFrame(fullImg, currentPhoto.exif, config, exportCanvas);
 
     showProgressModal('正在编码与写入文件...', '分辨率: ' + exportCanvas.width + ' × ' + exportCanvas.height, 85);
 
-    const base64Data = exportCanvas.toDataURL('image/png');
+    await encodeAndSaveExport(exportCanvas, savePath, format, quality);
 
-    await invoke('save_rendered_photo', {
-      outputPath: savePath,
-      base64Data,
-      format,
-      quality,
+    showToast('已保存 (' + exportCanvas.width + '×' + exportCanvas.height + '): ' + savePath, 'success', {
+      label: '打开所在文件夹',
+      onClick: () => {
+        revealItemInDir(savePath).catch((err) => showToast('打开文件夹失败: ' + err, 'error'));
+      },
     });
-
-    showToast('已保存 (' + exportCanvas.width + '×' + exportCanvas.height + '): ' + savePath, 'success');
   } catch (err) {
     showToast('导出失败: ' + err, 'error');
   } finally {
@@ -1334,11 +2055,11 @@ async function handleExportCurrentBrowser(item: PhotoItem) {
   const defaultName = buildOutputName(item, activeIndex);
 
   try {
-    showProgressModal('正在导出照片...', '读取原始分辨率像素...', 25);
+    showProgressModal('正在导出照片...', '正在读取原片...', 25);
 
     const img = await loadImageFromFile(item.sourceFile);
 
-    showProgressModal('正在渲染照片...', '生成相框排版...', 60);
+    showProgressModal('正在渲染照片...', '正在生成相框...', 60);
 
     const exportCanvas = document.createElement('canvas');
     await renderPhotoFrame(img, item.exif, config, exportCanvas);
@@ -1389,6 +2110,7 @@ async function handleBatchExport() {
     }
     if (progressFailuresEl) progressFailuresEl.style.display = 'none';
 
+    const exportCanvas = document.createElement('canvas');
     for (let i = 0; i < photos.length; i++) {
       if (exportCancelled) {
         showToast('已取消导出，完成 ' + successCount + ' / ' + photos.length + ' 张', 'info');
@@ -1404,18 +2126,11 @@ async function handleBatchExport() {
       );
 
       try {
-        const fullResDataUrl: string = await invoke('load_full_photo', {
-          path: item.path,
-          orientation: item.exif.orientation,
-        });
+        const fullImg = await loadFullImage(item);
+        await renderPhotoFrame(fullImg, item.exif, config, exportCanvas);
 
-        const fullImg = new Image();
-        fullImg.src = fullResDataUrl;
-        await new Promise((res) => (fullImg.onload = res));
-
-        const canvas = document.createElement('canvas');
-        await renderPhotoFrame(fullImg, item.exif, config, canvas);
-        const base64Data = canvas.toDataURL('image/png');
+        const outName = buildOutputName(item, i);
+        const outPath = await resolveUniqueOutputPath(outputDir, outName);
 
         showProgressModal(
           '正在写入文件...',
@@ -1424,14 +2139,7 @@ async function handleBatchExport() {
           true
         );
 
-        const outName = buildOutputName(item, i);
-        const outPath = await resolveUniqueOutputPath(outputDir, outName);
-        await invoke('save_rendered_photo', {
-          outputPath: outPath,
-          base64Data,
-          format,
-          quality,
-        });
+        await encodeAndSaveExport(exportCanvas, outPath, format, quality);
         successCount++;
       } catch (err) {
         failures.push({ filename: item.filename, error: String(err) });
@@ -1444,7 +2152,12 @@ async function handleBatchExport() {
     }
 
     if (failures.length === 0) {
-      showToast('批量导出完成: ' + successCount + ' / ' + photos.length + ' 张', 'success');
+      showToast('批量导出完成: ' + successCount + ' / ' + photos.length + ' 张', 'success', {
+        label: '打开所在文件夹',
+        onClick: () => {
+          revealItemInDir(outputDir).catch((err) => showToast('打开文件夹失败: ' + err, 'error'));
+        },
+      });
     } else {
       showProgressModal(
         '部分照片导出失败',
@@ -1519,14 +2232,24 @@ async function handleBatchExportBrowser() {
 
 let toastTimer: any = null;
 
-function showToast(msg: string, type: 'success' | 'error' | 'info' = 'info') {
+function showToast(msg: string, type: 'success' | 'error' | 'info' = 'info', action?: { label: string; onClick: () => void }) {
   toastEl.textContent = translateText(msg);
+  if (action) {
+    const btn = document.createElement('button');
+    btn.className = 'toast-action';
+    btn.textContent = translateText(action.label);
+    btn.addEventListener('click', () => {
+      action.onClick();
+      toastEl.style.display = 'none';
+    });
+    toastEl.appendChild(btn);
+  }
   toastEl.className = 'toast ' + type;
   toastEl.style.display = 'block';
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     toastEl.style.display = 'none';
-  }, 3500);
+  }, action ? 8000 : 3500);
 }
 
 function bindCheckbox(id: string, setter: (val: boolean) => void) {

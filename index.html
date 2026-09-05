@@ -90,7 +90,10 @@
       <aside class="sidebar-left">
         <div class="section-header">
           <span>照片列表 (<span id="photo-count">0</span>)</span>
-          <button id="btn-clear-all" class="photo-remove" title="清空列表">清空</button>
+          <span style="display: flex; gap: 8px; align-items: center">
+            <button id="btn-collapse-left" class="photo-remove" title="收起列表">«</button>
+            <button id="btn-clear-all" class="photo-remove" title="清空列表">清空</button>
+          </span>
         </div>
 
         <div id="photo-list" class="photo-list">
@@ -114,12 +117,27 @@
           <button id="btn-zoom-in" class="tool-btn" title="放大">+</button>
           <button id="btn-zoom-fit" class="tool-btn" title="适应屏幕">适应</button>
           <button id="btn-compare-original" class="tool-btn" title="按住查看原图">👁 原图</button>
+          <button id="btn-shortcuts" class="tool-btn" title="快捷键">⌨</button>
         </div>
 
         <div class="viewport" id="viewport-area">
           <div class="canvas-container" id="canvas-container">
             <canvas id="preview-canvas"></canvas>
           </div>
+          <button id="btn-prev-photo" class="stage-nav prev" title="上一张 (←)" style="display: none">‹</button>
+          <button id="btn-next-photo" class="stage-nav next" title="下一张 (→)" style="display: none">›</button>
+        </div>
+
+        <button id="btn-restore-left" class="sidebar-restore left" title="展开照片列表" style="display: none">»</button>
+        <button id="btn-restore-right" class="sidebar-restore right" title="展开设置面板" style="display: none">«</button>
+
+        <div class="drop-overlay" aria-hidden="true">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12m0 0 4-4m-4 4-4-4"></path>
+            <path d="M3 15v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3"></path>
+          </svg>
+          <span>松开导入照片</span>
+          <span class="drop-sub">支持 JPG / PNG / WebP / TIFF，可多选</span>
         </div>
       </main>
 
@@ -128,9 +146,24 @@
         <!-- Header with Reset All -->
         <div class="inspector-header">
           <span class="inspector-title">相框与参数配置</span>
-          <button id="btn-reset-all" class="btn-reset-text" title="恢复所有参数为默认配置">
-            ↺ 重置全部参数
-          </button>
+          <span style="display: flex; gap: 10px; align-items: center">
+            <button id="btn-collapse-right" class="btn-reset-text" title="收起面板">»</button>
+            <button id="btn-reset-all" class="btn-reset-text" title="恢复所有参数为默认配置">
+              ↺ 重置全部参数
+            </button>
+          </span>
+        </div>
+
+        <!-- 0. Presets -->
+        <div class="settings-group">
+          <div class="group-title">预设</div>
+          <div class="preset-grid" id="preset-grid"></div>
+          <div class="preset-save-row" id="preset-save-row" style="display: none">
+            <input type="text" id="preset-name-input" placeholder="预设名称" maxlength="24" />
+            <button id="btn-preset-save-confirm" class="btn btn-secondary">保存</button>
+            <button id="btn-preset-save-cancel" class="btn btn-secondary">取消</button>
+          </div>
+          <button id="btn-preset-save" class="btn-reset-text" style="margin-top: 8px">＋ 保存当前为预设</button>
         </div>
 
         <!-- 1. Frame Template -->
@@ -184,7 +217,7 @@
 
         <!-- 2. Background Style -->
         <div class="settings-group">
-          <div class="group-title">相框与背景质感</div>
+          <div class="group-title">相框背景</div>
           <div class="bg-type-grid">
             <div class="bg-type-btn active" data-bg="white">纯白相框</div>
             <div class="bg-type-btn" data-bg="dark">深黑相框</div>
@@ -204,6 +237,40 @@
           <div class="control-row" id="custom-color-row" style="display: none; margin-top: 8px">
             <span class="control-label">自定义背景色</span>
             <input type="color" id="cfg-custom-color" value="#ffffff" />
+          </div>
+        </div>
+
+        <!-- 2.5 Immersive Light / 沉浸光感 -->
+        <div class="settings-group">
+          <div class="group-title">沉浸光感</div>
+
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">光感强度</span>
+            </div>
+            <div class="fx-seg" id="fx-intensity-seg">
+              <button class="fx-btn" data-fx="strong">强</button>
+              <button class="fx-btn active" data-fx="balanced">均衡</button>
+              <button class="fx-btn" data-fx="weak">弱</button>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">主题色</span>
+            </div>
+            <div class="palette-row" id="palette-row">
+              <button class="swatch active" data-palette="amber" title="琥珀金" aria-label="琥珀金" style="background: linear-gradient(135deg, #dcb979, #a3711b)"></button>
+              <button class="swatch" data-palette="sunset" title="曙光橙" aria-label="曙光橙" style="background: linear-gradient(135deg, #e8a06a, #a05a28)"></button>
+              <button class="swatch" data-palette="celadon" title="青瓷绿" aria-label="青瓷绿" style="background: linear-gradient(135deg, #93ceae, #35745a)"></button>
+              <button class="swatch" data-palette="peakblue" title="远峰蓝" aria-label="远峰蓝" style="background: linear-gradient(135deg, #93bcec, #33619e)"></button>
+              <button class="swatch" data-palette="crimson" title="绯红" aria-label="绯红" style="background: linear-gradient(135deg, #e2919a, #9c3a46)"></button>
+            </div>
+          </div>
+
+          <div class="control-row">
+            <span class="control-label">氛围光跟随照片</span>
+            <input type="checkbox" id="cfg-photo-light" checked />
           </div>
         </div>
 
@@ -268,20 +335,30 @@
               <span class="control-label">字体</span>
             </div>
             <select id="cfg-font-family" style="width: 100%">
-              <option value="Noto Sans SC" selected>思源黑体 Noto Sans SC（无衬线）</option>
-              <option value="Noto Serif SC">思源宋体 Noto Serif SC（衬线）</option>
-              <option value="Brass Mono">Brass Mono（等宽复古）</option>
+              <option value="Noto Sans SC" selected>思源黑体 Noto Sans SC</option>
+              <option value="Noto Serif SC">思源宋体 Noto Serif SC</option>
+              <option value="Brass Mono">Brass Mono（等宽）</option>
             </select>
-            <div class="export-note">使用内置字体，无需安装。</div>
+            <div class="export-note">前三种为内置字体，其余来自系统。</div>
           </div>
 
-          <!-- Padding Slider -->
-          <div class="control-block">
+          <!-- Padding Slider (classic bottom bar / gallery border only) -->
+          <div class="control-block" id="block-padding">
             <div class="control-row">
               <span class="control-label">边距留白 <span class="val-badge" id="val-padding">4%</span></span>
               <button class="btn-reset-single" data-reset="padding" title="恢复默认边距">↺</button>
             </div>
             <input type="range" id="cfg-padding" min="2" max="15" value="4" />
+          </div>
+
+          <!-- Bottom Bar Height Slider (classic bottom bar only) -->
+          <div class="control-block" id="block-bar-height">
+            <div class="control-row">
+              <span class="control-label">底栏高度 <span class="val-badge" id="val-bar-height">12%</span></span>
+              <button class="btn-reset-single" data-reset="bar-height" title="恢复默认底栏高度">↺</button>
+            </div>
+            <input type="range" id="cfg-bar-height" min="8" max="25" value="12" />
+            <div class="export-note">仅经典底栏模板使用此项。</div>
           </div>
 
           <!-- Font Scale Slider -->
@@ -310,8 +387,8 @@
             <input type="range" id="cfg-secondary-font-weight" min="300" max="800" step="100" value="400" />
           </div>
 
-          <!-- Border Radius Slider -->
-          <div class="control-block">
+          <!-- Border Radius Slider (not for minimal badge) -->
+          <div class="control-block" id="block-border-radius">
             <div class="control-row">
               <span class="control-label">圆角弧度 <span class="val-badge" id="val-border-radius">0px</span></span>
               <button class="btn-reset-single" data-reset="border-radius" title="恢复默认圆角">↺</button>
@@ -319,13 +396,23 @@
             <input type="range" id="cfg-border-radius" min="0" max="30" value="0" />
           </div>
 
-          <!-- Shadow Slider -->
-          <div class="control-block">
+          <!-- Shadow Slider (classic bottom bar / gallery border only) -->
+          <div class="control-block" id="block-shadow">
             <div class="control-row">
               <span class="control-label">照片立体阴影 <span class="val-badge" id="val-shadow">15</span></span>
               <button class="btn-reset-single" data-reset="shadow" title="恢复默认阴影">↺</button>
             </div>
             <input type="range" id="cfg-shadow" min="0" max="50" value="15" />
+          </div>
+
+          <!-- Watermark Vertical Position Slider -->
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">水印垂直位置 <span class="val-badge" id="val-vertical-offset">居中</span></span>
+              <button class="btn-reset-single" data-reset="vertical-offset" title="恢复默认位置">↺</button>
+            </div>
+            <input type="range" id="cfg-vertical-offset" min="-100" max="100" value="0" />
+            <div class="export-note">负值上移，正值下移。</div>
           </div>
         </div>
 
@@ -333,14 +420,13 @@
         <div class="settings-group">
           <div class="group-title">导出设置</div>
           
-          <div class="control-row">
-            <span class="control-label">画质</span>
-            <select id="export-quality-select">
-              <option value="100" selected>100%</option>
-              <option value="95">95%</option>
-              <option value="90">90%</option>
-              <option value="85">85%</option>
-            </select>
+          <div class="control-block">
+            <div class="control-row">
+              <span class="control-label">画质</span>
+              <input type="number" id="export-quality-val" class="quality-input" min="0" max="100" step="1" value="100" />
+            </div>
+            <input type="range" id="export-quality" min="0" max="100" step="1" value="100" />
+            <div class="export-note">可拖动滑杆或直接输入数值，100% 为最高画质。</div>
           </div>
 
           <div class="control-row">
@@ -361,7 +447,7 @@
           </div>
 
           <div class="export-note">
-            导出保持原分辨率；JPEG 质量在上方选择。
+            导出保持照片原始分辨率。
           </div>
 
           <button id="btn-batch-export" class="btn btn-primary btn-block" style="margin-top: 10px">
@@ -369,6 +455,26 @@
           </button>
         </div>
       </aside>
+    </div>
+
+    <!-- Keyboard Shortcuts Modal -->
+    <div id="shortcuts-modal" class="modal-overlay" style="display: none" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+      <div class="modal-card shortcuts-card">
+        <div class="modal-title" id="shortcuts-title">键盘快捷键</div>
+        <div class="shortcuts-grid">
+          <span class="sc-keys"><kbd>←</kbd><kbd>→</kbd></span><span class="sc-desc">切换上一张 / 下一张照片</span>
+          <span class="sc-keys"><kbd>Space</kbd></span><span class="sc-desc">按住查看原图，松开恢复</span>
+          <span class="sc-keys"><kbd>F</kbd></span><span class="sc-desc">适应屏幕</span>
+          <span class="sc-keys"><kbd>+</kbd><kbd>-</kbd></span><span class="sc-desc">放大 / 缩小预览</span>
+          <span class="sc-keys"><kbd>E</kbd></span><span class="sc-desc">导出当前照片</span>
+          <span class="sc-keys"><kbd>Delete</kbd></span><span class="sc-desc">从列表移除当前照片</span>
+          <span class="sc-keys"><kbd>?</kbd></span><span class="sc-desc">显示 / 隐藏本卡片</span>
+          <span class="sc-keys"><kbd>Esc</kbd></span><span class="sc-desc">关闭弹窗</span>
+        </div>
+        <div class="confirm-actions">
+          <button id="btn-shortcuts-close" class="btn btn-secondary btn-block">关闭</button>
+        </div>
+      </div>
     </div>
 
     <!-- Dangerous Action Confirmation Modal -->

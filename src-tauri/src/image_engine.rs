@@ -4,9 +4,25 @@ use base64::Engine;
 use base64::engine::general_purpose::STANDARD as BASE64;
 use image::{DynamicImage, GenericImageView};
 
-pub fn load_and_orient_image<P: AsRef<Path>>(path: P, orientation: Option<u32>) -> Result<DynamicImage, String> {
+/// Load and orient an image from an in-memory buffer.
+fn load_oriented_from_bytes(
+    data: &[u8],
+    orientation: Option<u32>,
+) -> Result<DynamicImage, String> {
+    let img = image::load_from_memory(data).map_err(|e| format!("Failed to decode image: {}", e))?;
+
+    let oriented = match orientation.unwrap_or(1) {
+        3 => img.rotate180(),
+        6 => img.rotate90(),
+        8 => img.rotate270(),
+        _ => img,
+    };
+    Ok(oriented)
+}
+
+fn load_and_orient_image<P: AsRef<Path>>(path: P, orientation: Option<u32>) -> Result<DynamicImage, String> {
     let img = image::open(&path).map_err(|e| format!("Failed to open image: {}", e))?;
-    
+
     // Apply orientation if present
     let oriented = match orientation.unwrap_or(1) {
         3 => img.rotate180(),
@@ -18,22 +34,96 @@ pub fn load_and_orient_image<P: AsRef<Path>>(path: P, orientation: Option<u32>) 
     Ok(oriented)
 }
 
-pub fn generate_thumbnail<P: AsRef<Path>>(path: P, max_edge: u32, orientation: Option<u32>) -> Result<(String, u32, u32), String> {
-    let img = load_and_orient_image(&path, orientation)?;
-    let (orig_w, orig_h) = img.dimensions();
+/// Deterministic cache key: same path+size+mtime → same file, stable across
+/// runs (DefaultHasher::new has fixed keys).
+fn thumbnail_cache_key(path: &str, size_bytes: u64, mtime_secs: u64) -> String {
+    use std::hash::{Hash, Hasher};
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    path.hash(&mut hasher);
+    size_bytes.hash(&mut hasher);
+    mtime_secs.hash(&mut hasher);
+    format!("{:016x}{:016x}", hasher.finish(), size_bytes)
+}
 
-    let thumb = img.thumbnail(max_edge, max_edge);
-    let mut buffer = Cursor::new(Vec::new());
-    
-    // Encode as JPEG with high quality for fast preview
-    let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut buffer, 90);
-    encoder.encode_image(&thumb)
-        .map_err(|e| format!("Failed to encode thumbnail: {}", e))?;
+/// Encode the thumbnail, store it under `cache_dir/thumbnails` and return the
+/// cache file path plus original dimensions. A warm cache makes re-imports and
+/// session restores decode-free.
+pub fn generate_thumbnail_cached(
+    data: &[u8],
+    path: &str,
+    size_bytes: u64,
+    mtime_secs: u64,
+    cache_dir: &Path,
+    max_edge: u32,
+    orientation: Option<u32>,
+) -> Result<(String, u32, u32), String> {
+    let thumb_dir = cache_dir.join("thumbnails");
+    let key = thumbnail_cache_key(path, size_bytes, mtime_secs);
+    let cache_file = thumb_dir.join(format!("{}.jpg", key));
 
-    let base64_str = BASE64.encode(buffer.into_inner());
-    let data_url = format!("data:image/jpeg;base64,{}", base64_str);
+    let (orig_w, orig_h) = if cache_file.exists() {
+        // Cache hit: skip decode entirely; EXIF supplies the display dimensions.
+        (0, 0)
+    } else {
+        let img = load_oriented_from_bytes(data, orientation)?;
+        let (orig_w, orig_h) = img.dimensions();
+        let thumb = if orig_w <= max_edge && orig_h <= max_edge {
+            img
+        } else {
+            img.thumbnail(max_edge, max_edge)
+        };
 
-    Ok((data_url, orig_w, orig_h))
+        std::fs::create_dir_all(&thumb_dir)
+            .map_err(|e| format!("Failed to create thumbnail cache dir: {}", e))?;
+        let tmp = thumb_dir.join(format!(".{}.tmp", key));
+        {
+            let file = std::fs::File::create(&tmp)
+                .map_err(|e| format!("Failed to create cache file: {}", e))?;
+            let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(
+                std::io::BufWriter::new(file),
+                85,
+            );
+            encoder
+                .encode_image(&thumb)
+                .map_err(|e| format!("Failed to encode thumbnail: {}", e))?;
+        }
+        std::fs::rename(&tmp, &cache_file)
+            .map_err(|e| format!("Failed to finalize cache file: {}", e))?;
+        prune_thumbnails(&thumb_dir);
+        (orig_w, orig_h)
+    };
+
+    Ok((
+        cache_file.to_string_lossy().to_string(),
+        orig_w,
+        orig_h,
+    ))
+}
+
+/// Keep the thumbnail cache bounded: drop the oldest files beyond 800 entries.
+fn prune_thumbnails(thumb_dir: &Path) {
+    const MAX_FILES: usize = 800;
+    let Ok(entries) = std::fs::read_dir(thumb_dir) else {
+        return;
+    };
+    let mut files: Vec<(std::time::SystemTime, std::path::PathBuf)> = entries
+        .filter_map(|entry| {
+            let p = entry.ok()?.path();
+            if p.extension().and_then(|x| x.to_str()) != Some("jpg") {
+                return None;
+            }
+            let meta = p.metadata().ok()?;
+            Some((meta.modified().ok()?, p))
+        })
+        .collect();
+    if files.len() <= MAX_FILES {
+        return;
+    }
+    files.sort_by_key(|(t, _)| *t);
+    let excess = files.len() - MAX_FILES;
+    for (_, p) in files.into_iter().take(excess) {
+        let _ = std::fs::remove_file(p);
+    }
 }
 
 pub fn load_full_image_data_url<P: AsRef<Path>>(path: P, orientation: Option<u32>) -> Result<String, String> {

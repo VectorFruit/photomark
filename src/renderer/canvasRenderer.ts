@@ -2,6 +2,7 @@ import { ExifData, FocalLengthMode, FrameConfig } from '../types';
 import { detectBrandId, loadLogoImage } from './logoManager';
 import { drawDeepFrostedBackground } from './blurEngine';
 import { isNikonCamera, loadNikonModelLogoImage } from './nikonTypography';
+import { getStoredLang } from '../i18n';
 
 function formatFocalLength(exif: ExifData, mode: FocalLengthMode): string {
   const physical = exif.focal_length;
@@ -15,7 +16,8 @@ function formatFocalLength(exif: ExifData, mode: FocalLengthMode): string {
 
   if (mode === 'both') {
     if (physical && equiv && physical !== equiv) {
-      return `${physical} (等效 ${equiv})`;
+      const label = getStoredLang() === 'en' ? 'equiv.' : '等效';
+      return `${physical} (${label} ${equiv})`;
     }
     return physical || equiv || '';
   }
@@ -24,12 +26,65 @@ function formatFocalLength(exif: ExifData, mode: FocalLengthMode): string {
   return physical || equiv || '';
 }
 
+/**
+ * Portrait photos derive bar/padding scale from an equivalent-landscape
+ * reference height so bars keep proportions close to landscape (fonts always
+ * scale with imgW; a taller factor gives the bar more presence in the tall
+ * portrait composition without overflowing the narrower width).
+ * Landscape and square photos are unaffected.
+ */
+function verticalReferenceHeight(imgW: number, imgH: number, portraitFactor = 0.9): number {
+  return imgH > imgW ? Math.round(imgW * portraitFactor) : imgH;
+}
+
+/**
+ * Map config.contentVerticalOffset (-100..100, 0 = default layout) onto the
+ * free space of a content area: negative moves content up, positive down,
+ * clamped so content stays inside its area.
+ */
+function contentVerticalShift(offset: number, halfFree: number): number {
+  if (!offset || halfFree <= 0) return 0;
+  return Math.max(-halfFree, Math.min(halfFree, (offset / 100) * halfFree));
+}
+
+/**
+ * Canvas fillText never triggers webfont loading (only DOM usage does), and
+ * the UI chrome uses system fonts — so without an explicit load the embedded
+ * Noto/Brass faces are never fetched and font switching silently falls back.
+ * Load once per family+weight before any render; later calls resolve instantly.
+ */
+const loadedFonts = new Set<string>();
+
+/** Families shipped as webfonts; anything else (e.g. installed system fonts)
+ *  resolves natively in canvas and needs no loading. */
+const EMBEDDED_FONTS = ['Noto Sans SC', 'Noto Serif SC', 'Brass Mono'];
+
+async function ensureFontsLoaded(config: FrameConfig): Promise<void> {
+  if (typeof document === 'undefined' || !document.fonts) return;
+  const family = config.fontFamily || 'Noto Sans SC';
+  if (!EMBEDDED_FONTS.includes(family)) return;
+  const weights = new Set<number>([config.fontWeight || 500, config.secondaryFontWeight || 400]);
+  await Promise.all(
+    [...weights].map(async (weight) => {
+      const key = `${family}|${weight}`;
+      if (loadedFonts.has(key)) return;
+      try {
+        await document.fonts.load(`${weight} 32px "${family}"`, '预览Preview 0123');
+        loadedFonts.add(key);
+      } catch {
+        // Font unavailable: canvas keeps its current fallback behavior
+      }
+    })
+  );
+}
+
 export async function renderPhotoFrame(
   image: HTMLImageElement,
   exif: ExifData,
   config: FrameConfig,
   targetCanvas?: HTMLCanvasElement
 ): Promise<HTMLCanvasElement> {
+  await ensureFontsLoaded(config);
   const canvas = targetCanvas || document.createElement('canvas');
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   if (!ctx) throw new Error('Could not get canvas 2D context');
@@ -188,8 +243,15 @@ function renderBottomBar(
   nikonModelImg: HTMLImageElement | null
 ) {
   const padX = Math.round(imgW * (config.paddingPercent / 100));
-  const padTop = Math.round(imgH * (config.paddingPercent / 100));
-  const barHeight = Math.round(imgH * (config.bottomBarHeightPercent / 100));
+  // Portrait: uniform mat (padding slider widens all four photo margins
+  // equally) and a bottom band sized off the photo WIDTH with polaroid-grade
+  // presence (16% of width at the default bar height) — thin landscape-style
+  // strips read as broken on a tall composition. Landscape is unchanged.
+  const isPortrait = imgH > imgW;
+  const padTop = isPortrait ? padX : Math.round(imgH * (config.paddingPercent / 100));
+  const barHeight = isPortrait
+    ? Math.round(imgW * 0.16 * (config.bottomBarHeightPercent / 12))
+    : Math.round(imgH * (config.bottomBarHeightPercent / 100));
 
   const canvasW = imgW + padX * 2;
   const canvasH = imgH + padTop + barHeight;
@@ -232,7 +294,6 @@ function renderBottomBar(
   // Bottom Bar Content Area
   const contentY = photoY + imgH;
   const contentH = barHeight;
-  const midY = contentY + contentH / 2;
 
   const fontScale = (imgW / 1200) * config.fontSizeScale;
   const mainFontSize = Math.max(Math.round(22 * fontScale), 16);
@@ -241,6 +302,12 @@ function renderBottomBar(
   const mainWeight = config.fontWeight || 500;
   const subWeight = config.secondaryFontWeight || 400;
 
+  // Watermark content (text + logo) vertical position within the bar
+  const midY =
+    contentY +
+    contentH / 2 +
+    contentVerticalShift(config.contentVerticalOffset || 0, Math.max(0, contentH / 2 - mainFontSize * 1.1));
+
   // If frosted blur, apply text drop shadow for pristine legibility
   if (isFrosted) {
     ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
@@ -248,34 +315,42 @@ function renderBottomBar(
     ctx.shadowOffsetY = 2;
   }
 
-  // Left Section: Model & Lens
+  // Left Section: Model & Lens — each column is block-centered on the bar
+  // centerline so multi-line stacks share one optical middle with the logo.
   const leftX = photoX + Math.round(padX * 0.5);
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
 
   const hasLens = !!lensText;
   const hasModel = !!modelText || !!nikonModelImg;
+  const stackGap = Math.round(subFontSize * 0.5);
 
   if (nikonModelImg) {
     const modelLogoH = Math.round(barHeight * (hasLens ? 0.30 : 0.36));
     const modelLogoW = Math.round((nikonModelImg.width / nikonModelImg.height) * modelLogoH);
-    const modelLogoY = hasLens ? midY - modelLogoH * 0.95 : midY - modelLogoH / 2;
-
-    ctx.drawImage(nikonModelImg, leftX, modelLogoY, modelLogoW, modelLogoH);
 
     if (hasLens) {
+      const stackH = modelLogoH + stackGap + subFontSize;
+      const stackTop = midY - stackH / 2;
+      ctx.drawImage(nikonModelImg, leftX, stackTop, modelLogoW, modelLogoH);
+
       ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
       ctx.fillStyle = subTextColor;
-      ctx.fillText(lensText, leftX, midY + subFontSize * 0.8);
+      ctx.fillText(lensText, leftX, stackTop + modelLogoH + stackGap + subFontSize / 2);
+    } else {
+      ctx.drawImage(nikonModelImg, leftX, midY - modelLogoH / 2, modelLogoW, modelLogoH);
     }
   } else if (hasModel && hasLens) {
+    const stackH = mainFontSize + stackGap + subFontSize;
+    const stackTop = midY - stackH / 2;
+
     ctx.font = `${mainWeight} ${mainFontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
-    ctx.fillText(modelText, leftX, midY - mainFontSize * 0.6);
+    ctx.fillText(modelText, leftX, stackTop + mainFontSize / 2);
 
     ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
-    ctx.fillText(lensText, leftX, midY + subFontSize * 0.8);
+    ctx.fillText(lensText, leftX, stackTop + mainFontSize + stackGap + subFontSize / 2);
   } else if (hasModel || hasLens) {
     ctx.font = `${mainWeight} ${mainFontSize * 1.05}px ${fontFam}`;
     ctx.fillStyle = textColor;
@@ -315,13 +390,16 @@ function renderBottomBar(
   const rightSubText = subMetaParts.join('   •   ');
 
   if (rightSubText) {
+    const stackH = mainFontSize + stackGap + subFontSize;
+    const stackTop = midY - stackH / 2;
+
     ctx.font = `${mainWeight} ${mainFontSize}px ${fontFam}`;
     ctx.fillStyle = textColor;
-    ctx.fillText(paramsText, currentRightX, midY - mainFontSize * 0.6);
+    ctx.fillText(paramsText, currentRightX, stackTop + mainFontSize / 2);
 
     ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
     ctx.fillStyle = subTextColor;
-    ctx.fillText(rightSubText, currentRightX, midY + subFontSize * 0.8);
+    ctx.fillText(rightSubText, currentRightX, stackTop + mainFontSize + stackGap + subFontSize / 2);
   } else {
     ctx.font = `${mainWeight} ${mainFontSize * 1.05}px ${fontFam}`;
     ctx.fillStyle = textColor;
@@ -357,7 +435,15 @@ function renderBorderFrame(
   const pad = Math.round(Math.min(imgW, imgH) * (config.paddingPercent / 100));
   const subMetaParts = [noteText, dateText].filter(Boolean);
   const subMetaLine = subMetaParts.join('  •  ');
-  const bottomExtra = subMetaLine ? Math.round(pad * 1.6) : Math.round(pad * 1.2);
+  // Portrait: size the caption band off the photo WIDTH (16% with a sub-line,
+  // 12% single-line) so it carries the same presence as the polaroid chin;
+  // the pad-anchored band is too thin on a tall composition.
+  const isPortrait = imgH > imgW;
+  const bottomExtra = isPortrait
+    ? Math.max(Math.round(imgW * (subMetaLine ? 0.16 : 0.12)) - pad, Math.round(pad * 1.2))
+    : subMetaLine
+      ? Math.round(pad * 1.6)
+      : Math.round(pad * 1.2);
 
   const canvasW = imgW + pad * 2;
   const canvasH = imgH + pad * 2 + bottomExtra;
@@ -414,7 +500,9 @@ function renderBorderFrame(
   const remainingParts = [nikonModelImg ? '' : modelText, lensText, paramsText].filter(Boolean);
   const remainingText = remainingParts.join('  •  ');
   const hasSubLine = !!subMetaLine;
-  const mainY = hasSubLine ? bottomAreaY + captionH * 0.42 : bottomAreaY + captionH * 0.5;
+  const mainY =
+    (hasSubLine ? bottomAreaY + captionH * 0.36 : bottomAreaY + captionH * 0.44) +
+    contentVerticalShift(config.contentVerticalOffset || 0, Math.max(0, captionH / 2 - fontSize * 1.6));
 
   ctx.font = `${mainWeight} ${fontSize}px ${fontFam}`;
   const spacing = Math.round(14 * fontScale);
@@ -484,7 +572,10 @@ function renderPolaroid(
   nikonModelImg: HTMLImageElement | null
 ) {
   const pad = Math.round(imgW * 0.06);
-  const bottomExtra = Math.round(imgH * 0.24);
+  // Portrait photos: keep the classic chin proportion of a physical instant
+  // film frame (~16% of the width), otherwise the bottom area grows with imgH.
+  const vRef = verticalReferenceHeight(imgW, imgH, 2 / 3);
+  const bottomExtra = Math.round(vRef * 0.24);
 
   const canvasW = imgW + pad * 2;
   const canvasH = imgH + pad + bottomExtra;
@@ -524,7 +615,10 @@ function renderPolaroid(
 
   const bottomAreaY = pad + imgH;
   const bottomAreaH = bottomExtra - pad * 0.5;
-  const midY = bottomAreaY + bottomAreaH / 2;
+  const midY =
+    bottomAreaY +
+    bottomAreaH / 2 +
+    contentVerticalShift(config.contentVerticalOffset || 0, Math.max(0, bottomAreaH / 2 - fontSize * 1.6));
 
   const leftX = pad + Math.round(pad * 0.4);
   const rightX = canvasW - pad - Math.round(pad * 0.4);
@@ -535,64 +629,63 @@ function renderPolaroid(
     ctx.shadowOffsetY = 2;
   }
 
-  // Left Content: Model + (Lens | Params) + Signature Note
+  // Left Content: Model + (Lens | Params) + Signature Note, laid out as one
+  // vertically centered stack with an even, comfortable gap between rows
+  // (the old fixed offsets packed the model line against the EXIF line).
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
 
   const subLine = [lensText, paramsText].filter(Boolean).join('  |  ');
   const hasNote = !!noteText;
+  const stackGap = Math.round(subFontSize * 1.0);
+
+  const entries: { h: number; draw: (cy: number) => void }[] = [];
 
   if (nikonModelImg) {
-    const modelLogoH = Math.round(fontSize * (hasNote && subLine ? 1.2 : 1.35));
+    const modelLogoH = Math.round(fontSize * 1.3);
     const modelLogoW = Math.round((nikonModelImg.width / nikonModelImg.height) * modelLogoH);
+    entries.push({
+      h: modelLogoH,
+      draw: (cy) => ctx.drawImage(nikonModelImg, leftX, cy - modelLogoH / 2, modelLogoW, modelLogoH),
+    });
+  } else if (modelText) {
+    entries.push({
+      h: fontSize,
+      draw: (cy) => {
+        ctx.font = `${mainWeight} ${fontSize * 1.05}px ${fontFam}`;
+        ctx.fillStyle = textColor;
+        ctx.fillText(modelText, leftX, cy);
+      },
+    });
+  }
 
-    if (hasNote && subLine) {
-      ctx.drawImage(nikonModelImg, leftX, (midY - fontSize * 0.95) - modelLogoH / 2, modelLogoW, modelLogoH);
-
-      ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
-      ctx.fillStyle = subTextColor;
-      ctx.fillText(subLine, leftX, midY);
-
-      drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isDarkBg);
-    } else if (subLine || hasNote) {
-      ctx.drawImage(nikonModelImg, leftX, (midY - fontSize * 0.6) - modelLogoH / 2, modelLogoW, modelLogoH);
-
-      if (subLine) {
+  if (subLine) {
+    entries.push({
+      h: subFontSize,
+      draw: (cy) => {
         ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
         ctx.fillStyle = subTextColor;
-        ctx.fillText(subLine, leftX, midY + subFontSize * 0.8);
-      } else {
-        drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isDarkBg);
-      }
-    } else {
-      ctx.drawImage(nikonModelImg, leftX, midY - modelLogoH / 2, modelLogoW, modelLogoH);
+        ctx.fillText(subLine, leftX, cy);
+      },
+    });
+  }
+
+  if (hasNote) {
+    entries.push({
+      h: subFontSize,
+      draw: (cy) => drawSignatureNote(ctx, noteText, leftX, cy, subFontSize, isDarkBg),
+    });
+  }
+
+  if (entries.length === 1) {
+    entries[0].draw(midY);
+  } else if (entries.length > 1) {
+    const stackH = entries.reduce((s, e) => s + e.h, 0) + stackGap * (entries.length - 1);
+    let cy = midY - stackH / 2;
+    for (const e of entries) {
+      e.draw(cy + e.h / 2);
+      cy += e.h + stackGap;
     }
-  } else if (hasNote && subLine) {
-    ctx.font = `${mainWeight} ${fontSize}px ${fontFam}`;
-    ctx.fillStyle = textColor;
-    ctx.fillText(modelText, leftX, midY - fontSize * 0.95);
-
-    ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
-    ctx.fillStyle = subTextColor;
-    ctx.fillText(subLine, leftX, midY);
-
-    drawSignatureNote(ctx, noteText, leftX, midY + fontSize * 0.95, subFontSize, isDarkBg);
-  } else if (subLine || hasNote) {
-    ctx.font = `${mainWeight} ${fontSize}px ${fontFam}`;
-    ctx.fillStyle = textColor;
-    ctx.fillText(modelText, leftX, midY - fontSize * 0.6);
-
-    if (subLine) {
-      ctx.font = `${subWeight} ${subFontSize}px ${fontFam}`;
-      ctx.fillStyle = subTextColor;
-      ctx.fillText(subLine, leftX, midY + subFontSize * 0.8);
-    } else {
-      drawSignatureNote(ctx, noteText, leftX, midY + subFontSize * 0.8, subFontSize, isDarkBg);
-    }
-  } else {
-    ctx.font = `${mainWeight} ${fontSize * 1.1}px ${fontFam}`;
-    ctx.fillStyle = textColor;
-    ctx.fillText(modelText, leftX, midY);
   }
 
   // Right Content: Logo + Vintage Date Stamp
@@ -693,7 +786,12 @@ function renderMinimalBadge(
   const badgeW = contentW + pad * 2;
   const badgeH = fontSize * 2.2;
   const badgeX = imgW - badgeW - Math.round(imgW * 0.03);
-  const badgeY = imgH - badgeH - Math.round(imgH * 0.03);
+  // 0 keeps the default bottom-right spot; positive offset slides the badge up
+  // along the right edge, clamped so it never leaves the photo.
+  const vMargin = Math.round(imgH * 0.03);
+  const vTravel = Math.max(0, imgH - badgeH - vMargin * 2);
+  const upShift = Math.max(0, Math.min(vTravel, ((config.contentVerticalOffset || 0) / 100) * vTravel));
+  const badgeY = imgH - badgeH - vMargin - upShift;
 
   ctx.save();
   if (useLightBadge) {

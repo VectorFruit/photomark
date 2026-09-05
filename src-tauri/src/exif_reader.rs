@@ -1,6 +1,5 @@
-use std::fs::File;
-use std::io::BufReader;
-use std::path::Path;
+use std::io::Cursor;
+use std::sync::OnceLock;
 use exif::{Context, In, Reader, Tag, Value};
 use crate::models::ExifData;
 
@@ -12,6 +11,31 @@ const LENS_ID_TAG: Tag = Tag(Context::Exif, 0xa434);
 /// Entries are keyed by normalized focal-length/aperture spec plus camera make,
 /// so lenses that share the same numeric Lightroom LensID are disambiguated.
 const LENS_DB_JSON: &str = include_str!("../../src/lensDatabase.json");
+
+/// XMP data lives in APP1 segments near the start of the file — scanning the
+/// first 512KB is enough and avoids reading multi-MB files into a String.
+const XMP_SCAN_BYTES: usize = 512 * 1024;
+
+/// Parsed once per process; previously re-parsed the 124KB JSON per photo.
+fn lens_db() -> &'static Vec<(String, String, String)> {
+    static LENS_DB: OnceLock<Vec<(String, String, String)>> = OnceLock::new();
+    LENS_DB.get_or_init(|| {
+        let mut entries = Vec::new();
+        if let Ok(value) = serde_json::from_str::<serde_json::Value>(LENS_DB_JSON) {
+            if let Some(lenses) = value.get("lenses").and_then(|v| v.as_array()) {
+                for entry in lenses {
+                    let make = entry.get("make").and_then(|v| v.as_str()).map(|s| s.to_string());
+                    let spec = entry.get("spec").and_then(|v| v.as_str()).map(|s| s.to_string());
+                    let name = entry.get("name").and_then(|v| v.as_str()).map(|s| s.to_string());
+                    if let (Some(make), Some(spec), Some(name)) = (make, spec, name) {
+                        entries.push((make, spec, name));
+                    }
+                }
+            }
+        }
+        entries
+    })
+}
 
 fn looks_like_lens_spec(s: &str) -> bool {
     let t = s.trim().to_lowercase();
@@ -98,14 +122,10 @@ fn lens_spec_key(text: &str) -> Option<String> {
 }
 
 fn lens_name_from_database(make: &str, spec: &str) -> Option<String> {
-    let value: serde_json::Value = serde_json::from_str(LENS_DB_JSON).ok()?;
-    let lenses = value.get("lenses")?.as_array()?;
-    for entry in lenses {
-        if entry.get("make")?.as_str() == Some(make) && entry.get("spec")?.as_str() == Some(spec) {
-            return entry.get("name")?.as_str().map(|s| s.to_string());
-        }
-    }
-    None
+    lens_db()
+        .iter()
+        .find(|(m, s, _)| m == make && s == spec)
+        .map(|(_, _, name)| name.clone())
 }
 
 fn resolve_lens_name(lens_model: &str, make: Option<&str>, lens: Option<&str>) -> Option<String> {
@@ -119,16 +139,12 @@ fn resolve_lens_name(lens_model: &str, make: Option<&str>, lens: Option<&str>) -
     lens_name_from_database(&make, &key)
 }
 
-pub fn read_exif_from_path<P: AsRef<Path>>(path: P) -> ExifData {
+/// Parse EXIF (and, when needed, XMP) from an in-memory file buffer.
+/// Import previously opened each file up to 3 times; this path reads once.
+pub fn read_exif_from_memory(data: &[u8]) -> ExifData {
     let mut exif_data = ExifData::default();
 
-    let file = match File::open(&path) {
-        Ok(f) => f,
-        Err(_) => return exif_data,
-    };
-
-    let mut bufreader = BufReader::new(file);
-    let exif = match Reader::new().read_from_container(&mut bufreader) {
+    let exif = match Reader::new().read_from_container(&mut Cursor::new(data)) {
         Ok(ex) => ex,
         Err(_) => return exif_data,
     };
@@ -164,12 +180,11 @@ pub fn read_exif_from_path<P: AsRef<Path>>(path: P) -> ExifData {
     // resolve it back to a readable lens name from XMP aux:LensID / aux:Lens when possible.
     if let Some(current) = exif_data.lens_model.clone() {
         if looks_like_lens_spec(&current) {
-            if let Ok(bytes) = std::fs::read(&path) {
-                let text = String::from_utf8_lossy(&bytes);
-                let lens = extract_xmp_attr(&text, "aux:Lens");
-                if let Some(name) = resolve_lens_name(&current, exif_data.make.as_deref(), lens.as_deref()) {
-                    exif_data.lens_model = Some(name);
-                }
+            let head = &data[..data.len().min(XMP_SCAN_BYTES)];
+            let text = String::from_utf8_lossy(head);
+            let lens = extract_xmp_attr(&text, "aux:Lens");
+            if let Some(name) = resolve_lens_name(&current, exif_data.make.as_deref(), lens.as_deref()) {
+                exif_data.lens_model = Some(name);
             }
         }
     }

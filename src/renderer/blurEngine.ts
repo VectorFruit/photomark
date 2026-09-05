@@ -2,7 +2,25 @@
  * Fast, pure Multi-pass Box Blur engine (Gaussian approximation)
  * Runs on downscaled canvas buffer to guarantee ultra-fast (<1ms) rendering
  * and 100% reliable, deep frosted glass blur across all platforms (bypassing WebKitGTK filter limits).
+ *
+ * Finished backgrounds are cached per (image, size, intensity) so template /
+ * settings re-renders reuse them, and the scratch canvas is reused instead of
+ * being reallocated on every call.
  */
+
+const backgroundCache = new Map<string, HTMLCanvasElement>();
+let scratchCanvas: HTMLCanvasElement | null = null;
+
+const CACHE_LIMIT = 4;
+
+function getScratch(w: number, h: number): HTMLCanvasElement {
+  if (!scratchCanvas) scratchCanvas = document.createElement('canvas');
+  if (scratchCanvas.width !== w || scratchCanvas.height !== h) {
+    scratchCanvas.width = w;
+    scratchCanvas.height = h;
+  }
+  return scratchCanvas;
+}
 
 export function drawDeepFrostedBackground(
   ctx: CanvasRenderingContext2D,
@@ -12,6 +30,16 @@ export function drawDeepFrostedBackground(
   blurIntensity: number = 60
 ) {
   const intensity = Math.max(10, Math.min(150, blurIntensity || 60));
+  const cacheKey = `${img.src}|${canvasW}x${canvasH}|${intensity}`;
+
+  const cached = backgroundCache.get(cacheKey);
+  if (cached) {
+    // Refresh LRU position
+    backgroundCache.delete(cacheKey);
+    backgroundCache.set(cacheKey, cached);
+    ctx.drawImage(cached, 0, 0);
+    return;
+  }
 
   // Determine downsample resolution based on intensity
   // Higher intensity -> lower pyramid resolution + larger box blur passes = deep creamy blur
@@ -19,10 +47,8 @@ export function drawDeepFrostedBackground(
   const downW = Math.max(24, Math.round(canvasW / scaleDivisor));
   const downH = Math.max(24, Math.round(canvasH / scaleDivisor));
 
-  // 1. Downsample onto small scratch canvas
-  const smallCanvas = document.createElement('canvas');
-  smallCanvas.width = downW;
-  smallCanvas.height = downH;
+  // 1. Downsample onto the reused small scratch canvas
+  const smallCanvas = getScratch(downW, downH);
   const sCtx = smallCanvas.getContext('2d');
   if (!sCtx) return;
 
@@ -36,16 +62,25 @@ export function drawDeepFrostedBackground(
   fastBoxBlur(imageData, downW, downH, radius, 3);
   sCtx.putImageData(imageData, 0, 0);
 
-  // 3. Upscale to main canvas
-  ctx.save();
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(smallCanvas, -canvasW * 0.1, -canvasH * 0.1, canvasW * 1.2, canvasH * 1.2);
+  // 3. Bake the upscaled background + tint into a cacheable surface
+  const baked = document.createElement('canvas');
+  baked.width = canvasW;
+  baked.height = canvasH;
+  const bCtx = baked.getContext('2d');
+  if (!bCtx) return;
+  bCtx.imageSmoothingEnabled = true;
+  bCtx.imageSmoothingQuality = 'high';
+  bCtx.drawImage(smallCanvas, -canvasW * 0.1, -canvasH * 0.1, canvasW * 1.2, canvasH * 1.2);
+  bCtx.fillStyle = 'rgba(8, 10, 16, 0.42)';
+  bCtx.fillRect(0, 0, canvasW, canvasH);
 
-  // 4. Atmospheric frosted glass tint overlay (vibrant contrast)
-  ctx.fillStyle = 'rgba(8, 10, 16, 0.42)';
-  ctx.fillRect(0, 0, canvasW, canvasH);
-  ctx.restore();
+  backgroundCache.set(cacheKey, baked);
+  if (backgroundCache.size > CACHE_LIMIT) {
+    const oldest = backgroundCache.keys().next().value;
+    if (oldest !== undefined) backgroundCache.delete(oldest);
+  }
+
+  ctx.drawImage(baked, 0, 0);
 }
 
 function fastBoxBlur(

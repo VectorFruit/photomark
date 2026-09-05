@@ -1,11 +1,11 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use rayon::prelude::*;
 use serde::Serialize;
-use tauri::{AppHandle, Emitter};
-use crate::exif_reader::read_exif_from_path;
-use crate::image_engine::{generate_thumbnail, load_full_image_data_url, save_base64_image};
+use tauri::{AppHandle, Emitter, Manager};
+use crate::exif_reader::read_exif_from_memory;
+use crate::image_engine::{generate_thumbnail_cached, load_full_image_data_url, save_base64_image};
 use crate::models::{BatchExportItem, ExportResult, PhotoInfo};
 
 #[derive(Clone, Serialize)]
@@ -18,10 +18,22 @@ pub struct ProgressEvent {
 
 #[tauri::command]
 pub async fn load_photos(app: AppHandle, paths: Vec<String>) -> Result<Vec<PhotoInfo>, String> {
+    // Heavy decode work runs on a blocking thread so the async runtime stays free.
+    tauri::async_runtime::spawn_blocking(move || load_photos_blocking(app, paths))
+        .await
+        .map_err(|e| format!("load_photos task failed: {}", e))
+}
+
+fn load_photos_blocking(app: AppHandle, paths: Vec<String>) -> Vec<PhotoInfo> {
     let total = paths.len();
     let counter = Arc::new(AtomicUsize::new(0));
+    let thumb_cache_dir: Option<PathBuf> = app
+        .path()
+        .app_cache_dir()
+        .ok()
+        .map(|d| d.join("thumbnails"));
 
-    let results: Vec<PhotoInfo> = paths
+    paths
         .par_iter()
         .filter_map(|p_str| {
             let path = Path::new(p_str);
@@ -32,14 +44,39 @@ pub async fn load_photos(app: AppHandle, paths: Vec<String>) -> Result<Vec<Photo
             let filename = path.file_name()?.to_string_lossy().to_string();
             let metadata = std::fs::metadata(path).ok()?;
             let size_bytes = metadata.len();
+            let mtime_secs = metadata
+                .modified()
+                .ok()
+                .and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok())
+                .map(|d| d.as_secs())
+                .unwrap_or(0);
+
+            // Single read: EXIF, XMP and decode all work off this buffer.
+            let data = match std::fs::read(path) {
+                Ok(d) => d,
+                Err(_) => return None,
+            };
 
             // 1. Read EXIF
-            let mut exif = read_exif_from_path(path);
+            let mut exif = read_exif_from_memory(&data);
 
-            // 2. Generate Thumbnail & get dimensions
-            let (thumbnail_data_url, w, h) = match generate_thumbnail(path, 1600, exif.orientation) {
-                Ok((url, w, h)) => (Some(url), Some(w), Some(h)),
-                Err(_) => (None, None, None),
+            // 2. Thumbnail: encoded once into the on-disk cache, then served to
+            //    the webview via the asset protocol (no base64 over IPC). A
+            //    warm cache skips decode + encode entirely.
+            let (thumbnail_data_url, thumbnail_path, w, h) = match &thumb_cache_dir {
+                Some(dir) => match generate_thumbnail_cached(
+                    &data,
+                    p_str,
+                    size_bytes,
+                    mtime_secs,
+                    dir,
+                    1440,
+                    exif.orientation,
+                ) {
+                    Ok((p, w, h)) => (None, Some(p), Some(w), Some(h)),
+                    Err(_) => (None, None, None, None),
+                },
+                None => (None, None, None, None),
             };
 
             if exif.width.is_none() {
@@ -71,16 +108,33 @@ pub async fn load_photos(app: AppHandle, paths: Vec<String>) -> Result<Vec<Photo
                 size_bytes,
                 exif,
                 thumbnail_data_url,
+                thumbnail_path,
             })
         })
-        .collect();
-
-    Ok(results)
+        .collect()
 }
 
 #[tauri::command]
 pub async fn load_full_photo(path: String, orientation: Option<u32>) -> Result<String, String> {
     load_full_image_data_url(&path, orientation)
+}
+
+/// Enumerate installed system font family names (sorted, cached per process).
+#[tauri::command]
+pub async fn list_system_fonts() -> Result<Vec<String>, String> {
+    tauri::async_runtime::spawn_blocking(|| {
+        static FAMILIES: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
+        let families = FAMILIES.get_or_init(|| {
+            let mut list = font_kit::source::SystemSource::new()
+                .all_families()
+                .unwrap_or_default();
+            list.sort_by_key(|f| f.to_lowercase());
+            list
+        });
+        families.clone()
+    })
+    .await
+    .map_err(|e| format!("list_system_fonts task failed: {}", e))
 }
 
 #[tauri::command]
@@ -175,4 +229,17 @@ pub async fn batch_export(app: AppHandle, items: Vec<BatchExportItem>) -> Result
         .collect();
 
     Ok(results)
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn system_font_enumeration_finds_families() {
+        let mut families = font_kit::source::SystemSource::new()
+            .all_families()
+            .expect("font enumeration failed");
+        assert!(!families.is_empty(), "no system fonts found");
+        families.sort_by_key(|f| f.to_lowercase());
+        assert!(families.first().unwrap().len() > 0);
+    }
 }

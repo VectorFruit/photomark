@@ -21,8 +21,17 @@ export interface PhotoItem {
   size_bytes: number;
   exif: ExifData;
   thumbnail_data_url?: string;
+  /** Tauri mode: cached thumbnail file, read via the asset protocol */
+  thumbnail_path?: string;
   /** Browser mode: original file handle (Tauri mode loads from disk instead) */
   sourceFile?: File;
+}
+
+/** Helper: the best available <img> source for a photo's preview thumbnail. */
+export function thumbnailSrc(photo: PhotoItem, convertFileSrcFn?: (p: string) => string): string {
+  if (photo.thumbnail_data_url) return photo.thumbnail_data_url;
+  if (photo.thumbnail_path && convertFileSrcFn) return convertFileSrcFn(photo.thumbnail_path);
+  return '';
 }
 
 export type FrameTemplateId = 'bottom_bar' | 'border' | 'polaroid' | 'minimal_badge';
@@ -40,6 +49,7 @@ export interface FrameConfig {
   secondaryFontWeight: number; // 300 to 800 (sub text)
   paddingPercent: number; // 2% to 15%
   bottomBarHeightPercent: number; // 8% to 25%
+  contentVerticalOffset: number; // -100 to 100, shifts watermark text & logo up/down
   shadowRadius: number; // 0 to 50
   shadowOpacity: number; // 0 to 1
   borderRadius: number; // 0 to 40
@@ -68,6 +78,7 @@ export const DEFAULT_FRAME_CONFIG: FrameConfig = {
   secondaryFontWeight: 400,
   paddingPercent: 4,
   bottomBarHeightPercent: 12,
+  contentVerticalOffset: 0,
   shadowRadius: 15,
   shadowOpacity: 0.28,
   borderRadius: 0,

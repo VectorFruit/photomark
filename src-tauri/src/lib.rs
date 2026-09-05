@@ -3,7 +3,7 @@ mod exif_reader;
 mod image_engine;
 mod commands;
 
-use commands::{load_photos, load_full_photo, save_rendered_photo, batch_export, resolve_unique_path};
+use commands::{load_photos, load_full_photo, list_system_fonts, save_rendered_photo, batch_export, resolve_unique_path};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -14,6 +14,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             load_photos,
             load_full_photo,
+            list_system_fonts,
             save_rendered_photo,
             batch_export,
             resolve_unique_path
