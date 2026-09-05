@@ -8,8 +8,7 @@ arch=('x86_64')
 url="https://github.com/vectorfruit/photomark"
 license=('GPL-3.0-or-later')
 source=("${pkgname}-${pkgver}.tar.gz::https://github.com/vectorfruit/photomark/archive/refs/tags/v${pkgver}.tar.gz")
-# Tag 推送后用 `updpkgsums` 或 `sha256sum <(curl -L https://github.com/vectorfruit/photomark/archive/refs/tags/v1.5.0.tar.gz)` 更新
-sha256sums=('SKIP')
+sha256sums=('da32b8cb9fddf5833222edef8637f03e4a22554f50e6cbca661e07f52a051aa9')
 depends=(
   'cairo'
   'dbus'
