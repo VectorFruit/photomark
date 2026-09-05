@@ -60,10 +60,9 @@ fn load_photos_blocking(app: AppHandle, paths: Vec<String>) -> Vec<PhotoInfo> {
             // 1. Read EXIF
             let mut exif = read_exif_from_memory(&data);
 
-            // 2. Thumbnail: encoded once into the on-disk cache, then served to
-            //    the webview via the asset protocol (no base64 over IPC). A
-            //    warm cache skips decode + encode entirely.
-            let (thumbnail_data_url, thumbnail_path, w, h) = match &thumb_cache_dir {
+            // 2. Thumbnail: encode once into the on-disk cache (warm cache
+            //    skips decode + encode), deliver as a base64 data URL over IPC.
+            let (thumbnail_data_url, _thumbnail_path, w, h) = match &thumb_cache_dir {
                 Some(dir) => match generate_thumbnail_cached(
                     &data,
                     p_str,
@@ -73,7 +72,7 @@ fn load_photos_blocking(app: AppHandle, paths: Vec<String>) -> Vec<PhotoInfo> {
                     1440,
                     exif.orientation,
                 ) {
-                    Ok((p, w, h)) => (None, Some(p), Some(w), Some(h)),
+                    Ok((url, p, w, h)) => (Some(url), Some(p), Some(w), Some(h)),
                     Err(_) => (None, None, None, None),
                 },
                 None => (None, None, None, None),
@@ -108,7 +107,7 @@ fn load_photos_blocking(app: AppHandle, paths: Vec<String>) -> Vec<PhotoInfo> {
                 size_bytes,
                 exif,
                 thumbnail_data_url,
-                thumbnail_path,
+                thumbnail_path: _thumbnail_path,
             })
         })
         .collect()

@@ -1852,8 +1852,17 @@ async function doRender() {
 
   if (!img) {
     img = new Image();
-    img.src = thumbnailSrc(currentPhoto, isTauri ? convertFileSrc : undefined);
-    await new Promise((res) => (img!.onload = res));
+    const loaded = await new Promise<boolean>((res) => {
+      img!.onload = () => res(true);
+      // A rejected/failed thumbnail source must never hang the render pipeline.
+      img!.onerror = () => res(false);
+      setTimeout(() => res(false), 10000);
+      img!.src = thumbnailSrc(currentPhoto, isTauri ? convertFileSrc : undefined);
+    });
+    if (!loaded) {
+      showToast('预览加载失败，请重新导入或重启应用', 'error');
+      return;
+    }
     previewImageCache.set(currentPhoto.path, img);
     // LRU cap: bound memory when large queues are browsed for a long time
     if (previewImageCache.size > 16) {
@@ -1938,10 +1947,14 @@ async function loadFullImage(item: PhotoItem): Promise<HTMLImageElement> {
     try {
       const img = new Image();
       img.src = convertFileSrc(item.path);
-      await new Promise((res, rej) => {
-        img.onload = () => res(null);
-        img.onerror = () => rej(new Error('asset load failed'));
-      });
+      await Promise.race([
+        new Promise((res, rej) => {
+          img.onload = () => res(null);
+          img.onerror = () => rej(new Error('asset load failed'));
+        }),
+        // A stuck asset request must fall back to the Rust decode path.
+        new Promise((_, rej) => setTimeout(() => rej(new Error('asset load timeout')), 8000)),
+      ]);
       return img;
     } catch {
       // fall through to the Rust decode path

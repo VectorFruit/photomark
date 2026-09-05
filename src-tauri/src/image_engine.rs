@@ -45,9 +45,10 @@ fn thumbnail_cache_key(path: &str, size_bytes: u64, mtime_secs: u64) -> String {
     format!("{:016x}{:016x}", hasher.finish(), size_bytes)
 }
 
-/// Encode the thumbnail, store it under `cache_dir/thumbnails` and return the
-/// cache file path plus original dimensions. A warm cache makes re-imports and
-/// session restores decode-free.
+/// Encode the thumbnail into `cache_dir/thumbnails` (skipping decode on a
+/// warm cache) and return it as a base64 data URL plus original dimensions.
+/// The data URL goes over IPC as in 1.4.x: the asset protocol cannot serve
+/// the cache directory on Unix (dot-dir + require_literal_leading_dot).
 pub fn generate_thumbnail_cached(
     data: &[u8],
     path: &str,
@@ -56,14 +57,18 @@ pub fn generate_thumbnail_cached(
     cache_dir: &Path,
     max_edge: u32,
     orientation: Option<u32>,
-) -> Result<(String, u32, u32), String> {
+) -> Result<(String, String, u32, u32), String> {
     let thumb_dir = cache_dir.join("thumbnails");
     let key = thumbnail_cache_key(path, size_bytes, mtime_secs);
     let cache_file = thumb_dir.join(format!("{}.jpg", key));
 
-    let (orig_w, orig_h) = if cache_file.exists() {
-        // Cache hit: skip decode entirely; EXIF supplies the display dimensions.
-        (0, 0)
+    let (jpeg_bytes, orig_w, orig_h) = if cache_file.exists() {
+        // Cache hit: no decode, no encode — read the stored JPEG back.
+        (
+            std::fs::read(&cache_file).map_err(|e| format!("Failed to read thumbnail cache: {}", e))?,
+            0,
+            0,
+        )
     } else {
         let img = load_oriented_from_bytes(data, orientation)?;
         let (orig_w, orig_h) = img.dimensions();
@@ -90,14 +95,15 @@ pub fn generate_thumbnail_cached(
         std::fs::rename(&tmp, &cache_file)
             .map_err(|e| format!("Failed to finalize cache file: {}", e))?;
         prune_thumbnails(&thumb_dir);
-        (orig_w, orig_h)
+        (
+            std::fs::read(&cache_file).map_err(|e| format!("Failed to read thumbnail cache: {}", e))?,
+            orig_w,
+            orig_h,
+        )
     };
 
-    Ok((
-        cache_file.to_string_lossy().to_string(),
-        orig_w,
-        orig_h,
-    ))
+    let data_url = format!("data:image/jpeg;base64,{}", BASE64.encode(jpeg_bytes));
+    Ok((data_url, cache_file.to_string_lossy().to_string(), orig_w, orig_h))
 }
 
 /// Keep the thumbnail cache bounded: drop the oldest files beyond 800 entries.

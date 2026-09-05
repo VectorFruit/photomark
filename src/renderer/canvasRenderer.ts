@@ -69,10 +69,15 @@ async function ensureFontsLoaded(config: FrameConfig): Promise<void> {
       const key = `${family}|${weight}`;
       if (loadedFonts.has(key)) return;
       try {
-        await document.fonts.load(`${weight} 32px "${family}"`, '预览Preview 0123');
+        // Race a timeout: a stuck font fetch must never block rendering —
+        // the canvas falls back to system fonts until the face arrives.
+        await Promise.race([
+          document.fonts.load(`${weight} 32px "${family}"`, '预览Preview 0123'),
+          new Promise((res) => setTimeout(res, 3000)),
+        ]);
         loadedFonts.add(key);
       } catch {
-        // Font unavailable: canvas keeps its current fallback behavior
+        loadedFonts.add(key);
       }
     })
   );
