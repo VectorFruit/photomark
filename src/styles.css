@@ -2911,3 +2911,13 @@ input[type="number"] {
 .stage-nav.next:hover {
   transform: translateY(-50%) translateX(2px);
 }
+
+/* Brand logo (img replaces the old glyph tile) */
+img.brand-icon {
+  background: transparent;
+  color: initial;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 6px;
+  display: block;
+}

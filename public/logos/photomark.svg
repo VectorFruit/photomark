@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B2D35"/>
+      <stop offset="1" stop-color="#16171D"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BFD3E4"/>
+      <stop offset="1" stop-color="#93AEC6"/>
+    </linearGradient>
+    <clipPath id="photo">
+      <rect x="31" y="28" width="66" height="46" rx="3"/>
+    </clipPath>
+  </defs>
+
+  <rect x="1" y="1" width="126" height="126" rx="29" fill="url(#bg)"/>
+  <rect x="3" y="3" width="122" height="122" rx="27" fill="none" stroke="#FFFFFF" stroke-opacity="0.06" stroke-width="1.5"/>
+
+  <rect x="24" y="22" width="80" height="84" rx="8" fill="#F8F5EE"/>
+
+  <g clip-path="url(#photo)">
+    <rect x="31" y="28" width="66" height="46" fill="url(#sky)"/>
+    <circle cx="77" cy="41" r="7.4" fill="#E9B966"/>
+    <path d="M31 74 L51 47 L66 64 L74 56 L97 74 Z" fill="#6D8499"/>
+    <path d="M31 74 L48 58 L60 70 L70 60 L97 74 Z" fill="#4F6478"/>
+  </g>
+
+  <rect x="31" y="80" width="30" height="4.5" rx="2.2" fill="#454A55"/>
+  <rect x="31" y="89.5" width="42" height="3.7" rx="1.85" fill="#C9CDD5"/>
+  <circle cx="92.8" cy="87.4" r="3.3" fill="#D4A24C"/>
+</svg>
