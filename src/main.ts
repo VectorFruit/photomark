@@ -1946,6 +1946,10 @@ async function loadFullImage(item: PhotoItem): Promise<HTMLImageElement> {
   if (isTauri && ['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
     try {
       const img = new Image();
+      // Required for the asset-protocol image to stay CORS-clean: without it
+      // the request runs in no-cors mode and taints the export canvas, making
+      // toDataURL/toBlob throw SecurityError.
+      img.crossOrigin = 'anonymous';
       img.src = convertFileSrc(item.path);
       await Promise.race([
         new Promise((res, rej) => {
@@ -1955,6 +1959,15 @@ async function loadFullImage(item: PhotoItem): Promise<HTMLImageElement> {
         // A stuck asset request must fall back to the Rust decode path.
         new Promise((_, rej) => setTimeout(() => rej(new Error('asset load timeout')), 8000)),
       ]);
+
+      // Verify the image is actually CORS-clean for canvas readback; a taint
+      // check on a 1x1 probe is cheaper than failing inside the big export.
+      const probe = document.createElement('canvas');
+      probe.width = 1;
+      probe.height = 1;
+      probe.getContext('2d')!.drawImage(img, 0, 0, 1, 1);
+      probe.toDataURL();
+
       return img;
     } catch {
       // fall through to the Rust decode path
