@@ -5,7 +5,7 @@ use rayon::prelude::*;
 use serde::Serialize;
 use tauri::{AppHandle, Emitter, Manager};
 use crate::exif_reader::read_exif_from_memory;
-use crate::image_engine::{generate_thumbnail_cached, load_full_image_data_url, save_base64_image};
+use crate::image_engine::{generate_thumbnail_cached, load_full_image_data_url, save_base64_image, save_binary_image};
 use crate::models::{BatchExportItem, ExportResult, PhotoInfo};
 
 #[derive(Clone, Serialize)]
@@ -144,6 +144,18 @@ pub async fn save_rendered_photo(
     quality: u8,
 ) -> Result<bool, String> {
     save_base64_image(&output_path, &base64_data, &format, quality)?;
+    Ok(true)
+}
+
+#[tauri::command]
+pub async fn save_rendered_photo_binary(
+    output_path: String,
+    data: Vec<u8>,
+    format: String,
+    quality: u8,
+    source_path: Option<String>,
+) -> Result<bool, String> {
+    save_binary_image(&output_path, &data, &format, quality, source_path.as_deref())?;
     Ok(true)
 }
 

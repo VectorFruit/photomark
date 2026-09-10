@@ -33,6 +33,14 @@ appimagetool*
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+debug-render.html
 __pycache__/
 *.py[cod]
+.zcode
+
+# Test & scratch images
+/*.jpg
+/*.jpeg
+/*.png
+/*.webp
+

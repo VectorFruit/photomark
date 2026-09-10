@@ -46,8 +46,30 @@ export function detectBrandId(make?: string, model?: string): string | null {
   return null;
 }
 
-export async function loadLogoImage(brandId: string | null, isDarkTheme: boolean): Promise<HTMLImageElement | null> {
+export async function loadCustomLogo(dataUrl?: string): Promise<HTMLImageElement | null> {
+  if (!dataUrl) return null;
+  if (imageCache.has(dataUrl)) return imageCache.get(dataUrl)!;
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      imageCache.set(dataUrl, img);
+      resolve(img);
+    };
+    img.onerror = () => resolve(null);
+    img.src = dataUrl;
+  });
+}
+
+export async function loadLogoImage(
+  brandId: string | null,
+  isDarkTheme: boolean,
+  customDataUrl?: string
+): Promise<HTMLImageElement | null> {
   if (!brandId) return null;
+  if (brandId === 'custom') {
+    return loadCustomLogo(customDataUrl);
+  }
   const brand = BRAND_LOGOS.find((b) => b.id === brandId);
   if (!brand) return null;
   const url = isDarkTheme ? brand.lightSvg : brand.darkSvg;

@@ -168,6 +168,113 @@ pub fn load_full_image_data_url<P: AsRef<Path>>(path: P, orientation: Option<u32
     Ok(data_url)
 }
 
+/// Extract APP1 (EXIF/XMP), APP2 (ICC profile), and APP13 (IPTC) segments from JPEG bytes.
+fn extract_jpeg_metadata_chunks(data: &[u8]) -> Vec<Vec<u8>> {
+    let mut chunks = Vec::new();
+    if data.len() < 4 || data[0] != 0xFF || data[1] != 0xD8 {
+        return chunks;
+    }
+
+    let mut cursor = 2;
+    while cursor + 4 <= data.len() {
+        if data[cursor] != 0xFF {
+            break;
+        }
+        let marker = data[cursor + 1];
+        // SOS (Start of Scan) or EOI marks the end of header segments
+        if marker == 0xDA || marker == 0xD9 {
+            break;
+        }
+        // Markers without length field
+        if marker == 0xD8 || (marker >= 0xD0 && marker <= 0xD7) || marker == 0x01 || marker == 0x00 {
+            cursor += 2;
+            continue;
+        }
+
+        let length = ((data[cursor + 2] as usize) << 8) | (data[cursor + 3] as usize);
+        if length < 2 || cursor + 2 + length > data.len() {
+            break;
+        }
+
+        let chunk_end = cursor + 2 + length;
+        // APP1 (EXIF, XMP), APP2 (ICC Profile), APP13 (IPTC)
+        if marker == 0xE1 || marker == 0xE2 || marker == 0xED {
+            chunks.push(data[cursor..chunk_end].to_vec());
+        }
+
+        cursor = chunk_end;
+    }
+    chunks
+}
+
+/// Inject metadata chunks into a target JPEG directly after SOI (or after JFIF APP0 if present).
+fn inject_metadata_chunks(target: &[u8], metadata_chunks: &[Vec<u8>]) -> Vec<u8> {
+    if metadata_chunks.is_empty() || target.len() < 4 || target[0] != 0xFF || target[1] != 0xD8 {
+        return target.to_vec();
+    }
+
+    // Determine insertion position: after SOI (2) or after APP0 if the first segment is APP0
+    let mut insert_pos = 2;
+    if target.len() >= 6 && target[2] == 0xFF && target[3] == 0xE0 {
+        let app0_len = ((target[4] as usize) << 8) | (target[5] as usize);
+        if 4 + app0_len <= target.len() {
+            insert_pos = 2 + 2 + app0_len;
+        }
+    }
+
+    let mut output = Vec::with_capacity(target.len() + metadata_chunks.iter().map(|c| c.len()).sum::<usize>());
+    output.extend_from_slice(&target[..insert_pos]);
+    for chunk in metadata_chunks {
+        output.extend_from_slice(chunk);
+    }
+    output.extend_from_slice(&target[insert_pos..]);
+    output
+}
+
+pub fn save_binary_image<P: AsRef<Path>>(
+    output_path: P,
+    bytes: &[u8],
+    format: &str,
+    quality: u8,
+    source_path: Option<&str>,
+) -> Result<(), String> {
+    if let Some(parent) = output_path.as_ref().parent() {
+        std::fs::create_dir_all(parent).map_err(|e| format!("Failed to create parent dir: {}", e))?;
+    }
+
+    let is_jpeg_output = format.eq_ignore_ascii_case("jpeg") || format.eq_ignore_ascii_case("jpg");
+
+    // If saving as JPEG from a lossless PNG canvas buffer, encode in Rust with exact quality
+    let mut final_bytes = if is_jpeg_output && bytes.starts_with(&[0x89, 0x50, 0x4E, 0x47]) {
+        let img = image::load_from_memory(bytes)
+            .map_err(|e| format!("Failed to decode image buffer: {}", e))?;
+        let mut buffer = Cursor::new(Vec::new());
+        let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut buffer, quality);
+        encoder.encode_image(&img)
+            .map_err(|e| format!("Failed to encode JPEG: {}", e))?;
+        buffer.into_inner()
+    } else {
+        bytes.to_vec()
+    };
+
+    // If output is JPEG and source_path is supplied, preserve original EXIF, XMP and ICC profile
+    if is_jpeg_output {
+        if let Some(src) = source_path {
+            if let Ok(src_bytes) = std::fs::read(src) {
+                let metadata_chunks = extract_jpeg_metadata_chunks(&src_bytes);
+                if !metadata_chunks.is_empty() {
+                    final_bytes = inject_metadata_chunks(&final_bytes, &metadata_chunks);
+                }
+            }
+        }
+    }
+
+    std::fs::write(&output_path, final_bytes)
+        .map_err(|e| format!("Failed to write output file: {}", e))?;
+
+    Ok(())
+}
+
 pub fn save_base64_image<P: AsRef<Path>>(
     output_path: P,
     base64_data: &str,
@@ -185,27 +292,36 @@ pub fn save_base64_image<P: AsRef<Path>>(
     let bytes = BASE64.decode(raw_b64.trim())
         .map_err(|e| format!("Failed to decode base64: {}", e))?;
 
-    if let Some(parent) = output_path.as_ref().parent() {
-        std::fs::create_dir_all(parent).map_err(|e| format!("Failed to create parent dir: {}", e))?;
+    save_binary_image(output_path, &bytes, format, quality, None)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_extract_and_inject_metadata() {
+        // Construct a mock JPEG with APP1 (EXIF) and APP2 (ICC)
+        let mut mock_source = Vec::new();
+        mock_source.extend_from_slice(&[0xFF, 0xD8]); // SOI
+        // APP1: len = 6 (including 2 len bytes + 4 payload)
+        mock_source.extend_from_slice(&[0xFF, 0xE1, 0x00, 0x06, 0x45, 0x78, 0x69, 0x66]); // "Exif"
+        // APP2: len = 5
+        mock_source.extend_from_slice(&[0xFF, 0xE2, 0x00, 0x05, 0x49, 0x43, 0x43]); // "ICC"
+        // SOS
+        mock_source.extend_from_slice(&[0xFF, 0xDA, 0x00, 0x02]);
+
+        let chunks = extract_jpeg_metadata_chunks(&mock_source);
+        assert_eq!(chunks.len(), 2, "Should extract exactly APP1 and APP2");
+        assert_eq!(chunks[0][1], 0xE1);
+        assert_eq!(chunks[1][1], 0xE2);
+
+        // Target clean JPEG
+        let target_jpeg = vec![0xFF, 0xD8, 0xFF, 0xDA, 0x00, 0x02];
+        let injected = inject_metadata_chunks(&target_jpeg, &chunks);
+
+        assert_eq!(injected[0..2], [0xFF, 0xD8]);
+        assert_eq!(injected[2..4], [0xFF, 0xE1]);
+        assert!(injected.len() > target_jpeg.len());
     }
-
-    // If saving as JPEG from a lossless PNG canvas buffer, encode in Rust with exact quality
-    if (format.eq_ignore_ascii_case("jpeg") || format.eq_ignore_ascii_case("jpg"))
-        && bytes.starts_with(&[0x89, 0x50, 0x4E, 0x47])
-    {
-        let img = image::load_from_memory(&bytes)
-            .map_err(|e| format!("Failed to decode image buffer: {}", e))?;
-        let mut buffer = Cursor::new(Vec::new());
-        let mut encoder = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut buffer, quality);
-        encoder.encode_image(&img)
-            .map_err(|e| format!("Failed to encode JPEG: {}", e))?;
-        std::fs::write(&output_path, buffer.into_inner())
-            .map_err(|e| format!("Failed to write output file: {}", e))?;
-        return Ok(());
-    }
-
-    std::fs::write(&output_path, bytes)
-        .map_err(|e| format!("Failed to write output file: {}", e))?;
-
-    Ok(())
 }

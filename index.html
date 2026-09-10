@@ -149,6 +149,12 @@
           </span>
         </div>
 
+        <!-- Per-Photo Tuning Switch -->
+        <div class="control-row" style="margin: 4px 14px 10px 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.08));">
+          <span class="control-label" style="font-size: 12px; font-weight: 600;">仅对当前照片生效</span>
+          <input type="checkbox" id="cfg-per-photo-override" title="开启后此照片将拥有独立相框与水印配置" />
+        </div>
+
         <!-- 0. Presets -->
         <div class="settings-group">
           <div class="group-title">预设</div>
@@ -158,7 +164,12 @@
             <button id="btn-preset-save-confirm" class="btn btn-secondary">保存</button>
             <button id="btn-preset-save-cancel" class="btn btn-secondary">取消</button>
           </div>
-          <button id="btn-preset-save" class="btn-reset-text" style="margin-top: 8px">＋ 保存当前为预设</button>
+          <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+            <button id="btn-preset-save" class="btn-reset-text">＋ 保存当前为预设</button>
+            <button id="btn-preset-export" class="btn-reset-text">⤓ 导出预设</button>
+            <button id="btn-preset-import" class="btn-reset-text">⤒ 导入预设</button>
+            <input type="file" id="preset-file-input" accept=".json" style="display: none" />
+          </div>
         </div>
 
         <!-- 1. Frame Template -->
@@ -206,6 +217,152 @@
                 <rect x="82" y="63" width="18" height="2.5" fill="#ffffff" opacity="0.6" />
               </svg>
               <span>极简微章</span>
+            </div>
+            <div class="template-card" data-template="center_brand">
+              <svg class="template-preview" viewBox="0 0 120 86" aria-hidden="true">
+                <rect x="0" y="0" width="120" height="86" fill="currentColor" opacity="0.06" />
+                <rect x="8" y="6" width="104" height="58" fill="currentColor" opacity="0.30" />
+                <rect x="6" y="4" width="108" height="62" fill="none" stroke="currentColor" opacity="0.15" />
+                <line x1="42" y1="70" x2="52" y2="70" stroke="currentColor" opacity="0.4" stroke-width="1" />
+                <circle cx="60" cy="70" r="2.5" fill="currentColor" opacity="0.75" />
+                <line x1="68" y1="70" x2="78" y2="70" stroke="currentColor" opacity="0.4" stroke-width="1" />
+                <rect x="44" y="75" width="32" height="2" fill="currentColor" opacity="0.65" />
+                <rect x="36" y="80" width="48" height="1.5" fill="currentColor" opacity="0.35" />
+              </svg>
+              <span>居中大标</span>
+            </div>
+            <div class="template-card" data-template="cinematic">
+              <svg class="template-preview" viewBox="0 0 120 80" aria-hidden="true">
+                <rect x="0" y="0" width="120" height="80" fill="#09090b" />
+                <rect x="0" y="14" width="120" height="52" fill="currentColor" opacity="0.35" />
+                <path d="M 6 18 L 10 18 M 6 18 L 6 22" stroke="#ffffff" stroke-width="1" opacity="0.4" fill="none" />
+                <path d="M 114 18 L 110 18 M 114 18 L 114 22" stroke="#ffffff" stroke-width="1" opacity="0.4" fill="none" />
+                <path d="M 6 62 L 10 62 M 6 62 L 6 58" stroke="#ffffff" stroke-width="1" opacity="0.4" fill="none" />
+                <path d="M 114 62 L 110 62 M 114 62 L 114 58" stroke="#ffffff" stroke-width="1" opacity="0.4" fill="none" />
+                <circle cx="8" cy="7" r="1.8" fill="#ef4444" />
+                <rect x="13" y="6" width="22" height="2" fill="#ffffff" opacity="0.5" />
+                <rect x="88" y="6" width="26" height="2" fill="#ffffff" opacity="0.4" />
+                <rect x="8" y="72" width="36" height="2" fill="#ffffff" opacity="0.7" />
+                <rect x="76" y="72" width="36" height="2" fill="#ffffff" opacity="0.45" />
+              </svg>
+              <span>电影宽银幕</span>
+            </div>
+            <div class="template-card" data-template="film_roll">
+              <svg class="template-preview" viewBox="0 0 120 80" aria-hidden="true">
+                <defs>
+                  <radialGradient id="filmroll-leak" cx="0.86" cy="0" r="0.9">
+                    <stop offset="0" stop-color="#ff8a3c" stop-opacity="0.25" />
+                    <stop offset="1" stop-color="#ff8a3c" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+                <rect x="0" y="0" width="120" height="80" fill="#0d0d0f" />
+                <rect x="0" y="0" width="120" height="80" fill="url(#filmroll-leak)" />
+                <g fill="#000000" stroke="#ffffff" stroke-width="0.5" opacity="0.8">
+                  <rect x="6" y="2" width="5" height="4" rx="1" />
+                  <rect x="20" y="2" width="5" height="4" rx="1" />
+                  <rect x="34" y="2" width="5" height="4" rx="1" />
+                  <rect x="48" y="2" width="5" height="4" rx="1" />
+                  <rect x="62" y="2" width="5" height="4" rx="1" />
+                  <rect x="76" y="2" width="5" height="4" rx="1" />
+                  <rect x="90" y="2" width="5" height="4" rx="1" />
+                  <rect x="104" y="2" width="5" height="4" rx="1" />
+                  <rect x="6" y="74" width="5" height="4" rx="1" />
+                  <rect x="20" y="74" width="5" height="4" rx="1" />
+                  <rect x="34" y="74" width="5" height="4" rx="1" />
+                  <rect x="48" y="74" width="5" height="4" rx="1" />
+                  <rect x="62" y="74" width="5" height="4" rx="1" />
+                  <rect x="76" y="74" width="5" height="4" rx="1" />
+                  <rect x="90" y="74" width="5" height="4" rx="1" />
+                  <rect x="104" y="74" width="5" height="4" rx="1" />
+                </g>
+                <rect x="8" y="8.5" width="30" height="1.6" fill="#f59e0b" opacity="0.9" />
+                <rect x="46" y="8.5" width="28" height="1.6" fill="#f59e0b" opacity="0.45" />
+                <rect x="90" y="8.5" width="22" height="1.6" fill="#f59e0b" opacity="0.8" />
+                <rect x="8" y="11.5" width="104" height="5" fill="currentColor" opacity="0.12" />
+                <rect x="8" y="19" width="104" height="42" fill="currentColor" opacity="0.30" />
+                <rect x="98" y="56" width="10" height="2" fill="#ff9536" opacity="0.9" />
+                <rect x="8" y="63.5" width="104" height="5" fill="currentColor" opacity="0.12" />
+                <rect x="8" y="70.5" width="12" height="1.6" fill="#f59e0b" opacity="0.9" />
+                <g fill="#f59e0b" opacity="0.7">
+                  <rect x="24" y="70" width="1.2" height="3" />
+                  <rect x="26.5" y="70" width="0.8" height="3" />
+                  <rect x="28.5" y="70" width="2" height="3" />
+                  <rect x="31.5" y="70" width="0.8" height="3" />
+                  <rect x="33.5" y="70" width="1.5" height="3" />
+                </g>
+                <rect x="46" y="70.5" width="28" height="1.6" fill="#f59e0b" opacity="0.45" />
+                <rect x="92" y="70.5" width="20" height="1.6" fill="#f59e0b" opacity="0.8" />
+              </svg>
+              <span>复古胶卷</span>
+            </div>
+            <div class="template-card" data-template="medium_format">
+              <svg class="template-preview" viewBox="0 0 120 86" aria-hidden="true">
+                <rect x="0" y="0" width="120" height="86" fill="#0c0d10" />
+                <rect x="18" y="10" width="84" height="54" fill="currentColor" opacity="0.30" />
+                <path d="M 18 28 L 22 31 L 18 34 Z" fill="#0c0d10" />
+                <path d="M 18 44 L 22 47 L 18 50 Z" fill="#0c0d10" />
+                <line x1="18" y1="67" x2="102" y2="67" stroke="#ff7b00" stroke-width="1.2" />
+                <rect x="18" y="4" width="22" height="1.6" fill="#ffffff" opacity="0.5" />
+                <rect x="52" y="4" width="16" height="1.6" fill="#ffffff" opacity="0.3" />
+                <rect x="86" y="4" width="16" height="1.6" fill="#ffffff" opacity="0.5" />
+                <rect x="18" y="73" width="28" height="2.2" fill="#ffffff" opacity="0.8" />
+                <rect x="18" y="78" width="20" height="1.5" fill="#ffffff" opacity="0.4" />
+                <rect x="74" y="73" width="28" height="2" fill="#ffffff" opacity="0.6" />
+                <rect x="80" y="78" width="22" height="1.5" fill="#ffffff" opacity="0.4" />
+              </svg>
+              <span>中画幅胶片</span>
+            </div>
+            <div class="template-card" data-template="museum_matte">
+              <svg class="template-preview" viewBox="0 0 120 86" aria-hidden="true">
+                <rect x="0" y="0" width="120" height="86" fill="#f5f4ef" />
+                <rect x="14" y="8" width="92" height="52" fill="currentColor" opacity="0.25" />
+                <line x1="14" y1="8" x2="106" y2="8" stroke="#000000" stroke-width="1" opacity="0.35" />
+                <line x1="14" y1="8" x2="14" y2="60" stroke="#000000" stroke-width="1" opacity="0.35" />
+                <line x1="14" y1="60" x2="106" y2="60" stroke="#ffffff" stroke-width="1.2" opacity="0.8" />
+                <line x1="106" y1="8" x2="106" y2="60" stroke="#ffffff" stroke-width="1.2" opacity="0.8" />
+                <rect x="16" y="70" width="24" height="1.8" fill="currentColor" opacity="0.35" />
+                <rect x="16" y="74" width="16" height="1.4" fill="currentColor" opacity="0.2" />
+                <rect x="74" y="69" width="30" height="2.4" fill="currentColor" opacity="0.7" />
+                <rect x="68" y="74" width="36" height="1.6" fill="currentColor" opacity="0.4" />
+              </svg>
+              <span>画廊典藏展签</span>
+            </div>
+            <div class="template-card" data-template="street_split">
+              <svg class="template-preview" viewBox="0 0 120 86" aria-hidden="true">
+                <rect x="0" y="0" width="120" height="86" fill="currentColor" opacity="0.05" />
+                <rect x="8" y="6" width="104" height="50" fill="currentColor" opacity="0.30" />
+                <rect x="8" y="6" width="104" height="50" fill="none" stroke="currentColor" opacity="0.2" />
+                <line x1="56" y1="62" x2="56" y2="80" stroke="currentColor" stroke-width="0.8" opacity="0.25" />
+                <rect x="10" y="63" width="28" height="3" fill="currentColor" opacity="0.8" />
+                <circle cx="12" cy="74" r="2" fill="#ef4444" />
+                <circle cx="18" cy="74" r="2" fill="#f59e0b" />
+                <circle cx="24" cy="74" r="2" fill="#10b981" />
+                <circle cx="30" cy="74" r="2" fill="#3b82f6" />
+                <rect x="36" y="73" width="14" height="2" fill="currentColor" opacity="0.35" />
+                <rect x="62" y="64" width="22" height="2" fill="currentColor" opacity="0.5" />
+                <rect x="88" y="64" width="20" height="2" fill="currentColor" opacity="0.5" />
+                <rect x="62" y="72" width="22" height="2" fill="currentColor" opacity="0.5" />
+                <rect x="88" y="72" width="20" height="2" fill="currentColor" opacity="0.5" />
+              </svg>
+              <span>现代街拍配方卡</span>
+            </div>
+            <div class="template-card" data-template="slide_mount">
+              <svg class="template-preview" viewBox="0 0 120 86" aria-hidden="true">
+                <rect x="0" y="0" width="120" height="86" fill="#f0ece3" />
+                <rect x="4" y="4" width="112" height="78" fill="none" stroke="#000000" stroke-width="0.8" opacity="0.15" />
+                <rect x="18" y="14" width="84" height="48" fill="currentColor" opacity="0.30" />
+                <line x1="18" y1="14" x2="102" y2="14" stroke="#000000" stroke-width="1.2" opacity="0.4" />
+                <line x1="18" y1="14" x2="18" y2="62" stroke="#000000" stroke-width="1.2" opacity="0.4" />
+                <line x1="18" y1="62" x2="102" y2="62" stroke="#ffffff" stroke-width="1" opacity="0.8" />
+                <path d="M 19 8 L 22 5 L 25 8 Z" fill="#666666" />
+                <rect x="28" y="6" width="30" height="1.6" fill="#666666" />
+                <rect x="76" y="6" width="26" height="1.6" fill="#2563eb" />
+                <rect x="18" y="68" width="28" height="2.2" fill="#333333" />
+                <rect x="18" y="73" width="34" height="1.6" fill="#777777" />
+                <rect x="76" y="68" width="26" height="2" fill="#dc2626" />
+                <rect x="80" y="73" width="22" height="1.5" fill="#777777" />
+              </svg>
+              <span>反转片幻灯夹</span>
             </div>
           </div>
         </div>
@@ -281,6 +438,7 @@
             <span class="control-label">品牌图标</span>
             <select id="cfg-brand-logo" style="width: 140px">
               <option value="auto">自动识别 (EXIF)</option>
+              <option value="custom">自定义印章 / Logo</option>
               <option value="sony">SONY 索尼</option>
               <option value="canon">Canon 佳能</option>
               <option value="nikon">Nikon 尼康</option>
@@ -293,6 +451,14 @@
               <option value="ricoh">RICOH 理光</option>
               <option value="zeiss">ZEISS 蔡司</option>
             </select>
+          </div>
+
+          <!-- Custom Logo Upload Row -->
+          <div class="control-row" id="row-custom-logo" style="display: none; margin-top: 8px; align-items: center; gap: 8px;">
+            <button id="btn-upload-logo" class="btn btn-secondary" style="flex: 1; padding: 4px 8px; font-size: 12px;">上传印章/Logo</button>
+            <img id="custom-logo-thumb" style="height: 26px; max-width: 50px; object-fit: contain; border-radius: 4px; background: rgba(0,0,0,0.1); display: none;" />
+            <button id="btn-clear-custom-logo" class="photo-remove" title="清除自定义印章">✕</button>
+            <input type="file" id="input-custom-logo-file" accept="image/png,image/svg+xml,image/jpeg" style="display: none" />
           </div>
         </div>
 
@@ -316,9 +482,58 @@
           </div>
 
           <div class="control-row" style="margin-top: 6px">
+            <span class="control-label">胶片模拟 / 配方标签</span>
+          </div>
+          <input type="text" id="cfg-film-sim" placeholder="例如: Classic Chrome / Portra 400" />
+
+          <div class="control-row" style="margin-top: 6px">
             <span class="control-label">自定义签名 / 备注</span>
           </div>
           <input type="text" id="cfg-custom-note" placeholder="例如: Photo by Alex" />
+        </div>
+
+        <!-- 4b. Decorative markings (cinematic / film_roll only) -->
+        <div class="settings-group" id="group-decor" style="display: none">
+          <div class="group-title">装饰元素</div>
+
+          <div class="control-block" id="block-decor-cine" style="display: none">
+            <div class="control-row">
+              <span class="control-label">帧率 / 快门装饰</span>
+              <button class="btn-reset-single" data-reset="cineMetaText" title="恢复默认帧率装饰">↺</button>
+            </div>
+            <input type="text" id="cfg-cine-meta" placeholder="例如: 180.0° · 24 FPS(留空隐藏)" />
+            <div class="checkbox-group" style="margin-top: 8px">
+              <label class="checkbox-item"><input type="checkbox" id="cfg-show-soundtrack" checked /> 光学声轨波形</label>
+              <label class="checkbox-item"><input type="checkbox" id="cfg-show-grain" checked /> 胶片颗粒</label>
+            </div>
+          </div>
+
+          <div class="control-block" id="block-decor-film" style="display: none">
+            <div class="control-row">
+              <span class="control-label">帧号</span>
+              <button class="btn-reset-single" data-reset="filmFrameNo" title="恢复默认帧号">↺</button>
+            </div>
+            <input type="text" id="cfg-film-frame-no" placeholder="例如: 24A(留空隐藏)" />
+
+            <div class="control-row" style="margin-top: 6px">
+              <span class="control-label">张数计数</span>
+              <button class="btn-reset-single" data-reset="filmExp" title="恢复默认张数计数">↺</button>
+            </div>
+            <input type="text" id="cfg-film-exp" placeholder="例如: 24 · EXP 36(留空显示真实 ISO)" />
+
+            <div class="control-row" style="margin-top: 6px">
+              <span class="control-label">胶卷编号</span>
+              <button class="btn-reset-single" data-reset="filmCode" title="恢复默认胶卷编号">↺</button>
+            </div>
+            <input type="text" id="cfg-film-code" placeholder="例如: 5063(留空隐藏)" />
+
+            <div class="checkbox-group" style="margin-top: 8px">
+              <label class="checkbox-item"><input type="checkbox" id="cfg-show-dx-barcode" checked /> DX 条形码</label>
+              <label class="checkbox-item"><input type="checkbox" id="cfg-show-neighbor-frames" checked /> 相邻画格</label>
+              <label class="checkbox-item"><input type="checkbox" id="cfg-show-light-leak" checked /> 漏光效果</label>
+              <label class="checkbox-item"><input type="checkbox" id="cfg-show-date-stamp" checked /> 日期压印</label>
+            </div>
+          </div>
         </div>
 
         <!-- 5. Style & Layout Tuning -->

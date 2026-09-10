@@ -48,6 +48,25 @@ const zhToEn: Record<string, string> = {
   '自定义签名 / 备注': 'Custom signature / note',
   '焦距显示方式': 'Focal length display',
   '参数显示项': 'Displayed info',
+  '装饰元素': 'Decorations',
+  '帧率 / 快门装饰': 'Frame rate / shutter',
+  '光学声轨波形': 'Optical sound track',
+  '胶片颗粒': 'Film grain',
+  '帧号': 'Frame no.',
+  '张数计数': 'Exposure counter',
+  '胶卷编号': 'Film code',
+  'DX 条形码': 'DX barcode',
+  '相邻画格': 'Adjacent frames',
+  '漏光效果': 'Light leak',
+  '日期压印': 'Date stamp',
+  '恢复默认帧率装饰': 'Reset frame-rate decoration',
+  '恢复默认帧号': 'Reset frame number',
+  '恢复默认张数计数': 'Reset exposure counter',
+  '恢复默认胶卷编号': 'Reset film code',
+  '例如: 180.0° · 24 FPS(留空隐藏)': 'e.g. 180.0° · 24 FPS (empty hides)',
+  '例如: 24A(留空隐藏)': 'e.g. 24A (empty hides)',
+  '例如: 24 · EXP 36(留空显示真实 ISO)': 'e.g. 24 · EXP 36 (empty shows real ISO)',
+  '例如: 5063(留空隐藏)': 'e.g. 5063 (empty hides)',
   '导出设置': 'Export settings',
   '文件名模板': 'Filename template',
   '导出当前照片': 'Export current photo',
@@ -159,6 +178,31 @@ const zhToEn: Record<string, string> = {
   '松开导入照片': 'Drop to import photos',
   '支持 JPG / PNG / WebP / TIFF，可多选': 'JPG / PNG / WebP / TIFF · multi-select',
   '键盘快捷键': 'Keyboard shortcuts',
+  '画廊居中': 'Center brand',
+  '居中大标': 'Center brand',
+  '电影宽银幕': 'Cinematic',
+  '复古胶卷': 'Film roll',
+  '胶卷底片': 'Film roll',
+  '中画幅胶片': 'Medium format',
+  '画廊极简展签': 'Museum matte',
+  '现代街拍双联': 'Street split',
+  '反转片幻灯夹': 'Slide mount',
+  '暗房接触印样': 'Contact sheet',
+  '画廊微喷悬浮': 'Floating frame',
+  '胶片配方档案': 'Recipe card',
+  '自定义印章 / Logo': 'Custom logo / stamp',
+  '上传个人印章/Logo': 'Upload custom logo/stamp',
+  '清除自定义 Logo': 'Clear custom logo',
+  '胶片模拟 / 配方标签': 'Film simulation label',
+  '例如: Classic Chrome / Portra 400': 'e.g. Classic Chrome / Portra 400',
+  '导出预设': 'Export presets',
+  '导入预设': 'Import presets',
+  '预设导出成功': 'Presets exported successfully',
+  '预设导入成功': 'Presets imported successfully',
+  '预设文件格式不正确': 'Invalid preset file format',
+  '仅对当前照片生效': 'Apply to current photo only',
+  '全局统一配置': 'Apply to all photos',
+  '应用到全部照片': 'Apply to all photos',
   '打开所在文件夹': 'Open folder',
   '切换上一张 / 下一张照片': 'Previous / next photo',
   '按住查看原图，松开恢复': 'Hold to view original, release to restore',
@@ -169,6 +213,16 @@ const zhToEn: Record<string, string> = {
   '已移除 ': 'Removed ',
   '打开文件夹失败: ': 'Failed to open folder: ',
 };
+
+export function t(key: string, params?: Record<string, any>): string {
+  let text = translateText(key);
+  if (params) {
+    for (const [k, v] of Object.entries(params)) {
+      text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+    }
+  }
+  return text;
+}
 
 export function getStoredLang(): Lang {
   const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
